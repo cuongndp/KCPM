@@ -84,13 +84,13 @@ const AdminDashboard = () => {
 
   const handleCreateDoctor = async (values) => {
     try {
-      await adminService.createDoctor(values, values.departmentId);
+      await adminService.createDoctor(values);
       message.success('Đã thêm bác sĩ thành công');
       setDoctorModalVisible(false);
       doctorForm.resetFields();
       await loadAdminData();
     } catch (error) {
-      message.error('Không thể thêm bác sĩ');
+      message.error(error.response?.data?.message || error.response?.data?.error || 'Không thể thêm bác sĩ');
     }
   };
 
@@ -172,7 +172,6 @@ const AdminDashboard = () => {
         />
       )
     },
-    { title: 'Phí khám', dataIndex: 'consultationFee', key: 'consultationFee' },
     {
       title: 'Thao tác',
       key: 'actions',
@@ -314,9 +313,6 @@ const AdminDashboard = () => {
           </Form.Item>
           <Form.Item name="experience" label="Kinh nghiệm (năm)">
             <Input type="number" />
-          </Form.Item>
-          <Form.Item name="consultationFee" label="Phí khám" rules={[{ required: true, message: 'Vui lòng nhập phí khám' }]}>
-            <Input type="number" min={0} />
           </Form.Item>
           <Form.Item>
             <Button type="primary" htmlType="submit" block>Thêm bác sĩ</Button>

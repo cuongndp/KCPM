@@ -83,7 +83,7 @@ public class AdminService {
         doctor.setSpecialization(request.getSpecialization());
         doctor.setQualification(request.getQualification());
         doctor.setExperience(request.getExperience());
-        doctor.setConsultationFee(request.getConsultationFee());
+        doctor.setConsultationFee(0.0);
         doctor.setAvailable(true);
         return doctorRepository.save(doctor);
     }

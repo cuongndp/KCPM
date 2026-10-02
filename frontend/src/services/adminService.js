@@ -26,7 +26,7 @@ export const adminService = {
     return response.data;
   },
 
-  createDoctor: async (doctorData, departmentId) => {
+  createDoctor: async ({ departmentId, ...doctorData }) => {
     const response = await api.post(`/admin/doctors?departmentId=${departmentId}`, doctorData);
     return response.data;
   },

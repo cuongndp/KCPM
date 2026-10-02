@@ -5,12 +5,15 @@ import com.hospital.management.model.Appointment;
 import com.hospital.management.model.Prescription;
 import com.hospital.management.repository.AppointmentRepository;
 import com.hospital.management.repository.PrescriptionRepository;
+import com.hospital.management.util.BusinessTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -29,7 +32,8 @@ public class NotificationService {
     private static final String PRESCRIPTION_NOTIFICATION_TOPIC = "prescription-notifications";
     private static final String FOLLOW_UP_ALERT_TOPIC = "follow-up-alerts";
 
-    private final ObjectMapper objectMapper = new ObjectMapper();
+    @Autowired
+    private ObjectMapper objectMapper;
 
     public void sendAppointmentReminder(Appointment appointment) {
         try {
@@ -59,14 +63,15 @@ public class NotificationService {
     }
 
     @Scheduled(fixedRate = 3600000) // Run every hour
+    @Transactional
     public void checkAppointmentReminders() {
-        LocalDateTime tomorrow = LocalDateTime.now().plusDays(1);
-        LocalDateTime startOfTomorrow = tomorrow.toLocalDate().atStartOfDay();
-        LocalDateTime endOfTomorrow = tomorrow.toLocalDate().atTime(23, 59, 59);
+        LocalDate tomorrow = BusinessTime.now().toLocalDate().plusDays(1);
+        LocalDateTime startOfTomorrow = tomorrow.atStartOfDay();
+        LocalDateTime startOfDayAfterTomorrow = tomorrow.plusDays(1).atStartOfDay();
 
         List<Appointment> upcomingAppointments = appointmentRepository.findAll().stream()
-                .filter(a -> a.getAppointmentDateTime().isAfter(startOfTomorrow))
-                .filter(a -> a.getAppointmentDateTime().isBefore(endOfTomorrow))
+            .filter(a -> !a.getAppointmentDateTime().isBefore(startOfTomorrow))
+            .filter(a -> a.getAppointmentDateTime().isBefore(startOfDayAfterTomorrow))
                 .filter(a -> !a.getReminderSent())
                 .filter(a -> a.getStatus() == Appointment.Status.SCHEDULED || a.getStatus() == Appointment.Status.CONFIRMED)
                 .toList();
@@ -79,6 +84,7 @@ public class NotificationService {
     }
 
     @Scheduled(fixedRate = 7200000) // Run every 2 hours
+    @Transactional
     public void checkPrescriptionNotifications() {
         List<Prescription> prescriptions = prescriptionRepository.findAll().stream()
                 .filter(p -> !p.getNotificationSent())
@@ -92,8 +98,9 @@ public class NotificationService {
     }
 
     @Scheduled(fixedRate = 86400000) // Run daily
+    @Transactional(readOnly = true)
     public void checkFollowUpAlerts() {
-        LocalDateTime threeDaysAgo = LocalDateTime.now().minusDays(3);
+        LocalDateTime threeDaysAgo = BusinessTime.now().minusDays(3);
         
         List<Appointment> completedAppointments = appointmentRepository.findAll().stream()
                 .filter(a -> a.getAppointmentDateTime().isBefore(threeDaysAgo))

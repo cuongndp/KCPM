@@ -1,6 +1,5 @@
 package com.hospital.management.dto;
 
-import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -14,9 +13,11 @@ import java.time.LocalDateTime;
 public class AppointmentRequest {
     @NotNull(message = "Doctor ID is required")
     private Long doctorId;
+
+    @NotNull(message = "Department ID is required")
+    private Long departmentId;
     
     @NotNull(message = "Appointment date and time is required")
-    @Future(message = "Appointment must be in the future")
     private LocalDateTime appointmentDateTime;
     
     private String reason;

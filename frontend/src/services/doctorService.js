@@ -1,8 +1,13 @@
 import api from './api';
 
 export const doctorService = {
-  getAvailableDoctors: async () => {
-    const response = await api.get('/patient/doctors/available');
+  getActiveDepartments: async () => {
+    const response = await api.get('/patient/departments');
+    return response.data;
+  },
+
+  getAvailableDoctors: async (departmentId) => {
+    const response = await api.get('/patient/doctors/available', { params: { departmentId } });
     return response.data;
   },
 

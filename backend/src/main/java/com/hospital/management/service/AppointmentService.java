@@ -3,14 +3,19 @@ package com.hospital.management.service;
 import com.hospital.management.dto.AppointmentRequest;
 import com.hospital.management.exception.ResourceNotFoundException;
 import com.hospital.management.model.Appointment;
+import com.hospital.management.model.Department;
 import com.hospital.management.model.Doctor;
 import com.hospital.management.model.Patient;
 import com.hospital.management.repository.AppointmentRepository;
+import com.hospital.management.repository.DepartmentRepository;
 import com.hospital.management.repository.DoctorRepository;
 import com.hospital.management.repository.PatientRepository;
+import com.hospital.management.util.BusinessTime;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -28,6 +33,9 @@ public class AppointmentService {
     @Autowired
     private DoctorRepository doctorRepository;
 
+    @Autowired
+    private DepartmentRepository departmentRepository;
+
     public List<Appointment> getPatientAppointments(Long patientId) {
         return appointmentRepository.findByPatientId(patientId);
     }
@@ -37,6 +45,16 @@ public class AppointmentService {
     }
 
     public Appointment bookAppointment(Long patientId, AppointmentRequest request) {
+        if (!request.getAppointmentDateTime().isAfter(BusinessTime.now())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Appointment must be in the future");
+        }
+
+        Department department = departmentRepository.findById(request.getDepartmentId())
+                .orElseThrow(() -> new ResourceNotFoundException("Department", request.getDepartmentId()));
+        if (!department.getActive()) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Khoa đã tạm dừng nhận lịch hẹn.");
+        }
+
         Patient patient = patientRepository.findById(patientId)
                 .orElseThrow(() -> new ResourceNotFoundException("Patient", patientId));
 
@@ -45,6 +63,9 @@ public class AppointmentService {
 
         if (!doctor.getAvailable()) {
             throw new RuntimeException("Doctor is not available for appointments");
+        }
+        if (!doctor.getDepartment().getId().equals(department.getId())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Bác sĩ không thuộc khoa đã chọn.");
         }
 
         List<Appointment> conflictingAppointments = appointmentRepository.findConflictingAppointments(
@@ -82,7 +103,8 @@ public class AppointmentService {
     }
 
     public List<Appointment> getUpcomingAppointments(Long doctorId) {
+        LocalDateTime now = BusinessTime.now();
         return appointmentRepository.findDoctorAppointmentsBetween(
-                doctorId, LocalDateTime.now(), LocalDateTime.now().plusDays(7));
+            doctorId, now, now.plusDays(7));
     }
 }

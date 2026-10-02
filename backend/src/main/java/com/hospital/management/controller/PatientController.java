@@ -2,6 +2,7 @@ package com.hospital.management.controller;
 
 import com.hospital.management.dto.AppointmentRequest;
 import com.hospital.management.model.Appointment;
+import com.hospital.management.model.Department;
 import com.hospital.management.model.Doctor;
 import com.hospital.management.model.MedicalRecord;
 import com.hospital.management.model.Patient;
@@ -46,10 +47,20 @@ public class PatientController {
         return ResponseEntity.ok(patient);
     }
 
+    @GetMapping("/departments")
+    @PreAuthorize("hasRole('PATIENT')")
+    public ResponseEntity<List<Department>> getActiveDepartments() {
+        return ResponseEntity.ok(doctorService.getActiveDepartments());
+    }
+
     @GetMapping("/doctors/available")
     @PreAuthorize("hasRole('PATIENT')")
-    public ResponseEntity<List<Doctor>> getAvailableDoctors() {
-        return ResponseEntity.ok(doctorService.getAvailableDoctors());
+    public ResponseEntity<List<Doctor>> getAvailableDoctors(
+            @RequestParam(required = false) Long departmentId) {
+        if (departmentId == null) {
+            return ResponseEntity.ok(doctorService.getAvailableDoctors());
+        }
+        return ResponseEntity.ok(doctorService.getAvailableDoctors(departmentId));
     }
 
     @GetMapping("/appointments")

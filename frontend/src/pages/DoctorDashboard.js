@@ -11,6 +11,7 @@ import { useNavigate } from 'react-router-dom';
 import { authService } from '../services/authService';
 import { appointmentService } from '../services/appointmentService';
 import { doctorService } from '../services/doctorService';
+import { formatLocalDateTime } from '../utils/dateTime';
 
 const { Header, Content, Sider } = Layout;
 const { Option } = Select;
@@ -123,7 +124,7 @@ const DoctorDashboard = () => {
 
   const appointmentColumns = [
     { title: 'Bệnh nhân', dataIndex: ['patient', 'user', 'firstName'], key: 'patient' },
-    { title: 'Thời gian', dataIndex: 'appointmentDateTime', key: 'date', render: (date) => new Date(date).toLocaleString('vi-VN') },
+    { title: 'Thời gian', dataIndex: 'appointmentDateTime', key: 'date', render: formatLocalDateTime },
     { title: 'Trạng thái', dataIndex: 'status', key: 'status' },
     { title: 'Lý do', dataIndex: 'reason', key: 'reason' },
     {
@@ -301,7 +302,7 @@ const DoctorDashboard = () => {
                   value={appointment.id}
                   label={`#${appointment.id} ${appointment.patient?.user?.firstName || ''} ${appointment.patient?.user?.lastName || ''}`}
                 >
-                  #{appointment.id} - {appointment.patient?.user?.firstName} {appointment.patient?.user?.lastName} - {new Date(appointment.appointmentDateTime).toLocaleString()}
+                  #{appointment.id} - {appointment.patient?.user?.firstName} {appointment.patient?.user?.lastName} - {formatLocalDateTime(appointment.appointmentDateTime)}
                 </Option>
               ))}
             </Select>

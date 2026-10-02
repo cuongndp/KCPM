@@ -12,6 +12,7 @@ import { authService } from '../services/authService';
 import { appointmentService } from '../services/appointmentService';
 import { patientService } from '../services/patientService';
 import { doctorService } from '../services/doctorService';
+import { formatLocalDate, formatLocalDateTime } from '../utils/dateTime';
 
 const { Header, Content, Sider } = Layout;
 const { Option } = Select;
@@ -21,11 +22,13 @@ const PatientDashboard = () => {
   const [appointments, setAppointments] = useState([]);
   const [medicalHistory, setMedicalHistory] = useState([]);
   const [prescriptions, setPrescriptions] = useState([]);
+  const [departments, setDepartments] = useState([]);
   const [doctors, setDoctors] = useState([]);
   const [patientId, setPatientId] = useState(null);
   const [bookingModalVisible, setBookingModalVisible] = useState(false);
   const [loading, setLoading] = useState(false);
   const [form] = Form.useForm();
+  const selectedDepartmentId = Form.useWatch('departmentId', form);
   const navigate = useNavigate();
 
   const user = authService.getCurrentUser();
@@ -33,6 +36,27 @@ const PatientDashboard = () => {
   useEffect(() => {
     loadPatientData();
   }, []);
+
+  useEffect(() => {
+    if (!selectedDepartmentId) {
+      setDoctors([]);
+      return undefined;
+    }
+
+    let isCurrentDepartment = true;
+    setDoctors([]);
+    doctorService.getAvailableDoctors(selectedDepartmentId)
+      .then(availableDoctors => {
+        if (isCurrentDepartment) setDoctors(availableDoctors);
+      })
+      .catch(() => {
+        if (isCurrentDepartment) message.error('Không thể tải danh sách bác sĩ của khoa');
+      });
+
+    return () => {
+      isCurrentDepartment = false;
+    };
+  }, [selectedDepartmentId]);
 
   const loadPatientData = async () => {
     try {
@@ -43,9 +67,9 @@ const PatientDashboard = () => {
         appointmentService.getPatientAppointments(patient.id),
         patientService.getMedicalHistory(patient.id),
         patientService.getPrescriptions(patient.id),
-        doctorService.getAvailableDoctors()
+        doctorService.getActiveDepartments()
       ]);
-      const setters = [setAppointments, setMedicalHistory, setPrescriptions, setDoctors];
+      const setters = [setAppointments, setMedicalHistory, setPrescriptions, setDepartments];
       results.forEach((result, index) => {
         if (result.status === 'fulfilled') {
           setters[index](result.value);
@@ -62,7 +86,10 @@ const PatientDashboard = () => {
 
   const handleBookAppointment = async (values) => {
     try {
-      await appointmentService.bookAppointment(patientId, values);
+      await appointmentService.bookAppointment(patientId, {
+        ...values,
+        appointmentDateTime: values.appointmentDateTime.format('YYYY-MM-DDTHH:mm:ss')
+      });
       message.success('Đã đặt lịch hẹn thành công');
       setBookingModalVisible(false);
       form.resetFields();
@@ -133,7 +160,7 @@ const PatientDashboard = () => {
                 <div style={{ display: 'grid', gap: 16 }}>
                   {appointments.map(appointment => (
                     <Card key={appointment.id} title={`Lịch hẹn với BS. ${appointment.doctor?.user?.firstName}`}>
-                      <p><strong>Thời gian:</strong> {new Date(appointment.appointmentDateTime).toLocaleString('vi-VN')}</p>
+                      <p><strong>Thời gian:</strong> {formatLocalDateTime(appointment.appointmentDateTime)}</p>
                       <p><strong>Trạng thái:</strong> {appointment.status}</p>
                       <p><strong>Lý do:</strong> {appointment.reason}</p>
                       {appointment.status === 'SCHEDULED' && (
@@ -152,7 +179,7 @@ const PatientDashboard = () => {
               <Tabs.TabPane tab="Lịch sử khám" key="3">
                 <div style={{ display: 'grid', gap: 16 }}>
                   {medicalHistory.map(record => (
-                    <Card key={record.id} title={`Lần khám ngày ${new Date(record.createdAt).toLocaleDateString('vi-VN')}`}>
+                    <Card key={record.id} title={`Lần khám ngày ${formatLocalDate(record.createdAt)}`}>
                       <p><strong>Bác sĩ:</strong> BS. {record.doctor?.user?.firstName}</p>
                       <p><strong>Chẩn đoán:</strong> {record.diagnosis}</p>
                       <p><strong>Triệu chứng:</strong> {record.symptoms}</p>
@@ -186,13 +213,35 @@ const PatientDashboard = () => {
         onCancel={() => setBookingModalVisible(false)}
         footer={null}
       >
-        <Form form={form} onFinish={handleBookAppointment} layout="vertical">
+        <Form
+          form={form}
+          onFinish={handleBookAppointment}
+          layout="vertical"
+        >
+          <Form.Item
+            name="departmentId"
+            label="Chọn khoa"
+            rules={[{ required: true, message: 'Vui lòng chọn khoa' }]}
+          >
+            <Select placeholder="Chọn khoa">
+              {departments.map(department => (
+                <Option key={department.id} value={department.id}>
+                  {department.name}
+                </Option>
+              ))}
+            </Select>
+          </Form.Item>
+
           <Form.Item
             name="doctorId"
             label="Chọn bác sĩ"
             rules={[{ required: true, message: 'Vui lòng chọn bác sĩ' }]}
           >
-            <Select placeholder="Chọn bác sĩ">
+            <Select
+              placeholder={selectedDepartmentId ? 'Chọn bác sĩ' : 'Vui lòng chọn khoa trước'}
+              disabled={!selectedDepartmentId}
+              notFoundContent={selectedDepartmentId ? 'Khoa chưa có bác sĩ khả dụng' : 'Vui lòng chọn khoa trước'}
+            >
               {doctors.map(doctor => (
                 <Option key={doctor.id} value={doctor.id}>
                   BS. {doctor.user?.firstName} {doctor.user?.lastName} - {doctor.specialization}

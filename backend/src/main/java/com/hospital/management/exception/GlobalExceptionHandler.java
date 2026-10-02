@@ -8,6 +8,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.server.ResponseStatusException;
+import com.hospital.management.util.BusinessTime;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -21,7 +22,7 @@ public class GlobalExceptionHandler {
         ErrorResponse error = new ErrorResponse(
                 HttpStatus.NOT_FOUND.value(),
                 ex.getMessage(),
-                LocalDateTime.now()
+                BusinessTime.now()
         );
         return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
     }
@@ -31,7 +32,7 @@ public class GlobalExceptionHandler {
         ErrorResponse error = new ErrorResponse(
                 HttpStatus.UNAUTHORIZED.value(),
                 "Invalid username or password",
-                LocalDateTime.now()
+                BusinessTime.now()
         );
         return new ResponseEntity<>(error, HttpStatus.UNAUTHORIZED);
     }
@@ -47,7 +48,7 @@ public class GlobalExceptionHandler {
         ValidationErrorResponse error = new ValidationErrorResponse(
                 HttpStatus.BAD_REQUEST.value(),
                 "Validation failed",
-                LocalDateTime.now(),
+                BusinessTime.now(),
                 errors
         );
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
@@ -59,7 +60,7 @@ public class GlobalExceptionHandler {
         ErrorResponse error = new ErrorResponse(
                 status,
                 ex.getReason(),
-                LocalDateTime.now()
+                BusinessTime.now()
         );
         return ResponseEntity.status(ex.getStatusCode()).body(error);
     }
@@ -69,7 +70,7 @@ public class GlobalExceptionHandler {
         ErrorResponse error = new ErrorResponse(
                 HttpStatus.INTERNAL_SERVER_ERROR.value(),
                 ex.getMessage(),
-                LocalDateTime.now()
+                BusinessTime.now()
         );
         return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
     }

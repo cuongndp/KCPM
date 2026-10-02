@@ -1,8 +1,10 @@
 package com.hospital.management.service;
 
 import com.hospital.management.exception.ResourceNotFoundException;
+import com.hospital.management.model.Department;
 import com.hospital.management.model.Doctor;
 import com.hospital.management.repository.AppointmentRepository;
+import com.hospital.management.repository.DepartmentRepository;
 import com.hospital.management.repository.DoctorRepository;
 import com.hospital.management.repository.MedicalRecordRepository;
 import com.hospital.management.repository.PrescriptionRepository;
@@ -23,6 +25,9 @@ public class DoctorService {
     private DoctorRepository doctorRepository;
 
     @Autowired
+    private DepartmentRepository departmentRepository;
+
+    @Autowired
     private AppointmentRepository appointmentRepository;
 
     @Autowired
@@ -33,6 +38,14 @@ public class DoctorService {
 
     public List<Doctor> getAvailableDoctors() {
         return doctorRepository.findByAvailableTrue();
+    }
+
+    public List<Department> getActiveDepartments() {
+        return departmentRepository.findByActiveTrue();
+    }
+
+    public List<Doctor> getAvailableDoctors(Long departmentId) {
+        return doctorRepository.findByDepartmentIdAndDepartmentActiveTrueAndAvailableTrue(departmentId);
     }
 
     public Doctor getDoctorById(Long doctorId) {

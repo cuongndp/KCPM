@@ -1,0 +1,45 @@
+hospital-management-system/
+├── backend/                    # Spring Boot (Java 21)
+│   ├── src/main/java/com/hospital/management/
+│   │   ├── config/            # Security, Redis, Kafka configs
+│   │   ├── controller/        # REST API endpoints
+│   │   ├── service/           # Business logic
+│   │   ├── repository/        # Database repositories
+│   │   ├── model/             # JPA entities
+│   │   ├── dto/               # Data transfer objects
+│   │   ├── security/          # JWT authentication
+│   │   ├── exception/         # Error handling
+│   │   └── util/              # Utilities
+│   ├── src/main/resources/    # Configuration files
+│   ├── Dockerfile
+│   └── pom.xml
+│
+├── frontend/                   # React Application
+│   ├── src/
+│   │   ├── components/        # React components
+│   │   ├── pages/            # Dashboard pages
+│   │   ├── services/          # API services
+│   │   ├── App.js
+│   │   └── index.js
+│   ├── public/
+│   ├── Dockerfile
+│   └── package.json
+│
+├── k8s/                        # Kubernetes manifests
+│   ├── backend-deployment.yaml
+│   ├── frontend-deployment.yaml
+│   ├── postgres-deployment.yaml
+│   ├── redis-deployment.yaml
+│   ├── kafka-deployment.yaml
+│   ├── secrets.yaml
+│   ├── configmap.yaml
+│   ├── hpa.yaml
+│   └── ingress.yaml
+│
+├── .github/workflows/         # GitHub Actions CI/CD
+│   └── ci-cd.yml
+│
+├── docker-compose.yml         # Local development
+├── Jenkinsfile               # Jenkins pipeline
+├── README.md                 # Documentation
+└── .gitignore               # Git ignore rules

@@ -132,15 +132,17 @@ const DoctorDashboard = () => {
       key: 'actions',
       render: (_, record) => (
         <div>
-          {record.status === 'SCHEDULED' && (
-            <>
-              <Button size="small" onClick={() => handleUpdateAppointmentStatus(record.id, 'CONFIRMED')}>
-                Xác nhận
-              </Button>
-              <Button size="small" type="primary" onClick={() => handleUpdateAppointmentStatus(record.id, 'COMPLETED')}>
-                Hoàn tất
-              </Button>
-            </>
+          {['SCHEDULED', 'CONFIRMED'].includes(record.status) && (
+            <Button
+              size="small"
+              type={record.status === 'CONFIRMED' ? 'primary' : 'default'}
+              onClick={() => handleUpdateAppointmentStatus(
+                record.id,
+                record.status === 'SCHEDULED' ? 'CONFIRMED' : 'COMPLETED'
+              )}
+            >
+              {record.status === 'SCHEDULED' ? 'Xác nhận' : 'Hoàn tất'}
+            </Button>
           )}
         </div>
       )

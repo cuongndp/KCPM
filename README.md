@@ -199,6 +199,20 @@ Topics:
 
 ## 🧪 Testing
 
+### Sample accounts (local/demo only)
+
+When `app.seed.enabled=true` (the default for local and Docker runs), the backend creates or refreshes these test accounts at startup:
+
+| Role | Username | Password |
+|---|---|---|
+| Admin | `1` | `1` |
+| Doctor | `2` | `2` |
+| Patient | `3` | `3` |
+
+The doctor and patient accounts also receive their corresponding profiles. Their database IDs are generated independently from user IDs; use the `userId` returned by login to look up a profile, then use the profile's `id` for appointment and medical-data requests. The sample department `Y học tổng quát` must be initialized for the doctor profile.
+
+These credentials are intentionally weak and are for local coursework/demo use only. `application-prod.properties` disables sample-account initialization. Do not enable sample accounts in a publicly accessible deployment.
+
 ### Backend Tests
 ```bash
 cd backend

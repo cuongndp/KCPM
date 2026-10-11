@@ -37,20 +37,28 @@ const Login = () => {
         <Form
           name="login"
           onFinish={onFinish}
-          autoComplete="off"
+          autoComplete="on"
         >
           <Form.Item
             name="username"
             rules={[{ required: true, message: 'Vui lòng nhập tên đăng nhập!' }]}
           >
-            <Input prefix={<UserOutlined />} placeholder="Tên đăng nhập" />
+            <Input
+              prefix={<UserOutlined />}
+              placeholder="Tên đăng nhập"
+              autoComplete="username"
+            />
           </Form.Item>
 
           <Form.Item
             name="password"
             rules={[{ required: true, message: 'Vui lòng nhập mật khẩu!' }]}
           >
-            <Input.Password prefix={<LockOutlined />} placeholder="Mật khẩu" />
+            <Input.Password
+              prefix={<LockOutlined />}
+              placeholder="Mật khẩu"
+              autoComplete="current-password"
+            />
           </Form.Item>
 
           <Form.Item>

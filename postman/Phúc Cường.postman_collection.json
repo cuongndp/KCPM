@@ -1,0 +1,759 @@
+{
+  "info": {
+    "_postman_id": "06a65d1d-c4ba-4953-9110-ffc59438b8d4",
+    "name": "Phúc Cường",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "46953631",
+    "_collection_link": "https://go.postman.co/collection/58629851-06a65d1d-c4ba-4953-9110-ffc59438b8d4?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "api/patient/doctors/available",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{PATIENT_TOKEN}}",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/patient/doctors/available",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "patient",
+            "doctors",
+            "available"
+          ]
+        },
+        "description": "Mục đích  \nLấy danh sách bác sĩ đang nhận khám.\n\nMethod  \nGET\n\nURL  \n{{baseUrl}}/api/patient/doctors/available\n\nXác thực  \nBearer Token của tài khoản có role PATIENT.\n\nQuery Params  \ndepartmentId (không bắt buộc): ID khoa muốn lọc.  \nNếu không truyền, API lấy bác sĩ khả dụng ở các khoa.  \nVí dụ: departmentId = 2\n\nRequest Body  \nKhông có.\n\nResponse thành công  \nHTTP 200 OK  \nTrả về mảng Doctor. Mỗi bác sĩ có thể gồm:\n\n- id: ID hồ sơ bác sĩ\n    \n- user: thông tin tài khoản bác sĩ (id, username, email, firstName, lastName, phoneNumber, role, active...)\n    \n- department: thông tin khoa (id, name, description, active...)\n    \n- specialization: chuyên môn\n    \n- qualification: bằng cấp\n    \n- experience: số năm kinh nghiệm\n    \n- available: trạng thái nhận khám\n    \n- consultationFee: phí khám\n    \n- createdAt, updatedAt: thời điểm tạo/cập nhật\n    \n\nVí dụ response:  \n\\[  \n{  \n\"id\": 2,  \n\"user\": {  \n\"id\": 5,  \n\"username\": \"bacsitim\",  \n\"firstName\": \"Minh\",  \n\"lastName\": \"An\",  \n\"role\": \"DOCTOR\",  \n\"active\": true  \n},  \n\"department\": {  \n\"id\": 2,  \n\"name\": \"Tim mạch\",  \n\"active\": true  \n},  \n\"specialization\": \"Tim mạch\",  \n\"qualification\": \"Bác sĩ chuyên khoa I\",  \n\"experience\": 8,  \n\"available\": true,  \n\"consultationFee\": 0  \n}  \n\\]\n\nNếu chưa có bác sĩ khả dụng, response là \\[\\]."
+      },
+      "response": [
+        {
+          "name": "OK",
+          "originalRequest": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/patient/doctors/available",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "patient",
+                "doctors",
+                "available"
+              ]
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "_postman_previewlanguage": "json",
+          "header": [
+            {
+              "key": "vary",
+              "value": "Origin, Access-Control-Request-Method, Access-Control-Request-Headers"
+            },
+            {
+              "key": "x-content-type-options",
+              "value": "nosniff"
+            },
+            {
+              "key": "x-xss-protection",
+              "value": "0"
+            },
+            {
+              "key": "cache-control",
+              "value": "no-cache, no-store, max-age=0, must-revalidate"
+            },
+            {
+              "key": "pragma",
+              "value": "no-cache"
+            },
+            {
+              "key": "expires",
+              "value": "0"
+            },
+            {
+              "key": "x-frame-options",
+              "value": "DENY"
+            },
+            {
+              "key": "content-type",
+              "value": "application/json"
+            },
+            {
+              "key": "transfer-encoding",
+              "value": "chunked"
+            },
+            {
+              "key": "date",
+              "value": "Sun, 11 Oct 2026 06:32:12 GMT"
+            },
+            {
+              "key": "keep-alive",
+              "value": "timeout=60"
+            },
+            {
+              "key": "connection",
+              "value": "keep-alive"
+            }
+          ],
+          "cookie": [],
+          "body": "[\n  {\n    \"id\": 2,\n    \"user\": {\n      \"id\": 2,\n      \"username\": \"2\",\n      \"email\": \"sample-doctor@hospital.test\",\n      \"firstName\": \"Doctor\",\n      \"lastName\": \"Demo\",\n      \"phoneNumber\": \"0900000000\",\n      \"role\": \"DOCTOR\",\n      \"active\": true,\n      \"createdAt\": \"2026-10-04T11:42:19.191763\",\n      \"updatedAt\": \"2026-10-11T12:11:01.798904\"\n    },\n    \"department\": {\n      \"id\": 1,\n      \"name\": \"Y học tổng quát\",\n      \"description\": \"Khám và tư vấn sức khỏe tổng quát\",\n      \"active\": true,\n      \"createdAt\": \"2026-10-04T04:42:18.32039\",\n      \"updatedAt\": \"2026-10-04T04:42:18.32039\"\n    },\n    \"specialization\": \"Y học tổng quát\",\n    \"qualification\": \"Bác sĩ đa khoa\",\n    \"experience\": 2,\n    \"available\": true,\n    \"consultationFee\": 0,\n    \"createdAt\": \"2026-10-05T11:46:13.526642\",\n    \"updatedAt\": \"2026-10-11T13:21:11.451936\"\n  },\n  {\n    \"id\": 3,\n    \"user\": {\n      \"id\": 5,\n      \"username\": \"5\",\n      \"email\": \"khachf.test@example.com\",\n      \"firstName\": \"Khách\",\n      \"lastName\": \"Test\",\n      \"phoneNumber\": \"0912345678\",\n      \"role\": \"DOCTOR\",\n      \"active\": true,\n      \"createdAt\": \"2026-10-11T13:22:10.844862\",\n      \"updatedAt\": \"2026-10-11T13:22:10.844862\"\n    },\n    \"department\": {\n      \"id\": 1,\n      \"name\": \"Y học tổng quát\",\n      \"description\": \"Khám và tư vấn sức khỏe tổng quát\",\n      \"active\": true,\n      \"createdAt\": \"2026-10-04T04:42:18.32039\",\n      \"updatedAt\": \"2026-10-04T04:42:18.32039\"\n    },\n    \"specialization\": \"Y học tổng quát\",\n    \"qualification\": \"Bác sĩ đa khoa\",\n    \"experience\": 2,\n    \"available\": true,\n    \"consultationFee\": 0,\n    \"createdAt\": \"2026-10-11T13:27:45.883357\",\n    \"updatedAt\": \"2026-10-11T13:27:45.883357\"\n  }\n]"
+        }
+      ]
+    },
+    {
+      "name": "api/patient/appointments",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{token}}",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/patient/appointments?patientId=1",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "patient",
+            "appointments"
+          ],
+          "query": [
+            {
+              "key": "patientId",
+              "value": "1"
+            }
+          ]
+        },
+        "description": "Mục đích  \nLấy danh sách lịch hẹn theo ID hồ sơ bệnh nhân.\n\nMethod  \nGET\n\nURL  \n{{baseUrl}}/api/patient/appointments\n\nXác thực  \nBearer Token của tài khoản có role PATIENT.\n\nQuery Params  \npatientId (bắt buộc): ID hồ sơ bệnh nhân, không phải userId.  \nLấy giá trị id từ API GET /api/patient/profile?userId={{userId}}.\n\nRequest Body  \nKhông có.\n\nResponse thành công  \nHTTP 200 OK  \nTrả về mảng Appointment. Mỗi phần tử có:\n\n- id: ID lịch hẹn\n    \n- patient: thông tin bệnh nhân\n    \n- doctor: thông tin bác sĩ và khoa\n    \n- appointmentDateTime: ngày giờ khám, dạng YYYY-MM-DDTHH:mm:ss\n    \n- status: SCHEDULED, CONFIRMED, COMPLETED, CANCELLED hoặc NO_SHOW\n    \n- reason: lý do khám\n    \n- notes: ghi chú\n    \n- reminderSent: trạng thái đã gửi nhắc lịch\n    \n- followUpRequired: có yêu cầu tái khám hay không\n    \n- createdAt, updatedAt: thời điểm tạo/cập nhật\n    \n\nVí dụ response:  \n\\[  \n{  \n\"id\": 10,  \n\"appointmentDateTime\": \"2026-10-10T09:00:00\",  \n\"status\": \"CONFIRMED\",  \n\"reason\": \"Khám định kỳ\",  \n\"notes\": \"Ghi chú mẫu\",  \n\"reminderSent\": false,  \n\"followUpRequired\": false  \n}  \n\\]\n\nNếu bệnh nhân chưa có lịch hẹn, response là \\[\\]."
+      },
+      "response": [
+        {
+          "name": "OK",
+          "originalRequest": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/patient/appointments?patientId=1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "patient",
+                "appointments"
+              ],
+              "query": [
+                {
+                  "key": "patientId",
+                  "value": "1"
+                }
+              ]
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "_postman_previewlanguage": "json",
+          "header": [
+            {
+              "key": "vary",
+              "value": "Origin, Access-Control-Request-Method, Access-Control-Request-Headers"
+            },
+            {
+              "key": "x-content-type-options",
+              "value": "nosniff"
+            },
+            {
+              "key": "x-xss-protection",
+              "value": "0"
+            },
+            {
+              "key": "cache-control",
+              "value": "no-cache, no-store, max-age=0, must-revalidate"
+            },
+            {
+              "key": "pragma",
+              "value": "no-cache"
+            },
+            {
+              "key": "expires",
+              "value": "0"
+            },
+            {
+              "key": "x-frame-options",
+              "value": "DENY"
+            },
+            {
+              "key": "content-type",
+              "value": "application/json"
+            },
+            {
+              "key": "transfer-encoding",
+              "value": "chunked"
+            },
+            {
+              "key": "date",
+              "value": "Sun, 11 Oct 2026 06:33:34 GMT"
+            },
+            {
+              "key": "keep-alive",
+              "value": "timeout=60"
+            },
+            {
+              "key": "connection",
+              "value": "keep-alive"
+            }
+          ],
+          "cookie": [],
+          "body": "[\n  {\n    \"id\": 1,\n    \"patient\": {\n      \"id\": 1,\n      \"user\": {\n        \"id\": 3,\n        \"username\": \"3\",\n        \"email\": \"sample-patient@hospital.test\",\n        \"firstName\": \"Patient\",\n        \"lastName\": \"Demo\",\n        \"phoneNumber\": \"0900000000\",\n        \"role\": \"PATIENT\",\n        \"active\": true,\n        \"createdAt\": \"2026-10-04T11:42:19.263869\",\n        \"updatedAt\": \"2026-10-11T12:11:01.890687\"\n      },\n      \"address\": \"Địa chỉ mẫu\",\n      \"dateOfBirth\": null,\n      \"bloodGroup\": \"O+\",\n      \"emergencyContact\": \"0900000000\",\n      \"allergies\": null,\n      \"createdAt\": \"2026-10-04T11:42:19.331667\",\n      \"updatedAt\": \"2026-10-04T11:42:19.331667\"\n    },\n    \"doctor\": {\n      \"id\": 2,\n      \"user\": {\n        \"id\": 2,\n        \"username\": \"2\",\n        \"email\": \"sample-doctor@hospital.test\",\n        \"firstName\": \"Doctor\",\n        \"lastName\": \"Demo\",\n        \"phoneNumber\": \"0900000000\",\n        \"role\": \"DOCTOR\",\n        \"active\": true,\n        \"createdAt\": \"2026-10-04T11:42:19.191763\",\n        \"updatedAt\": \"2026-10-11T12:11:01.798904\"\n      },\n      \"department\": {\n        \"id\": 1,\n        \"name\": \"Y học tổng quát\",\n        \"description\": \"Khám và tư vấn sức khỏe tổng quát\",\n        \"active\": true,\n        \"createdAt\": \"2026-10-04T04:42:18.32039\",\n        \"updatedAt\": \"2026-10-04T04:42:18.32039\"\n      },\n      \"specialization\": \"Y học tổng quát\",\n      \"qualification\": \"Bác sĩ đa khoa\",\n      \"experience\": 2,\n      \"available\": true,\n      \"consultationFee\": 0,\n      \"createdAt\": \"2026-10-05T11:46:13.526642\",\n      \"updatedAt\": \"2026-10-11T13:21:11.451936\"\n    },\n    \"appointmentDateTime\": \"2026-10-10T09:00:00\",\n    \"status\": \"CONFIRMED\",\n    \"reason\": \"Khám sức khỏe định kỳ\",\n    \"notes\": \"Ghi chú mẫu\",\n    \"reminderSent\": false,\n    \"followUpRequired\": false,\n    \"createdAt\": \"2026-10-05T15:27:31.495028\",\n    \"updatedAt\": \"2026-10-05T15:30:05.520999\"\n  }\n]"
+        }
+      ]
+    },
+    {
+      "name": "api/patient/appointments",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{token}}",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"departmentId\": 1,\r\n  \"doctorId\": 2,\r\n  \"appointmentDateTime\": \"2026-10-10T09:00:00\",\r\n  \"reason\": \"Khám sức khỏe định kỳ\",\r\n  \"notes\": \"Ghi chú mẫu\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/patient/appointments?patientId=1",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "patient",
+            "appointments"
+          ],
+          "query": [
+            {
+              "key": "patientId",
+              "value": "1"
+            }
+          ]
+        },
+        "description": "Mục đích  \nTạo lịch hẹn khám cho bệnh nhân với bác sĩ thuộc khoa đã chọn.\n\nMethod  \nPOST\n\nURL  \n{{baseUrl}}/api/patient/appointments\n\nXác thực  \nBearer Token của tài khoản có role PATIENT.\n\nQuery Params  \npatientId (bắt buộc): ID hồ sơ bệnh nhân, không phải userId.\n\nHeaders  \nContent-Type: application/json\n\nRequest Body  \nChọn Body > raw > JSON.\n\nCác trường:\n\n- departmentId (bắt buộc): ID khoa.\n    \n- doctorId (bắt buộc): ID hồ sơ bác sĩ.\n    \n- appointmentDateTime (bắt buộc): giờ khám định dạng YYYY-MM-DDTHH:mm:ss; phải ở tương lai.\n    \n- reason: lý do khám.\n    \n- notes: ghi chú thêm.\n    \n\nVí dụ:  \n{  \n\"departmentId\": 2,  \n\"doctorId\": 3,  \n\"appointmentDateTime\": \"2026-10-10T09:00:00\",  \n\"reason\": \"Khám sức khỏe định kỳ\",  \n\"notes\": \"Ghi chú mẫu\"  \n}\n\nQuy tắc xử lý  \nBackend kiểm tra khoa tồn tại và đang hoạt động, bệnh nhân/bác sĩ tồn tại, bác sĩ đang khả dụng và thuộc khoa đã chọn, thời gian ở tương lai, đồng thời kiểm tra lịch bác sĩ bị trùng.\n\nResponse thành công  \nHTTP 200 OK  \nTrả về object Appointment vừa tạo, có id mới và status ban đầu là SCHEDULED."
+      },
+      "response": [
+        {
+          "name": "OK",
+          "originalRequest": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"departmentId\": 1,\r\n  \"doctorId\": 2,\r\n  \"appointmentDateTime\": \"2026-11-10T09:00:00\",\r\n  \"reason\": \"Khám sức khỏe định kỳ\",\r\n  \"notes\": \"Ghi chú mẫu\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/patient/appointments?patientId=1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "patient",
+                "appointments"
+              ],
+              "query": [
+                {
+                  "key": "patientId",
+                  "value": "1"
+                }
+              ]
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "_postman_previewlanguage": "json",
+          "header": [
+            {
+              "key": "vary",
+              "value": "Origin, Access-Control-Request-Method, Access-Control-Request-Headers"
+            },
+            {
+              "key": "x-content-type-options",
+              "value": "nosniff"
+            },
+            {
+              "key": "x-xss-protection",
+              "value": "0"
+            },
+            {
+              "key": "cache-control",
+              "value": "no-cache, no-store, max-age=0, must-revalidate"
+            },
+            {
+              "key": "pragma",
+              "value": "no-cache"
+            },
+            {
+              "key": "expires",
+              "value": "0"
+            },
+            {
+              "key": "x-frame-options",
+              "value": "DENY"
+            },
+            {
+              "key": "content-type",
+              "value": "application/json"
+            },
+            {
+              "key": "transfer-encoding",
+              "value": "chunked"
+            },
+            {
+              "key": "date",
+              "value": "Sun, 11 Oct 2026 06:48:13 GMT"
+            },
+            {
+              "key": "keep-alive",
+              "value": "timeout=60"
+            },
+            {
+              "key": "connection",
+              "value": "keep-alive"
+            }
+          ],
+          "cookie": [],
+          "body": "{\n  \"id\": 2,\n  \"patient\": {\n    \"id\": 1,\n    \"user\": {\n      \"id\": 3,\n      \"username\": \"3\",\n      \"email\": \"sample-patient@hospital.test\",\n      \"firstName\": \"Patient\",\n      \"lastName\": \"Demo\",\n      \"phoneNumber\": \"0900000000\",\n      \"role\": \"PATIENT\",\n      \"active\": true,\n      \"createdAt\": \"2026-10-04T11:42:19.263869\",\n      \"updatedAt\": \"2026-10-11T12:11:01.890687\"\n    },\n    \"address\": \"Địa chỉ mẫu\",\n    \"dateOfBirth\": null,\n    \"bloodGroup\": \"O+\",\n    \"emergencyContact\": \"0900000000\",\n    \"allergies\": null,\n    \"createdAt\": \"2026-10-04T11:42:19.331667\",\n    \"updatedAt\": \"2026-10-04T11:42:19.331667\"\n  },\n  \"doctor\": {\n    \"id\": 2,\n    \"user\": {\n      \"id\": 2,\n      \"username\": \"2\",\n      \"email\": \"sample-doctor@hospital.test\",\n      \"firstName\": \"Doctor\",\n      \"lastName\": \"Demo\",\n      \"phoneNumber\": \"0900000000\",\n      \"role\": \"DOCTOR\",\n      \"active\": true,\n      \"createdAt\": \"2026-10-04T11:42:19.191763\",\n      \"updatedAt\": \"2026-10-11T12:11:01.798904\"\n    },\n    \"department\": {\n      \"id\": 1,\n      \"name\": \"Y học tổng quát\",\n      \"description\": \"Khám và tư vấn sức khỏe tổng quát\",\n      \"active\": true,\n      \"createdAt\": \"2026-10-04T04:42:18.32039\",\n      \"updatedAt\": \"2026-10-04T04:42:18.32039\"\n    },\n    \"specialization\": \"Y học tổng quát\",\n    \"qualification\": \"Bác sĩ đa khoa\",\n    \"experience\": 2,\n    \"available\": true,\n    \"consultationFee\": 0,\n    \"createdAt\": \"2026-10-05T11:46:13.526642\",\n    \"updatedAt\": \"2026-10-11T13:21:11.451936\"\n  },\n  \"appointmentDateTime\": \"2026-11-10T09:00:00\",\n  \"status\": \"SCHEDULED\",\n  \"reason\": \"Khám sức khỏe định kỳ\",\n  \"notes\": \"Ghi chú mẫu\",\n  \"reminderSent\": false,\n  \"followUpRequired\": false,\n  \"createdAt\": \"2026-10-11T13:48:13.383042128\",\n  \"updatedAt\": \"2026-10-11T13:48:13.383042128\"\n}"
+        }
+      ]
+    },
+    {
+      "name": "api/patient/appointments/{appointmentId}",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{PATIENT_TOKEN}}",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/patient/appointments/{{appointmentId}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "patient",
+            "appointments",
+            "{{appointmentId}}"
+          ]
+        },
+        "description": "Mục đích  \nHủy lịch hẹn bằng cách chuyển trạng thái sang CANCELLED.  \nAPI không xóa hẳn bản ghi lịch khỏi database.\n\nMethod  \nDELETE\n\nURL  \n{{baseUrl}}/api/patient/appointments/{{appointmentId}}\n\nXác thực  \nBearer Token của tài khoản có role PATIENT.\n\nPath Variable  \nappointmentId: ID lịch hẹn cần hủy.  \nCó thể thay {{appointmentId}} bằng ID thật hoặc tạo biến cùng tên trong Environment.\n\nQuery Params  \nKhông có.\n\nRequest Body  \nKhông có.\n\nResponse thành công  \nHTTP 200 OK  \nNội dung:  \nAppointment cancelled successfully\n\nLỗi thường gặp  \n404: Không tìm thấy lịch có appointmentId đó."
+      },
+      "response": [
+        {
+          "name": "OK",
+          "originalRequest": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/patient/appointments/{{appointmentId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "patient",
+                "appointments",
+                "{{appointmentId}}"
+              ]
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "_postman_previewlanguage": "text",
+          "header": [
+            {
+              "key": "vary",
+              "value": "Origin, Access-Control-Request-Method, Access-Control-Request-Headers"
+            },
+            {
+              "key": "x-content-type-options",
+              "value": "nosniff"
+            },
+            {
+              "key": "x-xss-protection",
+              "value": "0"
+            },
+            {
+              "key": "cache-control",
+              "value": "no-cache, no-store, max-age=0, must-revalidate"
+            },
+            {
+              "key": "pragma",
+              "value": "no-cache"
+            },
+            {
+              "key": "expires",
+              "value": "0"
+            },
+            {
+              "key": "x-frame-options",
+              "value": "DENY"
+            },
+            {
+              "key": "content-type",
+              "value": "text/plain;charset=UTF-8"
+            },
+            {
+              "key": "content-length",
+              "value": "34"
+            },
+            {
+              "key": "date",
+              "value": "Sun, 11 Oct 2026 06:49:03 GMT"
+            },
+            {
+              "key": "keep-alive",
+              "value": "timeout=60"
+            },
+            {
+              "key": "connection",
+              "value": "keep-alive"
+            }
+          ],
+          "cookie": [],
+          "body": "Appointment cancelled successfully"
+        }
+      ]
+    },
+    {
+      "name": "api/patient/medical-history",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{PATIENT_TOKEN}}",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/patient/medical-history?patientId=1",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "patient",
+            "medical-history"
+          ],
+          "query": [
+            {
+              "key": "patientId",
+              "value": "1"
+            }
+          ]
+        },
+        "description": "Mục đích  \nLấy danh sách hồ sơ khám theo ID hồ sơ bệnh nhân.\n\nMethod  \nGET\n\nURL  \n{{baseUrl}}/api/patient/medical-history\n\nXác thực  \nBearer Token của tài khoản có role PATIENT.\n\nQuery Params  \npatientId (bắt buộc): ID hồ sơ bệnh nhân, không phải userId.\n\nRequest Body  \nKhông có.\n\nResponse thành công  \nHTTP 200 OK  \nTrả về mảng MedicalRecord. Mỗi hồ sơ có:\n\n- id: ID hồ sơ khám\n    \n- patient: thông tin bệnh nhân\n    \n- doctor: thông tin bác sĩ\n    \n- diagnosis: chẩn đoán\n    \n- symptoms: triệu chứng\n    \n- consultationNotes: ghi chú buổi khám\n    \n- labResults: kết quả xét nghiệm\n    \n- recommendations: khuyến nghị\n    \n- createdAt, updatedAt: thời điểm tạo/cập nhật\n    \n\nVí dụ:  \n\\[  \n{  \n\"id\": 4,  \n\"diagnosis\": \"Huyết áp cần theo dõi\",  \n\"symptoms\": \"Đôi lúc chóng mặt nhẹ\",  \n\"consultationNotes\": \"Tình trạng ổn định\",  \n\"labResults\": \"Huyết áp trong giới hạn theo dõi\",  \n\"recommendations\": \"Đo huyết áp mỗi ngày và tái khám đúng hẹn\"  \n}  \n\\]\n\nNếu chưa có hồ sơ khám, response là \\[\\]."
+      },
+      "response": [
+        {
+          "name": "OK",
+          "originalRequest": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/patient/medical-history?patientId=1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "patient",
+                "medical-history"
+              ],
+              "query": [
+                {
+                  "key": "patientId",
+                  "value": "1"
+                }
+              ]
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "_postman_previewlanguage": "json",
+          "header": [
+            {
+              "key": "vary",
+              "value": "Origin, Access-Control-Request-Method, Access-Control-Request-Headers"
+            },
+            {
+              "key": "x-content-type-options",
+              "value": "nosniff"
+            },
+            {
+              "key": "x-xss-protection",
+              "value": "0"
+            },
+            {
+              "key": "cache-control",
+              "value": "no-cache, no-store, max-age=0, must-revalidate"
+            },
+            {
+              "key": "pragma",
+              "value": "no-cache"
+            },
+            {
+              "key": "expires",
+              "value": "0"
+            },
+            {
+              "key": "x-frame-options",
+              "value": "DENY"
+            },
+            {
+              "key": "content-type",
+              "value": "application/json"
+            },
+            {
+              "key": "transfer-encoding",
+              "value": "chunked"
+            },
+            {
+              "key": "date",
+              "value": "Sun, 11 Oct 2026 06:49:16 GMT"
+            },
+            {
+              "key": "keep-alive",
+              "value": "timeout=60"
+            },
+            {
+              "key": "connection",
+              "value": "keep-alive"
+            }
+          ],
+          "cookie": [],
+          "body": "[\n  {\n    \"id\": 2,\n    \"patient\": {\n      \"id\": 1,\n      \"user\": {\n        \"id\": 3,\n        \"username\": \"3\",\n        \"email\": \"sample-patient@hospital.test\",\n        \"firstName\": \"Patient\",\n        \"lastName\": \"Demo\",\n        \"phoneNumber\": \"0900000000\",\n        \"role\": \"PATIENT\",\n        \"active\": true,\n        \"createdAt\": \"2026-10-04T11:42:19.263869\",\n        \"updatedAt\": \"2026-10-11T12:11:01.890687\"\n      },\n      \"address\": \"Địa chỉ mẫu\",\n      \"dateOfBirth\": null,\n      \"bloodGroup\": \"O+\",\n      \"emergencyContact\": \"0900000000\",\n      \"allergies\": null,\n      \"createdAt\": \"2026-10-04T11:42:19.331667\",\n      \"updatedAt\": \"2026-10-04T11:42:19.331667\"\n    },\n    \"doctor\": {\n      \"id\": 2,\n      \"user\": {\n        \"id\": 2,\n        \"username\": \"2\",\n        \"email\": \"sample-doctor@hospital.test\",\n        \"firstName\": \"Doctor\",\n        \"lastName\": \"Demo\",\n        \"phoneNumber\": \"0900000000\",\n        \"role\": \"DOCTOR\",\n        \"active\": true,\n        \"createdAt\": \"2026-10-04T11:42:19.191763\",\n        \"updatedAt\": \"2026-10-11T12:11:01.798904\"\n      },\n      \"department\": {\n        \"id\": 1,\n        \"name\": \"Y học tổng quát\",\n        \"description\": \"Khám và tư vấn sức khỏe tổng quát\",\n        \"active\": true,\n        \"createdAt\": \"2026-10-04T04:42:18.32039\",\n        \"updatedAt\": \"2026-10-04T04:42:18.32039\"\n      },\n      \"specialization\": \"Y học tổng quát\",\n      \"qualification\": \"Bác sĩ đa khoa\",\n      \"experience\": 2,\n      \"available\": true,\n      \"consultationFee\": 0,\n      \"createdAt\": \"2026-10-05T11:46:13.526642\",\n      \"updatedAt\": \"2026-10-11T13:21:11.451936\"\n    },\n    \"diagnosis\": \"Cảm cúm thông thường\",\n    \"symptoms\": \"Sốt nhẹ, ho, đau họng\",\n    \"consultationNotes\": \"Bệnh nhân tỉnh táo, dấu hiệu sinh tồn ổn định.\",\n    \"labResults\": \"Chưa có xét nghiệm đặc biệt.\",\n    \"recommendations\": \"Nghỉ ngơi, uống đủ nước và theo dõi nhiệt độ.\",\n    \"createdAt\": \"2026-10-11T12:26:54.68221\",\n    \"updatedAt\": \"2026-10-11T12:26:54.68221\"\n  },\n  {\n    \"id\": 1,\n    \"patient\": {\n      \"id\": 1,\n      \"user\": {\n        \"id\": 3,\n        \"username\": \"3\",\n        \"email\": \"sample-patient@hospital.test\",\n        \"firstName\": \"Patient\",\n        \"lastName\": \"Demo\",\n        \"phoneNumber\": \"0900000000\",\n        \"role\": \"PATIENT\",\n        \"active\": true,\n        \"createdAt\": \"2026-10-04T11:42:19.263869\",\n        \"updatedAt\": \"2026-10-11T12:11:01.890687\"\n      },\n      \"address\": \"Địa chỉ mẫu\",\n      \"dateOfBirth\": null,\n      \"bloodGroup\": \"O+\",\n      \"emergencyContact\": \"0900000000\",\n      \"allergies\": null,\n      \"createdAt\": \"2026-10-04T11:42:19.331667\",\n      \"updatedAt\": \"2026-10-04T11:42:19.331667\"\n    },\n    \"doctor\": {\n      \"id\": 2,\n      \"user\": {\n        \"id\": 2,\n        \"username\": \"2\",\n        \"email\": \"sample-doctor@hospital.test\",\n        \"firstName\": \"Doctor\",\n        \"lastName\": \"Demo\",\n        \"phoneNumber\": \"0900000000\",\n        \"role\": \"DOCTOR\",\n        \"active\": true,\n        \"createdAt\": \"2026-10-04T11:42:19.191763\",\n        \"updatedAt\": \"2026-10-11T12:11:01.798904\"\n      },\n      \"department\": {\n        \"id\": 1,\n        \"name\": \"Y học tổng quát\",\n        \"description\": \"Khám và tư vấn sức khỏe tổng quát\",\n        \"active\": true,\n        \"createdAt\": \"2026-10-04T04:42:18.32039\",\n        \"updatedAt\": \"2026-10-04T04:42:18.32039\"\n      },\n      \"specialization\": \"Y học tổng quát\",\n      \"qualification\": \"Bác sĩ đa khoa\",\n      \"experience\": 2,\n      \"available\": true,\n      \"consultationFee\": 0,\n      \"createdAt\": \"2026-10-05T11:46:13.526642\",\n      \"updatedAt\": \"2026-10-11T13:21:11.451936\"\n    },\n    \"diagnosis\": \"Cảm cúm thông thường\",\n    \"symptoms\": \"Sốt nhẹ, ho, đau họng\",\n    \"consultationNotes\": \"Bệnh nhân tỉnh táo, dấu hiệu sinh tồn ổn định.\",\n    \"labResults\": \"Chưa có xét nghiệm đặc biệt.\",\n    \"recommendations\": \"Nghỉ ngơi, uống đủ nước và theo dõi nhiệt độ.\",\n    \"createdAt\": \"2026-10-05T15:34:59.06611\",\n    \"updatedAt\": \"2026-10-05T15:34:59.06611\"\n  }\n]"
+        }
+      ]
+    },
+    {
+      "name": "api/patient/prescriptions",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{token}}",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/patient/prescriptions?patientId=1",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "patient",
+            "prescriptions"
+          ],
+          "query": [
+            {
+              "key": "patientId",
+              "value": "1"
+            }
+          ]
+        },
+        "description": "Mục đích  \nLấy danh sách đơn thuốc theo ID hồ sơ bệnh nhân.\n\nMethod  \nGET\n\nURL  \n{{baseUrl}}/api/patient/prescriptions\n\nXác thực  \nBearer Token của tài khoản có role PATIENT.\n\nQuery Params  \npatientId (bắt buộc): ID hồ sơ bệnh nhân, không phải userId.\n\nRequest Body  \nKhông có.\n\nResponse thành công  \nHTTP 200 OK  \nTrả về mảng Prescription. Mỗi đơn thuốc có:\n\n- id: ID đơn thuốc\n    \n- patient: thông tin bệnh nhân\n    \n- doctor: thông tin bác sĩ\n    \n- appointment: lịch khám liên quan, có thể null\n    \n- medication: tên thuốc\n    \n- dosage: liều lượng\n    \n- frequency: tần suất dùng\n    \n- duration: số ngày dùng, có thể null\n    \n- instructions: hướng dẫn dùng thuốc\n    \n- notificationSent: trạng thái gửi thông báo\n    \n- createdAt, updatedAt: thời điểm tạo/cập nhật\n    \n\nVí dụ:  \n\\[  \n{  \n\"id\": 3,  \n\"medication\": \"Thuốc hỗ trợ điều trị\",  \n\"dosage\": \"Một viên\",  \n\"frequency\": \"Mỗi ngày một lần\",  \n\"duration\": 7,  \n\"instructions\": \"Dùng sau bữa sáng theo hướng dẫn của bác sĩ\",  \n\"notificationSent\": false  \n}  \n\\]\n\nNếu chưa có đơn thuốc, response là \\[\\]."
+      },
+      "response": [
+        {
+          "name": "OK",
+          "originalRequest": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/patient/prescriptions?patientId=1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "patient",
+                "prescriptions"
+              ],
+              "query": [
+                {
+                  "key": "patientId",
+                  "value": "1"
+                }
+              ]
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "_postman_previewlanguage": "json",
+          "header": [
+            {
+              "key": "vary",
+              "value": "Origin, Access-Control-Request-Method, Access-Control-Request-Headers"
+            },
+            {
+              "key": "x-content-type-options",
+              "value": "nosniff"
+            },
+            {
+              "key": "x-xss-protection",
+              "value": "0"
+            },
+            {
+              "key": "cache-control",
+              "value": "no-cache, no-store, max-age=0, must-revalidate"
+            },
+            {
+              "key": "pragma",
+              "value": "no-cache"
+            },
+            {
+              "key": "expires",
+              "value": "0"
+            },
+            {
+              "key": "x-frame-options",
+              "value": "DENY"
+            },
+            {
+              "key": "content-type",
+              "value": "application/json"
+            },
+            {
+              "key": "transfer-encoding",
+              "value": "chunked"
+            },
+            {
+              "key": "date",
+              "value": "Sun, 11 Oct 2026 06:50:13 GMT"
+            },
+            {
+              "key": "keep-alive",
+              "value": "timeout=60"
+            },
+            {
+              "key": "connection",
+              "value": "keep-alive"
+            }
+          ],
+          "cookie": [],
+          "body": "[\n  {\n    \"id\": 1,\n    \"patient\": {\n      \"id\": 1,\n      \"user\": {\n        \"id\": 3,\n        \"username\": \"3\",\n        \"email\": \"sample-patient@hospital.test\",\n        \"firstName\": \"Patient\",\n        \"lastName\": \"Demo\",\n        \"phoneNumber\": \"0900000000\",\n        \"role\": \"PATIENT\",\n        \"active\": true,\n        \"createdAt\": \"2026-10-04T11:42:19.263869\",\n        \"updatedAt\": \"2026-10-11T12:11:01.890687\"\n      },\n      \"address\": \"Địa chỉ mẫu\",\n      \"dateOfBirth\": null,\n      \"bloodGroup\": \"O+\",\n      \"emergencyContact\": \"0900000000\",\n      \"allergies\": null,\n      \"createdAt\": \"2026-10-04T11:42:19.331667\",\n      \"updatedAt\": \"2026-10-04T11:42:19.331667\"\n    },\n    \"doctor\": {\n      \"id\": 2,\n      \"user\": {\n        \"id\": 2,\n        \"username\": \"2\",\n        \"email\": \"sample-doctor@hospital.test\",\n        \"firstName\": \"Doctor\",\n        \"lastName\": \"Demo\",\n        \"phoneNumber\": \"0900000000\",\n        \"role\": \"DOCTOR\",\n        \"active\": true,\n        \"createdAt\": \"2026-10-04T11:42:19.191763\",\n        \"updatedAt\": \"2026-10-11T12:11:01.798904\"\n      },\n      \"department\": {\n        \"id\": 1,\n        \"name\": \"Y học tổng quát\",\n        \"description\": \"Khám và tư vấn sức khỏe tổng quát\",\n        \"active\": true,\n        \"createdAt\": \"2026-10-04T04:42:18.32039\",\n        \"updatedAt\": \"2026-10-04T04:42:18.32039\"\n      },\n      \"specialization\": \"Y học tổng quát\",\n      \"qualification\": \"Bác sĩ đa khoa\",\n      \"experience\": 2,\n      \"available\": true,\n      \"consultationFee\": 0,\n      \"createdAt\": \"2026-10-05T11:46:13.526642\",\n      \"updatedAt\": \"2026-10-11T13:21:11.451936\"\n    },\n    \"appointment\": {\n      \"id\": 1,\n      \"patient\": {\n        \"id\": 1,\n        \"user\": {\n          \"id\": 3,\n          \"username\": \"3\",\n          \"email\": \"sample-patient@hospital.test\",\n          \"firstName\": \"Patient\",\n          \"lastName\": \"Demo\",\n          \"phoneNumber\": \"0900000000\",\n          \"role\": \"PATIENT\",\n          \"active\": true,\n          \"createdAt\": \"2026-10-04T11:42:19.263869\",\n          \"updatedAt\": \"2026-10-11T12:11:01.890687\"\n        },\n        \"address\": \"Địa chỉ mẫu\",\n        \"dateOfBirth\": null,\n        \"bloodGroup\": \"O+\",\n        \"emergencyContact\": \"0900000000\",\n        \"allergies\": null,\n        \"createdAt\": \"2026-10-04T11:42:19.331667\",\n        \"updatedAt\": \"2026-10-04T11:42:19.331667\"\n      },\n      \"doctor\": {\n        \"id\": 2,\n        \"user\": {\n          \"id\": 2,\n          \"username\": \"2\",\n          \"email\": \"sample-doctor@hospital.test\",\n          \"firstName\": \"Doctor\",\n          \"lastName\": \"Demo\",\n          \"phoneNumber\": \"0900000000\",\n          \"role\": \"DOCTOR\",\n          \"active\": true,\n          \"createdAt\": \"2026-10-04T11:42:19.191763\",\n          \"updatedAt\": \"2026-10-11T12:11:01.798904\"\n        },\n        \"department\": {\n          \"id\": 1,\n          \"name\": \"Y học tổng quát\",\n          \"description\": \"Khám và tư vấn sức khỏe tổng quát\",\n          \"active\": true,\n          \"createdAt\": \"2026-10-04T04:42:18.32039\",\n          \"updatedAt\": \"2026-10-04T04:42:18.32039\"\n        },\n        \"specialization\": \"Y học tổng quát\",\n        \"qualification\": \"Bác sĩ đa khoa\",\n        \"experience\": 2,\n        \"available\": true,\n        \"consultationFee\": 0,\n        \"createdAt\": \"2026-10-05T11:46:13.526642\",\n        \"updatedAt\": \"2026-10-11T13:21:11.451936\"\n      },\n      \"appointmentDateTime\": \"2026-10-10T09:00:00\",\n      \"status\": \"CANCELLED\",\n      \"reason\": \"Khám sức khỏe định kỳ\",\n      \"notes\": \"Ghi chú mẫu\",\n      \"reminderSent\": false,\n      \"followUpRequired\": false,\n      \"createdAt\": \"2026-10-05T15:27:31.495028\",\n      \"updatedAt\": \"2026-10-11T13:49:03.34918\"\n    },\n    \"medication\": \"Paracetamol\",\n    \"dosage\": \"500mg\",\n    \"frequency\": \"2 times/day\",\n    \"duration\": 5,\n    \"instructions\": \"Take after meals\",\n    \"notificationSent\": false,\n    \"createdAt\": \"2026-10-11T12:57:54.986974\",\n    \"updatedAt\": \"2026-10-11T12:57:54.986974\"\n  }\n]"
+        }
+      ]
+    }
+  ],
+  "auth": {
+    "type": "jwt",
+    "jwt": [
+      {
+        "key": "algorithm",
+        "value": "HS256",
+        "type": "string"
+      },
+      {
+        "key": "isSecretBase64Encoded",
+        "value": false,
+        "type": "boolean"
+      },
+      {
+        "key": "payload",
+        "value": "{}",
+        "type": "string"
+      },
+      {
+        "key": "addTokenTo",
+        "value": "header",
+        "type": "string"
+      },
+      {
+        "key": "headerPrefix",
+        "value": "Bearer",
+        "type": "string"
+      },
+      {
+        "key": "queryParamKey",
+        "value": "token",
+        "type": "string"
+      },
+      {
+        "key": "header",
+        "value": "{}",
+        "type": "string"
+      }
+    ]
+  },
+  "variable": [
+    {
+      "key": "token",
+      "value": ""
+    },
+    {
+      "key": "departmentId",
+      "value": ""
+    },
+    {
+      "key": "PATIENT_TOKEN",
+      "value": ""
+    }
+  ]
+}

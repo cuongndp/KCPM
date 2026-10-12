@@ -1,0 +1,537 @@
+{
+  "info": {
+    "_postman_id": "83ef6d2f-b6c7-42f1-baec-2fda62da1334",
+    "name": "Quốc Thắng",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "46953631",
+    "_collection_link": "https://go.postman.co/collection/46953631-83ef6d2f-b6c7-42f1-baec-2fda62da1334?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "api/auth/register",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('200 OK', function () {\n    pm.response.to.have.status(200);\n});\n\npm.test('Thong bao thanh cong', function () {\n    pm.expect(pm.response.text()).to.include('registered successfully');\n});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"username\": \"4\",\n  \"password\": \"4\",\n  \"email\": \"khach.test@example.com\",\n  \"firstName\": \"Khách\",\n  \"lastName\": \"Test\",\n  \"phoneNumber\": \"0912345678\",\n  \"role\": \"PATIENT\",\n  \"address\": \"123 Nguyễn Huệ, Q.1, TP.HCM\",\n  \"dateOfBirth\": \"1995-05-20\",\n  \"bloodGroup\": \"O+\",\n  \"emergencyContact\": \"0912345678\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/auth/register",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "auth",
+            "register"
+          ]
+        },
+        "description": "Body: RegistrationRequest.\nBắt buộc: username, password, email, firstName, lastName, phoneNumber (10 chữ số), role.\nTu chọn: address, dateOfBirth, bloodGroup, emergencyContact.\nKhông cần Authorization.\nKết quả mong đợi: 200 OK, \"User registered successfully\".\n\nLƯU Ý BẢO MẬT: trường role do client gửi lên và backend không kiểm tra - đổi role thành ADMIN sẽ tạo được tài khoản quản trị. Xem mục Known Issues."
+      },
+      "response": [
+        {
+          "name": "OK",
+          "originalRequest": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"4\",\n  \"password\": \"4\",\n  \"email\": \"khach.test@example.com\",\n  \"firstName\": \"Khách\",\n  \"lastName\": \"Test\",\n  \"phoneNumber\": \"0912345678\",\n  \"role\": \"PATIENT\",\n  \"address\": \"123 Nguyễn Huệ, Q.1, TP.HCM\",\n  \"dateOfBirth\": \"1995-05-20\",\n  \"bloodGroup\": \"O+\",\n  \"emergencyContact\": \"0912345678\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/register",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "register"
+              ]
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "_postman_previewlanguage": "text",
+          "header": [
+            {
+              "key": "vary",
+              "value": "Origin, Access-Control-Request-Method, Access-Control-Request-Headers"
+            },
+            {
+              "key": "x-content-type-options",
+              "value": "nosniff"
+            },
+            {
+              "key": "x-xss-protection",
+              "value": "0"
+            },
+            {
+              "key": "cache-control",
+              "value": "no-cache, no-store, max-age=0, must-revalidate"
+            },
+            {
+              "key": "pragma",
+              "value": "no-cache"
+            },
+            {
+              "key": "expires",
+              "value": "0"
+            },
+            {
+              "key": "x-frame-options",
+              "value": "DENY"
+            },
+            {
+              "key": "content-type",
+              "value": "text/plain;charset=UTF-8"
+            },
+            {
+              "key": "content-length",
+              "value": "28"
+            },
+            {
+              "key": "date",
+              "value": "Sun, 11 Oct 2026 06:06:03 GMT"
+            },
+            {
+              "key": "keep-alive",
+              "value": "timeout=60"
+            },
+            {
+              "key": "connection",
+              "value": "keep-alive"
+            }
+          ],
+          "cookie": [],
+          "body": "User registered successfully"
+        }
+      ]
+    },
+    {
+      "name": "api/admin/departments",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('200 OK', function () {\n    pm.response.to.have.status(200);\n});\n\npm.test('Tra ve danh sach khoa', function () {\n    const jsonData = pm.response.json();\n    pm.expect(jsonData).to.be.an('array');\n    pm.expect(jsonData.length).to.be.above(0);\n});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{ADMIN_TOKEN}}",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/admin/departments",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "admin",
+            "departments"
+          ]
+        },
+        "description": "Yêu cầu Authorization: Bearer token của tài khoản ADMIN.\nKết quả mong đợi: 200 OK, mảng JSON các khoa/phòng (id, name, description, active, createdAt, updatedAt).\n\nLƯU Ý: dữ liệu seed trong data.sql bị lỗi encoding nên tên khoa có thể hiển thị sai dấu tiếng Việt. Xem mục Known Issues."
+      },
+      "response": [
+        {
+          "name": "OK",
+          "originalRequest": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/departments",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "departments"
+              ]
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "_postman_previewlanguage": "json",
+          "header": [
+            {
+              "key": "vary",
+              "value": "Origin, Access-Control-Request-Method, Access-Control-Request-Headers"
+            },
+            {
+              "key": "x-content-type-options",
+              "value": "nosniff"
+            },
+            {
+              "key": "x-xss-protection",
+              "value": "0"
+            },
+            {
+              "key": "cache-control",
+              "value": "no-cache, no-store, max-age=0, must-revalidate"
+            },
+            {
+              "key": "pragma",
+              "value": "no-cache"
+            },
+            {
+              "key": "expires",
+              "value": "0"
+            },
+            {
+              "key": "x-frame-options",
+              "value": "DENY"
+            },
+            {
+              "key": "content-type",
+              "value": "application/json"
+            },
+            {
+              "key": "transfer-encoding",
+              "value": "chunked"
+            },
+            {
+              "key": "date",
+              "value": "Sun, 11 Oct 2026 06:06:46 GMT"
+            },
+            {
+              "key": "keep-alive",
+              "value": "timeout=60"
+            },
+            {
+              "key": "connection",
+              "value": "keep-alive"
+            }
+          ],
+          "cookie": [],
+          "body": "[\n  {\n    \"id\": 1,\n    \"name\": \"Y học tổng quát\",\n    \"description\": \"Khám và tư vấn sức khỏe tổng quát\",\n    \"active\": true,\n    \"createdAt\": \"2026-10-04T04:42:18.32039\",\n    \"updatedAt\": \"2026-10-04T04:42:18.32039\"\n  },\n  {\n    \"id\": 2,\n    \"name\": \"Tim mạch\",\n    \"description\": \"Khám và điều trị bệnh tim mạch\",\n    \"active\": true,\n    \"createdAt\": \"2026-10-04T04:42:18.32039\",\n    \"updatedAt\": \"2026-10-04T04:42:18.32039\"\n  },\n  {\n    \"id\": 3,\n    \"name\": \"Chỉnh hình\",\n    \"description\": \"Khám và điều trị bệnh về xương khớp\",\n    \"active\": true,\n    \"createdAt\": \"2026-10-04T04:42:18.32039\",\n    \"updatedAt\": \"2026-10-04T04:42:18.32039\"\n  },\n  {\n    \"id\": 4,\n    \"name\": \"Nhi khoa\",\n    \"description\": \"Chăm sóc và điều trị sức khỏe trẻ em\",\n    \"active\": true,\n    \"createdAt\": \"2026-10-04T04:42:18.32039\",\n    \"updatedAt\": \"2026-10-04T04:42:18.32039\"\n  },\n  {\n    \"id\": 5,\n    \"name\": \"Thần kinh\",\n    \"description\": \"Khám và điều trị bệnh về thần kinh\",\n    \"active\": true,\n    \"createdAt\": \"2026-10-04T04:42:18.32039\",\n    \"updatedAt\": \"2026-10-04T04:42:18.32039\"\n  },\n  {\n    \"id\": 6,\n    \"name\": \"Da liễu\",\n    \"description\": \"Khám và điều trị bệnh về da\",\n    \"active\": true,\n    \"createdAt\": \"2026-10-04T04:42:18.32039\",\n    \"updatedAt\": \"2026-10-04T04:42:18.32039\"\n  },\n  {\n    \"id\": 7,\n    \"name\": \"Tai Mũi Họng\",\n    \"description\": \"Khám và điều trị bệnh về tai, mũi và họng\",\n    \"active\": true,\n    \"createdAt\": \"2026-10-04T04:42:18.32039\",\n    \"updatedAt\": \"2026-10-04T04:42:18.32039\"\n  }\n]"
+        }
+      ]
+    },
+    {
+      "name": "api/admin/departments",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('200 OK', function () {\n    pm.response.to.have.status(200);\n});\n\nconst jsonData = pm.response.json();\npm.test('Tra ve department da tao', function () {\n    pm.expect(jsonData.id).to.be.a('number');\n    pm.expect(jsonData.name).to.eql('Khoa Da Nghiem Thu');\n});\n\nif (jsonData.id) {\n    pm.collectionVariables.set('departmentId', jsonData.id);\n    console.log('Da luu departmentId = ' + jsonData.id);\n}"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{ADMIN_TOKEN}}",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Khoa Da Nghiem Thu\",\n  \"description\": \"Khoa tao moi phuc vu nghiem thu W1-01\",\n  \"active\": true\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/admin/departments",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "admin",
+            "departments"
+          ]
+        },
+        "description": "Yêu cầu Authorization: Bearer token ADMIN.\nBody: Department { name, description, active }. name là duy nhất và bắt buộc.\nKết quả mong đợi: 200 OK, trả về Department vừa tạo kèm id.\nTest script tự lưu departmentId cho request DELETE.\n\nLƯU Ý: gửi lại đúng name sẽ nhận HTTP 500 thay vì 409. Xem mục Known Issues."
+      },
+      "response": [
+        {
+          "name": "OK",
+          "originalRequest": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Khoa Da Nghiem Thu\",\n  \"description\": \"Khoa tao moi phuc vu nghiem thu W1-01\",\n  \"active\": true\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/departments",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "departments"
+              ]
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "_postman_previewlanguage": "json",
+          "header": [
+            {
+              "key": "vary",
+              "value": "Origin, Access-Control-Request-Method, Access-Control-Request-Headers"
+            },
+            {
+              "key": "x-content-type-options",
+              "value": "nosniff"
+            },
+            {
+              "key": "x-xss-protection",
+              "value": "0"
+            },
+            {
+              "key": "cache-control",
+              "value": "no-cache, no-store, max-age=0, must-revalidate"
+            },
+            {
+              "key": "pragma",
+              "value": "no-cache"
+            },
+            {
+              "key": "expires",
+              "value": "0"
+            },
+            {
+              "key": "x-frame-options",
+              "value": "DENY"
+            },
+            {
+              "key": "content-type",
+              "value": "application/json"
+            },
+            {
+              "key": "transfer-encoding",
+              "value": "chunked"
+            },
+            {
+              "key": "date",
+              "value": "Sun, 11 Oct 2026 06:08:48 GMT"
+            },
+            {
+              "key": "keep-alive",
+              "value": "timeout=60"
+            },
+            {
+              "key": "connection",
+              "value": "keep-alive"
+            }
+          ],
+          "cookie": [],
+          "body": "{\n  \"id\": 43,\n  \"name\": \"Khoa Da Nghiem Thu\",\n  \"description\": \"Khoa tao moi phuc vu nghiem thu W1-01\",\n  \"active\": true,\n  \"createdAt\": \"2026-10-11T13:08:48.466639815\",\n  \"updatedAt\": \"2026-10-11T13:08:48.466639815\"\n}"
+        }
+      ]
+    },
+    {
+      "name": "api/admin/departments/{departmentId}",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('200 OK', function () {\n    pm.response.to.have.status(200);\n});\n\npm.test('Thong bao xoa thanh cong', function () {\n    pm.expect(pm.response.text()).to.include('deleted successfully');\n});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{ADMIN_TOKEN}}",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/admin/departments/{{departmentId}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "admin",
+            "departments",
+            "{{departmentId}}"
+          ],
+          "variable": [
+            {
+              "key": "departmentId",
+              "value": "{{departmentId}}"
+            }
+          ]
+        },
+        "description": "Yêu cầu Authorization: Bearer token ADMIN.\nPath variable departmentId - chạy request 4 trước để có giá trị này.\nKết quả mong đợi: 200 OK, \"Department deleted successfully\".\nNếu id không tồn tại: 404."
+      },
+      "response": [
+        {
+          "name": "OK",
+          "originalRequest": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/departments/{{departmentId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "departments",
+                "{{departmentId}}"
+              ],
+              "variable": [
+                {
+                  "key": "departmentId",
+                  "value": "{{departmentId}}"
+                }
+              ]
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "_postman_previewlanguage": "text",
+          "header": [
+            {
+              "key": "vary",
+              "value": "Origin, Access-Control-Request-Method, Access-Control-Request-Headers"
+            },
+            {
+              "key": "x-content-type-options",
+              "value": "nosniff"
+            },
+            {
+              "key": "x-xss-protection",
+              "value": "0"
+            },
+            {
+              "key": "cache-control",
+              "value": "no-cache, no-store, max-age=0, must-revalidate"
+            },
+            {
+              "key": "pragma",
+              "value": "no-cache"
+            },
+            {
+              "key": "expires",
+              "value": "0"
+            },
+            {
+              "key": "x-frame-options",
+              "value": "DENY"
+            },
+            {
+              "key": "content-type",
+              "value": "text/plain;charset=UTF-8"
+            },
+            {
+              "key": "content-length",
+              "value": "31"
+            },
+            {
+              "key": "date",
+              "value": "Sun, 11 Oct 2026 06:10:22 GMT"
+            },
+            {
+              "key": "keep-alive",
+              "value": "timeout=60"
+            },
+            {
+              "key": "connection",
+              "value": "keep-alive"
+            }
+          ],
+          "cookie": [],
+          "body": "Department deleted successfully"
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "departmentId",
+      "value": ""
+    }
+  ]
+}

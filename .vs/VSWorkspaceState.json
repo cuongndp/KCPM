@@ -1,0 +1,15 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\backend\\src",
+    "\\backend\\src\\main",
+    "\\backend\\src\\main\\java",
+    "\\backend\\src\\main\\java\\com",
+    "\\backend\\src\\main\\java\\com\\hospital",
+    "\\backend\\src\\main\\java\\com\\hospital\\management",
+    "\\backend\\src\\main\\java\\com\\hospital\\management\\util",
+    "\\frontend"
+  ],
+  "SelectedNode": "\\frontend\\package.json",
+  "PreviewInSolutionExplorer": false
+}

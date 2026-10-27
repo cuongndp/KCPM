@@ -48,8 +48,15 @@ A comprehensive multi-specialty hospital management system with appointment sche
 - **Kubernetes** - Orchestration
 - **Jenkins** - CI/CD pipeline
 - **SonarQube** - Code quality analysis
+- **GitHub Actions + Qodana** - Automated code inspections for the backend and frontend on pushes and pull requests
 - **Nexus Repository** - Artifact management
 - **ELK Stack** - Logging and monitoring
+
+#### Qodana on GitHub Actions
+
+The `.github/workflows/qodana.yml` workflow analyzes the Java backend and React frontend on pushes and pull requests to any branch. It can also be started manually from the GitHub Actions tab.
+
+The Community linters can run without a Qodana Cloud token. To publish analysis results to Qodana Cloud, create a project token in Qodana Cloud and add it to the repository as the `QODANA_TOKEN` Actions secret under **Settings → Secrets and variables → Actions**.
 
 ## 📄 Requirements
 

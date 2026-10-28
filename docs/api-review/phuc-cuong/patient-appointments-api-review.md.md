@@ -4,74 +4,78 @@
 
 ### Bảng điều kiện test
 
-| Conditions | Valid Partitions | Tag | Invalid Partitions | Tag | Valid Boundaries | Tag |
+| Conditions | Valid Partitions | Tag | Invalid Partitions | Tag | Boundary Values (BVA) | Tag |
 |---|---|---|---|---|---|---|
-| `patientId` | ID bệnh nhân tồn tại (ví dụ `1`, `2`) | V1 | Thiếu `patientId` | X1 | ID nhỏ nhất có trong dữ liệu test: `1` | B1 |
-|  |  |  | Không phải số (`abc`) hoặc vượt miền `Long` (`9223372036854775808`) | X2 | ID kế tiếp trong dữ liệu test: `2` | B2 |
-|  |  |  | ID không tồn tại (ví dụ `999999`) | X3 |  |  |
+| `patientId` (query) | ID bệnh nhân có lịch hẹn | V1 | Thiếu `patientId` | X1 | API không quy định min/max ID nghiệp vụ; không áp dụng BVA | — |
+|  | ID dạng số không có lịch hẹn (bao gồm ID không tồn tại) | V2 | Không phải số (`abc`) hoặc vượt miền `Long` | X2 |  | — |
 
-> API không khai báo min/max cho ID. `1` và `2` là biên theo dữ liệu fixture, không phải giới hạn được xác nhận trong nghiệp vụ. ID `0`/âm hiện không có validation riêng; nếu không có bản ghi tương ứng, API trả danh sách rỗng.
+> BVA không áp dụng cho `patientId` vì API không định nghĩa biên nghiệp vụ. Với ID số không có lịch hẹn, GET trả về danh sách rỗng; endpoint không kiểm tra bệnh nhân có tồn tại hay không.
 
 ### Thiết kế test cases
 
 | Test Case | Input | Expected Outcome | New Tags Covered |
 |---|---|---|---|
-| 1 | `GET /api/patient/appointments?patientId=1` (bệnh nhân tồn tại) | `200 OK`; trả danh sách lịch hẹn của bệnh nhân `1` (có thể là `[]`) | V1, B1 |
-| 2 | `GET /api/patient/appointments?patientId=2` (bệnh nhân tồn tại kế tiếp) | `200 OK`; chỉ trả lịch hẹn của bệnh nhân `2` | B2 |
-| 3 | `GET /api/patient/appointments?patientId=999999` | `200 OK`; body `[]` nếu ID không tồn tại | X3 |
-| 4 | Gửi lần lượt: `GET /api/patient/appointments` (thiếu `patientId`); `GET /api/patient/appointments?patientId=abc` (sai định dạng) | Request bị từ chối. Theo bằng chứng rà soát trước đây, hai trường hợp hiện trả `500`; ghi nhận là kết quả thực tế cần sửa/xác minh (lỗi đầu vào nên là `4xx`). | X1, X2 |
+| 1 | `GET /api/patient/appointments?patientId=1` (bệnh nhân `1` có lịch hẹn) | `200 OK`; trả về danh sách lịch hẹn của bệnh nhân `1`. | V1 |
+| 2 | `GET /api/patient/appointments?patientId=999999` (ID dạng số không có lịch hẹn) | `200 OK`; trả về danh sách rỗng `[]`. | V2 |
+| 3 | `GET /api/patient/appointments` | `400 Bad Request`; từ chối request vì thiếu `patientId`. | X1 |
+| 4 | `GET /api/patient/appointments?patientId=abc` | `400 Bad Request`; từ chối request vì `patientId` không phải số. | X2 |
 
 ## 2. POST `/api/patient/appointments`
 
 ### Bảng điều kiện test
 
-| Conditions | Valid Partitions | Tag | Invalid Partitions | Tag | Valid Boundaries | Tag |
+| Conditions | Valid Partitions | Tag | Invalid Partitions | Tag | Boundary Values (BVA) | Tag |
 |---|---|---|---|---|---|---|
-| `patientId` (query) | ID bệnh nhân tồn tại | V1 | Thiếu; sai định dạng; ID không tồn tại | X1, X2, X3 | ID tồn tại nhỏ nhất trong fixture: `1` | B1 |
-| `doctorId` (body) | ID bác sĩ tồn tại và nhận lịch | V2 | Thiếu/null; ID không tồn tại | X4, X5 | ID tồn tại nhỏ nhất trong fixture: `1` | B2 |
-| `departmentId` (body) | Khoa tồn tại và đang hoạt động | V3 | Thiếu/null; ID không tồn tại hoặc khoa ngừng hoạt động | X6, X7 | ID tồn tại nhỏ nhất trong fixture: `1` | B3 |
-| `appointmentDateTime` | Thời điểm lớn hơn hiện tại | V4 | Thiếu/null; nhỏ hơn hoặc bằng hiện tại | X8, X9 | `now + 1 giây` | B4 |
-|  |  |  |  |  | `now` | B5 |
-|  |  |  |  |  | `now - 1 giây` | B6 |
-| `reason`, `notes` | Có thể bỏ trống hoặc gửi chuỗi | V5 | Không có giới hạn độ dài được khai báo | — | Bỏ trống | B7 |
-
-> Các giá trị ID `1` là giá trị biên theo dữ liệu test đã chuẩn bị; mã nguồn không khai báo giới hạn min/max ID. Thời gian hẹn được so với giờ hiện tại `Asia/Ho_Chi_Minh`.
+| `patientId` (query) | ID bệnh nhân tồn tại (`1`) | V1 | Thiếu | X1 | Không khai báo min/max ID nghiệp vụ; không áp dụng BVA | — |
+|  |  |  | Không phải số (`abc`) | X2 |  | — |
+|  |  |  | ID không tồn tại (`999999`) | X3 |  | — |
+| `doctorId` (body) | Bác sĩ tồn tại và đang nhận lịch (`1`) | V2 | Thiếu/null | X4 | Không khai báo min/max ID nghiệp vụ; không áp dụng BVA | — |
+|  |  |  | Bác sĩ không tồn tại (`999999`) | X5 |  | — |
+|  |  |  | Bác sĩ không nhận lịch | X6 |  | — |
+|  |  |  | Bác sĩ không thuộc `departmentId` đã chọn | X7 |  | — |
+| `departmentId` (body) | Khoa tồn tại, đang hoạt động và là khoa của bác sĩ (`1`) | V3 | Thiếu/null | X8 | Không khai báo min/max ID nghiệp vụ; không áp dụng BVA | — |
+|  |  |  | Khoa không tồn tại (`999999`) | X9 |  | — |
+|  |  |  | Khoa ngừng hoạt động | X10 |  | — |
+| `appointmentDateTime` (body) | Thời điểm hẹn sau giờ hiện tại | V4 | Thiếu/null | X11 | `now - 1 giây`; `now`; `now + 1 giây` | B1, B2, B3 |
+|  |  |  | Sai định dạng ngày giờ | X12 |  | — |
+|  |  |  | Thời điểm trước hoặc bằng giờ hiện tại | X13 |  | — |
+| Slot bác sĩ | Slot chưa được đặt | V5 | Slot đã được đặt và lịch cũ chưa bị hủy/đánh dấu `NO_SHOW` | X14 | Không áp dụng BVA; kiểm tra trùng slot | — |
+| `reason` (body) | Có thể gửi chuỗi hoặc bỏ trống | V6 | Không có ràng buộc dữ liệu/độ dài được khai báo | — | Không khai báo giới hạn; không áp dụng BVA | — |
+| `notes` (body) | Có thể gửi chuỗi hoặc bỏ trống | V7 | Không có ràng buộc dữ liệu/độ dài được khai báo | — | Không khai báo giới hạn; không áp dụng BVA | — |
 
 ### Thiết kế test cases
 
-Body hợp lệ dùng làm dữ liệu nền:
+#### Tiền điều kiện
 
-```json
-{
-  "doctorId": 1,
-  "departmentId": 1,
-  "appointmentDateTime": "<thời điểm kiểm thử + 1 giây>",
-  "reason": "Khám định kỳ",
-  "notes": "Ghi chú kiểm thử"
-}
-```
+- Dùng môi trường test với token hợp lệ có role `PATIENT`.
+- Bệnh nhân `1`, bác sĩ `1`, khoa `1` tồn tại; bác sĩ `1` đang nhận lịch và thuộc khoa hoạt động `1`.
+- Bác sĩ `2` tồn tại, đang nhận lịch và thuộc khoa `2`; bác sĩ `3` tồn tại, thuộc khoa `1` nhưng không nhận lịch; khoa `2` tồn tại nhưng ngừng hoạt động.
+- Mock `BusinessTime.now()` là `2026-10-28T12:00:00`.
+- Mỗi dòng là một request độc lập. Dùng slot chưa được đặt cho các test cần tạo lịch; reset fixture giữa các test.
+
+Body hợp lệ làm nền: `{"doctorId":1,"departmentId":1,"appointmentDateTime":"2030-01-01T10:00:00","reason":"Khám định kỳ","notes":"Ghi chú kiểm thử"}`. Ở các test BVA thời gian, thay `appointmentDateTime` bằng giá trị ghi trong input.
 
 | Test Case | Input | Expected Outcome | New Tags Covered |
 |---|---|---|---|
-| 1 | `POST /api/patient/appointments?patientId=1`; body hợp lệ ở trên, slot chưa được đặt | `200 OK`; lịch hẹn được tạo cho bệnh nhân `1`, bác sĩ `1`, trạng thái `SCHEDULED` | V1, V2, V3, V4, B1, B2, B3, B4 |
-| 2 | Cùng request hợp lệ; bỏ `reason` và `notes` | `200 OK`; lịch hẹn được tạo, hai trường tùy chọn để trống | V5, B7 |
-| 3 | `patientId=1`; bỏ đồng thời `doctorId`, `departmentId`, `appointmentDateTime` khỏi body | `400 Bad Request`; validation báo cả ba trường bắt buộc | X4, X6, X8 |
-| 4 | `patientId=1`; body hợp lệ nhưng đặt `doctorId=999999` | `404 Not Found`; không tìm thấy bác sĩ | X5 |
-| 5 | `patientId=1`; body hợp lệ nhưng đặt `departmentId=999999` | `404 Not Found`; không tìm thấy khoa | X7 |
-| 6 | Cùng request hợp lệ; lần lượt đặt `appointmentDateTime` bằng `now` và `now - 1 giây` | Cả hai lần trả `400 Bad Request`; thời gian hiện tại và quá khứ không được chấp nhận | X9, B5, B6 |
-| 7 | Gửi lần lượt: thiếu `patientId`; `patientId=abc`; `patientId=999999` | Thiếu/sai định dạng bị từ chối; ID bệnh nhân không tồn tại trả `404 Not Found` | X1, X2, X3 |
+| 1 | `POST /api/patient/appointments?patientId=1`<br>Body: `{"doctorId":1,"departmentId":1,"appointmentDateTime":"2026-10-28T12:00:01","reason":"Khám định kỳ","notes":"Ghi chú kiểm thử"}`; slot chưa được đặt | `200 OK`; tạo lịch cho bệnh nhân `1`, bác sĩ `1`, khoa `1`, trạng thái `SCHEDULED`. | V1, V2, V3, V4, V5, V6, V7, B3 |
+| 2 | `POST /api/patient/appointments?patientId=1`<br>Body: `{"doctorId":1,"departmentId":1,"appointmentDateTime":"2026-10-28T11:59:59","reason":"Khám định kỳ","notes":"Ghi chú kiểm thử"}` | `400 Bad Request`; không tạo lịch vì thời điểm hẹn sớm hơn `now` một giây. | X13, B1 |
+| 3 | `POST /api/patient/appointments?patientId=1`<br>Body: `{"doctorId":1,"departmentId":1,"appointmentDateTime":"2026-10-28T12:00:00","reason":"Khám định kỳ","notes":"Ghi chú kiểm thử"}` | `400 Bad Request`; không tạo lịch vì thời điểm hẹn bằng `now`. | X13, B2 |
+| 4 | `POST /api/patient/appointments?patientId=1`<br>Body: `{"doctorId":null,"departmentId":null,"appointmentDateTime":null}` | `400 Bad Request`; validation từ chối các trường body bắt buộc bị null. | X4, X8, X11 |
+| 5 | `POST /api/patient/appointments`<br>Body: `{"doctorId":1,"departmentId":1,"appointmentDateTime":"2030-01-01T10:00:00","reason":"Khám định kỳ","notes":"Ghi chú kiểm thử"}` | `400 Bad Request`; từ chối request vì thiếu query parameter `patientId`. | X1 |
+| 6 | `POST /api/patient/appointments?patientId=abc`<br>Body: `{"doctorId":1,"departmentId":1,"appointmentDateTime":"2030-01-01T10:00:00","reason":"Khám định kỳ","notes":"Ghi chú kiểm thử"}` | `400 Bad Request`; từ chối request vì `patientId` không phải số. | X2 |
+| 7 | `POST /api/patient/appointments?patientId=999999`<br>Body: `{"doctorId":1,"departmentId":1,"appointmentDateTime":"2030-01-01T10:00:00","reason":"Khám định kỳ","notes":"Ghi chú kiểm thử"}` | `404 Not Found`; không tìm thấy bệnh nhân `999999`. | X3 |
+| 8 | `POST /api/patient/appointments?patientId=1`<br>Body: `{"doctorId":999999,"departmentId":1,"appointmentDateTime":"2030-01-01T10:00:00"}` | `404 Not Found`; không tìm thấy bác sĩ `999999`. | X5 |
+| 9 | `POST /api/patient/appointments?patientId=1`<br>Body: `{"doctorId":3,"departmentId":1,"appointmentDateTime":"2030-01-01T10:00:00"}`; bác sĩ `3` tồn tại nhưng không nhận lịch | `409 Conflict`; không tạo lịch vì bác sĩ không nhận lịch hẹn. | X6 |
+| 10 | `POST /api/patient/appointments?patientId=1`<br>Body: `{"doctorId":2,"departmentId":1,"appointmentDateTime":"2030-01-01T10:00:00"}`; bác sĩ `2` thuộc khoa `2` | `400 Bad Request`; không tạo lịch vì bác sĩ không thuộc khoa `1` đã chọn. | X7 |
+| 11 | `POST /api/patient/appointments?patientId=1`<br>Body: `{"doctorId":1,"departmentId":999999,"appointmentDateTime":"2030-01-01T10:00:00"}` | `404 Not Found`; không tìm thấy khoa `999999`. | X9 |
+| 12 | `POST /api/patient/appointments?patientId=1`<br>Body: `{"doctorId":2,"departmentId":2,"appointmentDateTime":"2030-01-01T10:00:00"}`; khoa `2` tồn tại nhưng ngừng hoạt động | `409 Conflict`; không tạo lịch vì khoa `2` ngừng nhận lịch hẹn. | X10 |
+| 13 | `POST /api/patient/appointments?patientId=1`<br>Body: `{"doctorId":1,"departmentId":1,"appointmentDateTime":"28-10-2026 12:00"}` | `400 Bad Request`; từ chối ngày giờ sai định dạng. | X12 |
+| 14 | `POST /api/patient/appointments?patientId=1`<br>Body: `{"doctorId":1,"departmentId":1,"appointmentDateTime":"2030-01-01T10:00:00","reason":"Khám định kỳ","notes":"Ghi chú kiểm thử"}`<br>Đã có lịch chưa hủy của bác sĩ `1` tại `2030-01-01T10:00:00`. | `409 Conflict`; không tạo lịch vì slot đã được đặt. | X14 |
 
-## 3. Tiền điều kiện chạy test
-
-- Dùng môi trường test, token hợp lệ có role `PATIENT`, không dùng dữ liệu bệnh nhân thật.
-- Chuẩn bị bệnh nhân `1`, `2`, bác sĩ `1`, khoa `1`; bác sĩ đang nhận lịch và thuộc khoa đang hoạt động `1`.
-- Chọn slot lịch hẹn tương lai chưa bị đặt.
-- Với các giá trị `now`, `now - 1 giây`, cố định đồng hồ hoặc đồng bộ thời điểm chạy để kết quả ổn định.
-- Mỗi dòng test case có thể gồm nhiều request được ghi rõ là “gửi lần lượt”; đây là cách gom test theo cùng một mục đích, không gửi nhiều giá trị trong một request.
-
-## 4. Căn cứ mã nguồn
+## Căn cứ mã nguồn
 
 - `backend/src/main/java/com/hospital/management/controller/PatientController.java`
 - `backend/src/main/java/com/hospital/management/dto/AppointmentRequest.java`
 - `backend/src/main/java/com/hospital/management/service/AppointmentService.java`
 - `backend/src/main/java/com/hospital/management/util/BusinessTime.java`
+- `backend/src/main/java/com/hospital/management/exception/GlobalExceptionHandler.java`

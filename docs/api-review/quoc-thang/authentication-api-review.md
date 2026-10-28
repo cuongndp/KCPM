@@ -1,121 +1,119 @@
-Báo cáo rà soát API Xác thực (Authentication)
-1. Thông tin chung
-- Người thực hiện: Quoc Thang
-- Công cụ: Postman
-- API đang rà soát: POST /api/auth/login, POST /api/auth/register
-- Mục tiêu: Kiểm tra phương thức, URL, Headers, Body, Authorization, xử lý dữ liệu đầu vào, validation và phản hồi của API xác thực.
-- Môi trường: Local (http://localhost:8080) - Chạy bằng Docker Compose
-- Thời điểm thực hiện: [25/10/2026]
-Báo cáo này chỉ ghi nhận kết quả quan sát được trực tiếp trên Postman. Các nhận xét, vấn đề cần xác minh sẽ được đối chiếu với code và yêu cầu nghiệp vụ trước khi xác nhận là bug.
+# Bảng điều kiện test và thiết kế test case BVA
 
-2. Cấu hình request quan sát được
-Thông tin	Giá trị
-Method	POST
-Base URL	http://localhost:8080
-Endpoint	/api/auth/login / /api/auth/register
-Authorization	No Auth (Không yêu cầu token)
-Headers	Content-Type: application/json
-Body	raw / JSON
-Controller	AuthController.java (@RequestMapping("/api/auth"))
-Service	AuthService.java
-DTO sử dụng	LoginRequest, LoginResponse, RegistrationRequest
+## 1. POST `/api/auth/register`
 
+### Bảng điều kiện test
 
-Ghi chú: Cả 2 API đều là public endpoint, không yêu cầu Bearer Token để truy cập.
-3. Kết quả kiểm thử
-3.1. Rà soát API POST /api/auth/login
-URL: POST http://localhost:8080/api/auth/login 
+| Conditions | Valid Partitions | Tag | Invalid Partitions | Tag | Valid Boundaries | Tag |
+|---|---|---|---|---|---|---|
+| `username` | Chuỗi không rỗng, chưa tồn tại trong hệ thống | V1 | Thiếu, `null`, chuỗi rỗng hoặc chỉ có khoảng trắng; username đã tồn tại | X1, X2 | Giá trị tối thiểu được xác nhận bởi code là chuỗi có ít nhất một ký tự không phải khoảng trắng; không có min/max length khai báo | B1 |
+| `password` | Chuỗi không rỗng | V2 | Thiếu, `null`, chuỗi rỗng hoặc chỉ có khoảng trắng | X3 | Chuỗi không rỗng / chuỗi rỗng / chỉ khoảng trắng | B2, B3, B4 |
+| `email` | Email đúng định dạng, chưa được sử dụng | V3 | Thiếu, `null`, rỗng; sai định dạng; email đã tồn tại | X4, X5, X6 | Địa chỉ email đúng định dạng ngắn nhất phù hợp với validator cần được kiểm chứng; code không khai báo giới hạn độ dài | B5 |
+| `firstName`, `lastName` | Chuỗi không rỗng | V4 | Thiếu, `null`, rỗng hoặc chỉ có khoảng trắng | X7, X8 | Chuỗi có nội dung / rỗng / chỉ khoảng trắng | B6, B7 |
+| `phoneNumber` | Đúng 10 chữ số (`^[0-9]{10}$`) | V5 | 9 chữ số, 11 chữ số, có chữ cái/ký tự đặc biệt, thiếu/null/rỗng | X9, X10, X11, X12 | 9 chữ số; đúng 10 chữ số; 11 chữ số | B8, B9, B10 |
+| `role` | `PATIENT`, `DOCTOR`, `ADMIN` (service chuyển thành chữ hoa trước khi parse) | V6 | Thiếu/null/rỗng; giá trị không thuộc enum, ví dụ `ABC` | X13, X14 | Một role hợp lệ; chuỗi rỗng; role không hợp lệ | B11, B12, B13 |
+| `address`, `dateOfBirth`, `bloodGroup`, `emergencyContact` | Có thể bỏ qua theo DTO; nếu gửi ngày sinh thì dùng định dạng ISO `yyyy-MM-dd` | V7 | `dateOfBirth` sai định dạng có thể phát sinh lỗi khi `LocalDate.parse` (cần xác minh) | X15 | Không gửi trường tùy chọn / gửi ngày hợp lệ; không có giới hạn độ dài được khai báo | B14 |
 
-Headers: Content-Type: application/json 
+> **Căn cứ và giới hạn:** `RegistrationRequest` khai báo `@NotBlank` cho `username`, `password`, `email`, `firstName`, `lastName`, `phoneNumber`, `role`; `email` có thêm `@Email`; `phoneNumber` có `@Pattern(regexp = "^[0-9]{10}$")`. Không thấy giới hạn min/max độ dài cho username, password, email, firstName hoặc lastName. ID và các giới hạn độ dài khác không được tự suy diễn thành quy tắc nghiệp vụ. `AuthController` dùng `@Valid` cho request đăng ký. Việc xử lý `role` không thuộc enum và ngày sinh sai định dạng cần được xác minh bằng request thực tế.
 
-Authorization: No Auth
-Test ID	Trường hợp	Request Body	Kết quả mong đợi	Status Code	Response (thực tế)	Nhận xét
-LOGIN-01	Hợp lệ - Admin	{"username": "1", "password": "1"}	Đăng nhập thành công, trả về token	_____	_____	Kiểm tra trả về đầy đủ token, type, userId, username, role
-LOGIN-02	Hợp lệ - Doctor	{"username": "2", "password": "2"}	Đăng nhập thành công, trả về token	_____	_____	Kiểm tra đúng role DOCTOR
-LOGIN-03	Hợp lệ - Patient	{"username": "3", "password": "3"}	Đăng nhập thành công, trả về token	_____	_____	Kiểm tra đúng role PATIENT
-LOGIN-04	Sai mật khẩu	{"username": "1", "password": "wrongpass"}	Từ chối truy cập	_____	_____	Kiểm tra xử lý lỗi khi thông tin không chính xác
-LOGIN-05	User không tồn tại	{"username": "notexist", "password": "123456"}	Từ chối truy cập	_____	_____	Kiểm tra thông báo lỗi có rõ ràng hay không
-LOGIN-06	Thiếu trường password	{"username": "1"}	Trả về lỗi do thiếu dữ liệu bắt buộc	_____	_____	Kiểm tra validate đầu vào
-LOGIN-07	Body rỗng	{}	Trả về lỗi do thiếu dữ liệu bắt buộc	_____	_____	Kiểm tra xử lý khi body không hợp lệ
+### Thiết kế test cases
 
+Dữ liệu nền hợp lệ dùng cho các test đăng ký (thay username/email bằng giá trị mới cho mỗi lần chạy):
 
-3.2. Rà soát API POST /api/auth/register
-URL: POST http://localhost:8080/api/auth/register 
+```json
+{
+  "username": "bva_patient_01",
+  "password": "Test@1234",
+  "email": "bva_patient_01@example.com",
+  "firstName": "Test",
+  "lastName": "Patient",
+  "phoneNumber": "0123456789",
+  "role": "PATIENT",
+  "address": "Ho Chi Minh City",
+  "dateOfBirth": "2000-01-01",
+  "bloodGroup": "O+",
+  "emergencyContact": "0987654321"
+}
+```
 
-Headers: Content-Type: application/json 
+| Test Case | Input | Expected Outcome | New Tags Covered |
+|---|---|---|---|
+| REG-BVA-01 | Gửi body hợp lệ ở trên với username/email chưa tồn tại | `200 OK`; body `User registered successfully`; user được tạo. Với `PATIENT`, service thực hiện tạo thêm hồ sơ Patient | V1, V2, V3, V4, V5, V6, V7, B1, B6, B9, B11 |
+| REG-BVA-02 | Lần lượt bỏ `username`, đặt `username: null`, `username: ""`, `username: "   "` | Dự kiến validation từ chối (`4xx`, thường là `400 Bad Request`); xác nhận response thực tế | X1, B1 |
+| REG-BVA-03 | Lần lượt bỏ `password`, đặt `password: null`, `password: ""`, `password: "   "` | Dự kiến validation từ chối (`4xx`); không tạo tài khoản | X3, B2, B3, B4 |
+| REG-BVA-04 | Lần lượt bỏ `email`, đặt `email: null`, `email: ""`, `email: "not-an-email"` | Dự kiến validation từ chối (`4xx`); không tạo tài khoản | X4, X5, B5 |
+| REG-BVA-05 | Lần lượt đặt `firstName` thành `""`/`"   "`, rồi làm tương tự với `lastName` | Dự kiến validation từ chối (`4xx`) cho trường không có nội dung | X7, X8, B6, B7 |
+| REG-BVA-06 | Body hợp lệ nhưng `phoneNumber: "123456789"` (9 chữ số) | Dự kiến validation từ chối (`4xx`) | X9, B8 |
+| REG-BVA-07 | Body hợp lệ với `phoneNumber: "0123456789"` (đúng 10 chữ số) | Dự kiến vượt qua validation số điện thoại; dùng username/email mới để tránh trùng dữ liệu | V5, B9 |
+| REG-BVA-08 | Body hợp lệ nhưng `phoneNumber: "01234567890"` (11 chữ số) | Dự kiến validation từ chối (`4xx`) | X10, B10 |
+| REG-BVA-09 | Lần lượt đặt `phoneNumber: "012345678a"` và `phoneNumber: "01234-6789"` | Dự kiến validation từ chối do có ký tự không phải chữ số | X11, X12 |
+| REG-BVA-10 | Lần lượt bỏ `role`, đặt `role: null` hoặc `role: ""` | Dự kiến validation từ chối (`4xx`) | X13, B12 |
+| REG-BVA-11 | Lần lượt đăng ký với `role: "PATIENT"`, `"DOCTOR"`, `"ADMIN"`; mỗi lần dùng username/email mới | Dự kiến `200 OK` cho từng role hợp lệ; xác minh role được lưu đúng. Role `PATIENT` cần tạo thêm hồ sơ Patient | V6, B11 |
+| REG-BVA-12 | Gửi `role: "ABC"` với các trường còn lại hợp lệ | Request phải bị từ chối; ghi nhận status thực tế và kiểm tra có phát sinh `500` thay vì lỗi đầu vào `4xx` hay không | X14, B13 |
+| REG-BVA-13 | Gửi body hợp lệ nhưng dùng username đã tồn tại | Từ chối đăng ký trùng username; không tạo tài khoản mới | X2 |
+| REG-BVA-14 | Gửi body hợp lệ nhưng dùng email đã tồn tại | Từ chối đăng ký trùng email; không tạo tài khoản mới | X6 |
+| REG-BVA-15 | Bỏ các trường tùy chọn `address`, `dateOfBirth`, `bloodGroup`, `emergencyContact` | Theo DTO, các trường này không có validation bắt buộc; dự kiến đăng ký được nếu các trường bắt buộc hợp lệ | V7, B14 |
+| REG-BVA-16 | Với role `PATIENT`, lần lượt gửi `dateOfBirth: "2000-01-01"` và `dateOfBirth: "01-01-2000"` | Ngày ISO hợp lệ được parse; ngày sai định dạng cần bị xử lý an toàn. Ghi nhận status thực tế, không mặc định rằng code đã validate định dạng trước | X15, B14 |
 
-Authorization: No Auth
-Test ID	Trường hợp	Request Body	Kết quả mong đợi	Status Code	Response (thực tế)	Nhận xét
-REG-01	Đăng ký PATIENT hợp lệ	{"username":"test_patient_01","password":"Test@1234","email":"test_patient_01@example.com","firstName":"Test","lastName":"Patient","phoneNumber":"0123456789","role":"PATIENT","address":"HCM","dateOfBirth":"2000-01-01","bloodGroup":"O+","emergencyContact":"0987654321"}	Đăng ký thành công	_____	_____	Kiểm tra trả về "User registered successfully". Với role PATIENT sẽ tự động tạo Patient profile
-REG-02	Trùng username	{"username":"test_patient_01","password":"Test@1234","email":"test_patient_02@example.com","firstName":"Test","lastName":"Patient","phoneNumber":"0123456788","role":"PATIENT"}	Từ chối do trùng dữ liệu	_____	_____	Kiểm tra xử lý trùng username
-REG-03	Trùng email	{"username":"test_patient_03","password":"Test@1234","email":"test_patient_01@example.com","firstName":"Test","lastName":"Patient","phoneNumber":"0123456787","role":"PATIENT"}	Từ chối do trùng dữ liệu	_____	_____	Kiểm tra xử lý trùng email
-REG-04	Email sai định dạng	{"username":"test_02","password":"Test@1234","email":"abc@abc","firstName":"Test","lastName":"Test","phoneNumber":"0123456789","role":"PATIENT"}	Bị validate từ chối	_____	_____	Kiểm tra annotation @Email
-REG-05	Số điện thoại < 10 số	{"username":"test_03","password":"Test@1234","email":"test_03@example.com","firstName":"Test","lastName":"Test","phoneNumber":"12345","role":"PATIENT"}	Bị validate từ chối	_____	_____	Kiểm tra annotation @Pattern(regexp = "^[0-9]{10}$")
-REG-06	Số điện thoại có chứa chữ cái	{"username":"test_04","password":"Test@1234","email":"test_04@example.com","firstName":"Test","lastName":"Test","phoneNumber":"012345678a","role":"PATIENT"}	Bị validate từ chối	_____	_____	Kiểm tra annotation @Pattern(regexp = "^[0-9]{10}$")
-REG-07	Thiếu trường bắt buộc (thiếu email)	{"username":"test_05","password":"Test@1234","firstName":"Test","lastName":"Test","phoneNumber":"0123456789","role":"PATIENT"}	Bị validate từ chối	_____	_____	Kiểm tra annotation @NotBlank, @Email
-REG-08	Role không hợp lệ	{"username":"test_06","password":"Test@1234","email":"test_06@example.com","firstName":"Test","lastName":"Test","phoneNumber":"0123456789","role":"ABC"}	Kiểm tra xử lý lỗi	_____	_____	Quan sát cách hệ thống xử lý giá trị role không thuộc enum User.Role
+## 2. POST `/api/auth/login`
 
+### Bảng điều kiện test
 
-4. Các trường validation quan sát được
-Dựa trên việc tra cứu RegistrationRequest.java, các ràng buộc sau được áp dụng:
-Trường	Validation	Ghi chú
-username	@NotBlank	Bắt buộc
-password	@NotBlank	Bắt buộc
-email	@NotBlank, @Email	Bắt buộc, phải đúng định dạng email
-firstName	@NotBlank	Bắt buộc
-lastName	@NotBlank	Bắt buộc
-phoneNumber	@NotBlank, @Pattern(regexp = "^[0-9]{10}$")	Bắt buộc, chỉ chấp nhận đúng 10 chữ số
-role	@NotBlank	Bắt buộc
-address, dateOfBirth, bloodGroup, emergencyContact	Không có validation bắt buộc	Trường tùy chọn
+| Conditions | Valid Partitions | Tag | Invalid Partitions | Tag | Valid Boundaries | Tag |
+|---|---|---|---|---|---|---|
+| `username` | Username của tài khoản tồn tại | V1 | Tài khoản không tồn tại; thiếu/null/rỗng/chuỗi chỉ có khoảng trắng | X1, X2 | Username tồn tại nhỏ nhất theo fixture test (ví dụ `1`); không có giới hạn độ dài khai báo | B1 |
+| `password` | Mật khẩu đúng của tài khoản | V2 | Sai mật khẩu; thiếu/null/rỗng/chuỗi chỉ có khoảng trắng | X3, X4 | Mật khẩu đúng; chuỗi rỗng; chỉ khoảng trắng | B2, B3, B4 |
+| Request body | JSON có `username` và `password` | V3 | Body rỗng `{}`, thiếu trường hoặc JSON không hợp lệ | X5, X6 | Hai trường đều có giá trị / một trường thiếu / body `{}` | B5, B6 |
+| Authentication response | Tài khoản hợp lệ có thể xác thực | V4 | Thông tin xác thực không hợp lệ | X7 | Response thành công có `token`, `type`, `userId`, `username`, `role` | B7 |
 
+> **Lưu ý quan trọng:** `LoginRequest` chỉ khai báo hai trường `String username` và `String password`; không có annotation `@NotBlank`, `@Size` hoặc giới hạn min/max. `AuthController` dùng `@Valid`, nhưng DTO không khai báo constraint để `@Valid` thực thi. Vì vậy các trường hợp thiếu/rỗng phải được chạy trên môi trường thực tế; không khẳng định trước rằng chúng chắc chắn trả `400`. Service xác thực thông qua `AuthenticationManager`; đăng nhập thành công trả `200 OK` cùng `LoginResponse`. Username/password hợp lệ là dữ liệu fixture, không phải giá trị biên độ dài do code quy định.
 
-5. Vấn đề cần xác minh
-Sau khi thực hiện các test case trên Postman, cần xác minh các điểm sau:
-STT	Nội dung cần xác minh	Kết quả quan sát	Ghi chú
-1	Các trường hợp đăng nhập sai (sai mật khẩu, user không tồn tại) có trả về thông báo lỗi rõ ràng, nhất quán không?	_____	Tránh lộ thông tin nhạy cảm (không phân biệt rõ "user không tồn tại" hay "sai mật khẩu" là tốt hơn)
-2	Với trường hợp thiếu/không hợp lệ ở POST /api/auth/register, API có trả về 400 Bad Request kèm message validation rõ ràng không?	_____	Đối chiếu với các annotation đã liệt kê ở mục 4
-3	Khi đăng ký thành công với role = PATIENT, hệ thống có tự động tạo bản ghi Patient tương ứng không?	_____	Có thể kiểm tra nhanh qua dữ liệu sau khi đăng ký
-4	Khi truyền role không hợp lệ (VD: ABC), API xử lý thế nào (400 hay 500)?	_____	Cần ghi nhận thực tế để đưa vào báo cáo
-5	LoginResponse có đầy đủ các trường theo DTO (token, type, userId, username, role) không?	_____	Kiểm tra đặc biệt với các case đăng nhập thành công
+### Thiết kế test cases
 
+Dữ liệu nền đăng nhập hợp lệ (thay bằng tài khoản test có thật trong môi trường):
 
-6. Bằng chứng Postman
-Tất cả ảnh bằng chứng được lưu tại thư mục: docs/api-review/quoc-thang/evidence/
-6.1. Bằng chứng API POST /api/auth/login
-Test ID	Tên file ảnh	Mô tả
-LOGIN-01	login-01-valid-admin.png	Đăng nhập hợp lệ - Admin (username: 1)
-LOGIN-02	login-02-valid-doctor.png	Đăng nhập hợp lệ - Doctor (username: 2)
-LOGIN-03	login-03-valid-patient.png	Đăng nhập hợp lệ - Patient (username: 3)
-LOGIN-04	login-04-wrong-password.png	Sai mật khẩu
-LOGIN-05	login-05-user-not-exist.png	Tài khoản không tồn tại
-LOGIN-06	login-06-missing-password.png	Thiếu trường password
-LOGIN-07	login-07-empty-body.png	Body rỗng {}
+```json
+{
+  "username": "demo1",
+  "password": "1"
+}
+```
 
+| Test Case | Input | Expected Outcome | New Tags Covered |
+|---|---|---|---|
+| LOGIN-BVA-01 | Gửi thông tin đúng của tài khoản Admin test | `200 OK`; response có `token`, `type`, `userId`, `username`, `role`; role phải đúng tài khoản | V1, V2, V3, V4, B1, B2, B7 |
+| LOGIN-BVA-02 | Gửi thông tin đúng của tài khoản Doctor test | `200 OK`; response có token và `role: "DOCTOR"` | V1, V2, V4, B7 |
+| LOGIN-BVA-03 | Gửi thông tin đúng của tài khoản Patient test | `200 OK`; response có token và `role: "PATIENT"` | V1, V2, V4, B7 |
+| LOGIN-BVA-04 | Username tồn tại nhưng password sai | Từ chối xác thực; dự kiến `4xx`/`401` tùy cơ chế xử lý exception hiện tại; không trả token | X3, X7 |
+| LOGIN-BVA-05 | Username không tồn tại và password bất kỳ | Từ chối xác thực; không trả token. Ghi nhận status/body thực tế | X1, X7 |
+| LOGIN-BVA-06 | Lần lượt bỏ `username`, đặt `username: null`, `username: ""`, `username: "   "` | Request phải không đăng nhập thành công; ghi nhận status/body thực tế vì DTO không khai báo validation | X2, B1 |
+| LOGIN-BVA-07 | Lần lượt bỏ `password`, đặt `password: null`, `password: ""`, `password: "   "` | Request phải không đăng nhập thành công; ghi nhận status/body thực tế vì DTO không khai báo validation | X4, B3, B4 |
+| LOGIN-BVA-08 | Gửi body rỗng `{}` | Không đăng nhập thành công; ghi nhận status/body thực tế. Không giả định `400` khi chưa chạy test | X5, B5 |
+| LOGIN-BVA-09 | Gửi JSON sai cú pháp, ví dụ `{"username":"1", "password":}` | Request bị từ chối do JSON không hợp lệ; dự kiến `4xx` | X6, B6 |
+| LOGIN-BVA-10 | Gửi đúng username/password nhưng kiểm tra response JSON | Xác minh đủ `token`, `type`, `userId`, `username`, `role`; `type` dự kiến `Bearer` theo `AuthService` | V4, B7 |
 
-6.2. Bằng chứng API POST /api/auth/register
-Test ID	Tên file ảnh	Mô tả
-REG-01	reg-01-valid-patient.png	Đăng ký PATIENT hợp lệ
-REG-02	reg-02-duplicate-username.png	Trùng username
-REG-03	reg-03-duplicate-email.png	Trùng email
-REG-04	reg-04-invalid-email.png	Email sai định dạng
-REG-05	reg-05-invalid-phone-short.png	Số điện thoại < 10 số
-REG-06	reg-06-invalid-phone-letter.png	Số điện thoại chứa ký tự không phải số
-REG-07	reg-07-missing-email.png	Thiếu trường bắt buộc email
-REG-08	reg-08-invalid-role.png	Role không hợp lệ
+## 3. Tiền điều kiện chạy test
 
+- Chạy trên môi trường test/local, ví dụ `http://localhost:8080`; cả hai endpoint là public và không yêu cầu Bearer Token.
+- Header: `Content-Type: application/json`; Method: `POST`.
+- Chuẩn bị tài khoản test có role `ADMIN`, `DOCTOR`, `PATIENT`, với thông tin đăng nhập đã xác minh.
+- Với đăng ký thành công, dùng username và email mới cho từng lần chạy; dùng dữ liệu test, không dùng thông tin cá nhân thật.
+- Với test trùng username/email, tạo trước tài khoản fixture tương ứng hoặc dùng tài khoản test đã biết tồn tại.
+- Các kết quả ghi “dự kiến” cần được đối chiếu bằng Postman. Ghi status code, response body và kết quả thực tế trước khi kết luận pass/fail.
+- Một dòng test case ghi “lần lượt” nghĩa là gửi nhiều request riêng biệt, mỗi request chỉ thay đổi trường được nêu để cô lập điều kiện kiểm thử.
 
-7. Tổng kết
-- Phạm vi rà soát: Đã rà soát đầy đủ 2 API POST /api/auth/login và POST /api/auth/register theo yêu cầu đề bài.
-- Phương pháp: Thực hiện kiểm thử thủ công trên Postman với đầy đủ các trường hợp hợp lệ, thiếu trường, sai định dạng và dữ liệu trùng lặp.
-- Bằng chứng: Đã chuẩn bị đầy đủ 15 ảnh bằng chứng, sắp xếp theo từng Test ID rõ ràng, lưu đúng thư mục docs/api-review/quoc-thang/evidence/.
-- Kết quả: Tất cả các request đã được ghi nhận đầy đủ Method, URL, Headers, Body, Status Code và Response trong ảnh chụp.
-- Nhận xét chung: Cả 2 API đều public, không yêu cầu Authorization. Việc validate được thực hiện khá rõ ràng ở phía register. Cần tiếp tục đối chiếu với thực tế test để hoàn thiện phần nhận xét và xác minh các vấn đề nêu ở mục 5.
-8. Liên kết công việc
-- Jira task: [Điền link Jira task tại đây]
-- GitHub branch: quoc-thang/auth-api-review
-- GitHub commit: [Điền link commit sau khi push]
-- Pull Request: [Điền link PR sau khi tạo]
-Link báo cáo: [docs/api-review/quoc-thang/authentication-api-review.md](./authentication-api-review.md) 
+## 4. Căn cứ mã nguồn
 
-Thư mục bằng chứng: [docs/api-review/quoc-thang/evidence/](./evidence/)
+- `backend/src/main/java/com/hospital/management/controller/AuthController.java`
+- `backend/src/main/java/com/hospital/management/dto/RegistrationRequest.java`
+- `backend/src/main/java/com/hospital/management/dto/LoginRequest.java`
+- `backend/src/main/java/com/hospital/management/dto/LoginResponse.java`
+- `backend/src/main/java/com/hospital/management/service/AuthService.java`
+- `backend/src/main/java/com/hospital/management/model/User.java`
+- `backend/src/main/java/com/hospital/management/config/SecurityConfig.java`
 
+## 5. Trạng thái bàn giao
+
+- Trạng thái: `In Review` – chờ trưởng nhóm kiểm tra.
+- File này là thiết kế test case BVA; chỉ chuyển `Done` sau khi trưởng nhóm kiểm tra và các kết quả thực thi (nếu được yêu cầu) đã được cập nhật.
+- Thư mục báo cáo: `docs/api-review/quoc-thang/`.

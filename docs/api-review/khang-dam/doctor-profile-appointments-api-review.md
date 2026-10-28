@@ -1,166 +1,76 @@
-﻿# Báo cáo rà soát API — Khang Đàm — Tuần 03
+﻿# Bảng điều kiện test và thiết kế test case BVA
 
-## 1. Thông tin chung
+## 1. GET `/api/doctor/profile`
 
-| Hạng mục | Nội dung |
-|---|---|
-| Người thực hiện | Khang Đàm |
-| Phạm vi | API hồ sơ bác sĩ và danh sách lịch hẹn |
-| Base URL dự kiến | `http://localhost:8080` |
-| Environment variable | `{{baseUrl}}`, `{{DOCTOR_TOKEN}}` |
-| API 1 | `GET /api/doctor/profile` |
-| API 2 | `GET /api/doctor/appointments` |
+### Bảng điều kiện test
 
-Mục tiêu là rà soát phản hồi HTTP, cách xử lý tham số đầu vào và cơ chế xác thực/phân quyền. Báo cáo chỉ xác nhận kết quả có căn cứ trong tài liệu hiện có; các kết quả chưa có bằng chứng cần được chạy lại trên Postman trước khi kết luận.
+| Conditions | Valid Partitions | Tag | Invalid Partitions | Tag | Valid Boundary / Representative Value | Tag |
+|---|---|---|---|---|---|---|
+| `userId` | ID người dùng tồn tại và có hồ sơ bác sĩ (ví dụ `2`) | V1 | Thiếu `userId` | X1 | Giá trị đại diện trong evidence: `2`; mã nguồn không định nghĩa biên nghiệp vụ cho ID | B1 |
+|  |  |  | Không phải số (`abc`) hoặc vượt miền `Long` (`9223372036854775808`) | X2 |  |  |
+|  |  |  | Không có hồ sơ bác sĩ gắn với `userId` (ví dụ `999999`) | X3 |  |  |
+| Token | JWT hợp lệ của tài khoản có role `DOCTOR` | V2 | Thiếu token | X4 | — | — |
+|  |  |  | JWT không hợp lệ hoặc hết hạn | X5 |  |  |
 
-**Lưu ý về tính nhất quán:** Bản nháp ban đầu ghi `PROFILE-01` trả `200 OK` trong bảng kiểm thử, nhưng phần mô tả sự cố lại ghi cùng request trả `403 Forbidden`. Vì chưa có ảnh response đính kèm để phân xử, kết quả của trường hợp này được đánh dấu **cần xác minh**, không khẳng định một trong hai trạng thái là kết quả cuối cùng.
+> `2` là ID được dùng trong ảnh Postman và trả `200 OK`; đây là giá trị đại diện theo dữ liệu test, không phải biên ID được quy định trong nghiệp vụ. Controller chỉ kiểm tra role `DOCTOR`; với endpoint profile, service tìm hồ sơ theo `userId` được truyền vào.
 
-## 2. Cấu hình request
+### Thiết kế test cases
 
-### 2.1. `GET /api/doctor/profile`
+| Test Case | Input | Expected Outcome | New Tags Covered |
+|---|---|---|---|
+| 1 | `GET /api/doctor/profile?userId=2` với token hợp lệ | `200 OK`; trả về JSON hồ sơ bác sĩ, `user.id = 2`, `role = "DOCTOR"` | V1, V2, B1 |
+| 2 | `GET /api/doctor/profile` (thiếu `userId`) | Theo mã nguồn hiện tại, lỗi tham số bắt buộc đi vào handler tổng quát và trả `500 Internal Server Error`; ghi nhận status thực tế khi chạy | X1 |
+| 3 | `GET /api/doctor/profile?userId=abc` | Theo mã nguồn hiện tại, lỗi chuyển kiểu `Long` đi vào handler tổng quát và trả `500 Internal Server Error`; ghi nhận status thực tế khi chạy | X2 |
+| 4 | `GET /api/doctor/profile?userId=999999` | Không có hồ sơ bác sĩ gắn với user ID này: `DoctorService` ném `403 Forbidden` (không phải `404`) | X3 |
+| 5 | `GET /api/doctor/profile?userId=2` không gửi token | Request bị từ chối do thiếu xác thực | X4 |
+| 6 | `GET /api/doctor/profile?userId=2` với JWT không hợp lệ hoặc hết hạn | Ghi nhận kết quả thực tế; bộ lọc JWT phân tích token trước khi vào controller và hiện không bắt lỗi phân tích token | X5 |
 
-- **Method:** `GET`
-- **URL:** `{{baseUrl}}/api/doctor/profile`
-- **Query parameter:** `userId=2`
-- **Request mẫu:** `{{baseUrl}}/api/doctor/profile?userId=2`
-- **Authorization:** Tab Authorization được cấu hình trong Postman; ảnh hiện tại không hiển thị giá trị token nên không ghi lại token trong báo cáo.
-- **Body:** Không cần body cho request GET.
-- **Kết quả theo ảnh Postman:** `200 OK`, thời gian phản hồi `197 ms`, kích thước response `1.07 KB`.
+## 2. GET `/api/doctor/appointments`
 
-Response JSON hiển thị object hồ sơ với `id: 1`; object `user` bên trong có `id: 2`, `username: "2"`, `email: "sample-doctor@hospital.test"`, `firstName: "Doctor"`, `lastName: "Demo"`, `role: "DOCTOR"` và `active: true`. Đây là kết quả thành công được xác nhận bởi ảnh Postman mới cung cấp.
+### Bảng điều kiện test
 
-### 2.2. `GET /api/doctor/appointments`
+| Conditions | Valid Partitions | Tag | Invalid Partitions | Tag | Valid Boundary / Representative Value | Tag |
+|---|---|---|---|---|---|---|
+| `doctorId` | ID bác sĩ tồn tại (ví dụ `2`) | V1 | Thiếu `doctorId` | X1 | Giá trị đại diện trong dữ liệu test: `2`; mã nguồn không định nghĩa biên nghiệp vụ cho ID | B1 |
+|  |  |  | Không phải số (`abc`) hoặc vượt miền `Long` (`9223372036854775808`) | X2 |  |  |
+|  |  |  | ID không có lịch hẹn phù hợp (ví dụ `999999`) | X3 |  |  |
+| Token | JWT hợp lệ của tài khoản có role `DOCTOR` | V2 | Thiếu token | X4 | — | — |
+|  |  |  | JWT không hợp lệ hoặc hết hạn | X5 |  |  |
 
-- **Method:** `GET`
-- **URL:** `{{baseUrl}}/api/doctor/appointments`
-- **Query parameter:** `doctorId`
-- **Authorization:** `Bearer Token` nếu endpoint yêu cầu xác thực.
-- **Body:** Không cần body cho request GET.
+> ID `2` là giá trị mẫu; hãy xác nhận bác sĩ tồn tại trong dữ liệu test trước khi chạy.
 
-Bản nháp có ghi `doctorId=2` trả `200 OK` với mảng rỗng `[]`, nhưng chưa có ảnh response trong tệp được cung cấp. Cần kiểm tra lại trên môi trường thực tế trước khi dùng làm bằng chứng nghiệm thu.
+### Thiết kế test cases
 
-## 3. Bảng kiểm thử
+| Test Case | Input | Expected Outcome | New Tags Covered |
+|---|---|---|---|
+| 1 | `GET /api/doctor/appointments?doctorId=2` với token hợp lệ | `200 OK`; trả danh sách lịch hẹn của bác sĩ `2` (có thể là `[]` nếu chưa có lịch) | V1, V2, B1 |
+| 2 | `GET /api/doctor/appointments` (thiếu `doctorId`) | Theo mã nguồn hiện tại, lỗi tham số bắt buộc đi vào handler tổng quát và trả `500 Internal Server Error`; ghi nhận status thực tế khi chạy | X1 |
+| 3 | `GET /api/doctor/appointments?doctorId=abc` | Theo mã nguồn hiện tại, lỗi chuyển kiểu `Long` đi vào handler tổng quát và trả `500 Internal Server Error`; ghi nhận status thực tế khi chạy | X2 |
+| 4 | `GET /api/doctor/appointments?doctorId=999999` | Service truy vấn trực tiếp theo `doctorId`, không kiểm tra bác sĩ tồn tại; trả `200 OK` với `[]` nếu không có lịch | X3 |
+| 5 | `GET /api/doctor/appointments?doctorId=2` không gửi token | Request bị từ chối do thiếu xác thực | X4 |
+| 6 | `GET /api/doctor/appointments?doctorId=2` với JWT không hợp lệ hoặc hết hạn | Ghi nhận kết quả thực tế; bộ lọc JWT phân tích token trước khi vào controller và hiện không bắt lỗi phân tích token | X5 |
 
-**Quy ước trạng thái**
-- **Cần xác minh:** Bản nháp có ghi kết quả nhưng thiếu bằng chứng hoặc có thông tin mâu thuẫn.
-- **Chưa xác nhận:** Chưa có response/bằng chứng đủ để kết luận.
-- Mã HTTP trong cột kết quả là thông tin được ghi trong bản nháp, không thay thế cho bằng chứng Postman.
+> Endpoint này xác thực role `DOCTOR`, nhưng mã nguồn không đối chiếu `doctorId` với bác sĩ đang đăng nhập. Vì vậy, test theo ID khác cần ghi nhận đúng hành vi hiện tại; không xem role check là kiểm tra quyền sở hữu dữ liệu.
 
-| Test ID | Trường hợp | Kết quả được ghi trong bản nháp | Trạng thái hiện tại | Hướng xử lý |
-|---|---|---|---|---|
-| `PROFILE-01` | `userId=2`, token Doctor | `200 OK`; response trả về object hồ sơ, `id=1`, thông tin `user` có `id=2`, `role=DOCTOR`, `active=true` | **Đã xác nhận theo ảnh Postman** | Request thành công. Lưu ý `id` ngoài cùng là `1`, còn `user.id` là `2`; cần giữ đúng phân biệt này khi đối chiếu dữ liệu |
-| `PROFILE-02` | `userId=` (tham số có nhưng rỗng) | `500 Internal Server Error`; thông báo tham số `userId` được chuyển thành `null` | Cần xác minh bằng ảnh/log | Kiểm tra validation và xử lý lỗi đầu vào |
-| `PROFILE-03` | Không truyền `userId` | `500 Internal Server Error`; thông báo thiếu required request parameter `userId` | Cần xác minh bằng ảnh/log | Kiểm tra exception handler; tham số bắt buộc thường nên trả `400 Bad Request` |
-| `PROFILE-04` | Không gửi token | `403 Forbidden` | Cần xác minh bằng ảnh response | Chạy lại request không có Authorization |
-| `PROFILE-05` | Token giả/không hợp lệ | `403 Forbidden` | Cần xác minh bằng ảnh response | Chạy lại với token thử nghiệm không hợp lệ |
-| `APPT-01` | `doctorId=2`, token được cấp quyền | `200 OK`; response `[]` | Cần xác minh bằng ảnh response | Kiểm tra dữ liệu lịch hẹn và quyền truy cập |
-| `APPT-02` | `doctorId=` (tham số có nhưng rỗng) | `500 Internal Server Error`; thông báo tham số `doctorId` được chuyển thành `null` | Cần xác minh bằng ảnh/log | Kiểm tra validation và xử lý lỗi đầu vào |
-| `APPT-03` | Không truyền `doctorId` | `500 Internal Server Error`; thông báo thiếu required request parameter `doctorId` | Cần xác minh bằng ảnh/log | Kiểm tra exception handler; tham số bắt buộc thường nên trả `400 Bad Request` |
-| `APPT-04` | Không gửi token | `403 Forbidden` | Cần xác minh bằng ảnh response | Chạy lại request không có Authorization |
-| `APPT-05` | Token giả/không hợp lệ | `403 Forbidden` | Cần xác minh bằng ảnh response | Chạy lại với token thử nghiệm không hợp lệ |
+## 3. Tiền điều kiện chạy test
 
-> Không dùng `PROFILE-02`/`PROFILE-03` hoặc `APPT-02`/`APPT-03` làm bằng chứng lỗi đã xác nhận nếu chưa lưu được response thực tế. Các mã trạng thái ở trên là kết quả được ghi trong bản nháp.
+- Dùng môi trường test và JWT hợp lệ của tài khoản có role `DOCTOR`; không đưa token thật vào tài liệu hoặc ảnh công khai.
+- Xác nhận `{{baseUrl}}` trỏ đến `http://localhost:8080`.
+- Chuẩn bị người dùng `2` có hồ sơ bác sĩ và xác nhận ID bác sĩ dùng cho API lịch hẹn.
+- Lưu status code và response thực tế của từng request. Trường hợp chưa chạy chỉ là kết quả kỳ vọng, không phải kết quả thực tế.
+- Ảnh `evidence/profile-01-forbidden.png` hiển thị request profile trả `200 OK` trong `197 ms`, response có `user.id = 2`, `role = "DOCTOR"` và `active = true`; tên file có chữ `forbidden` nhưng nội dung ảnh không phải phản hồi `403`.
+- Với thiếu/thừa định dạng tham số, mã nguồn hiện có handler tổng quát cho `Exception`, nên expected status trong bảng là `500`; cần đối chiếu lần chạy thực tế trước khi kết luận.
+- Nếu gặp lỗi xác thực hoặc phân quyền, lưu status và response thực tế; kiểm tra JWT, role và log backend. Bộ lọc JWT hiện không bắt ngoại lệ khi phân tích token sai/hết hạn.
 
-## 4. Phân tích và hướng xử lý
+## 4. Căn cứ
 
-### 4.1. Sự cố `403 Forbidden` ở Doctor Profile
+- Ảnh Postman và các lần chạy được lưu trong `evidence/`; đối chiếu đúng tên file và nội dung ảnh trước khi trích dẫn status.
 
-Thông báo `Access to the resource is prohibited.` cho thấy request bị từ chối, nhưng riêng thông báo này chưa đủ để kết luận nguyên nhân là token sai. Các khả năng cần kiểm tra:
+### Căn cứ mã nguồn
 
-1. **Environment:** Đã chọn đúng Environment chưa? Xác nhận `{{baseUrl}}` có giá trị `http://localhost:8080` khi backend chạy tại cổng đó.
-2. **Token:** Kiểm tra `{{DOCTOR_TOKEN}}` đã được đặt giá trị, chưa hết hạn và được cấp cho tài khoản có quyền phù hợp. Không đưa token thật vào báo cáo hoặc commit.
-3. **Role và quyền truy cập:** Kiểm tra role trong token và quy tắc phân quyền của endpoint.
-4. **ID đầu vào:** Xác nhận `userId=2` tồn tại và người gọi được phép xem hồ sơ tương ứng.
-5. **Backend:** Đối chiếu log server, cấu hình Spring Security (nếu dùng) và code controller/service.
-
-Sau khi kiểm tra, cập nhật kết quả bằng chứng và ghi rõ nguyên nhân đã xác nhận hoặc vẫn chưa xác định.
-
-### 4.2. Xử lý tham số thiếu hoặc rỗng
-
-Theo bản nháp, các trường hợp thiếu/rỗng `userId` và `doctorId` từng được ghi nhận là `500 Internal Server Error`. Nếu chạy lại và tái hiện được, đây là vấn đề cần xem xét: dữ liệu đầu vào không hợp lệ thường nên được trả về `400 Bad Request`, thay vì lỗi 500.
-
-Hướng xử lý phía backend:
-- Kiểm tra khai báo tham số bắt buộc và kiểu dữ liệu trong controller.
-- Chuẩn hóa xử lý ngoại lệ để lỗi đầu vào có phản hồi rõ ràng, không làm lộ stack trace.
-- Bổ sung kiểm thử cho tham số bị thiếu, rỗng, không phải số và ID không tồn tại.
-- Xác nhận quy tắc trả lỗi theo hợp đồng API trước khi thay đổi code.
-
-### 4.3. Response rỗng ở danh sách lịch hẹn
-
-Nếu `GET /api/doctor/appointments?doctorId=2` trả `200 OK` và `[]`, điều đó có thể biểu thị không có lịch hẹn phù hợp; không tự động có nghĩa API bị lỗi. Cần xác nhận ID bác sĩ tồn tại, dữ liệu thử nghiệm có lịch hẹn hay không và endpoint có lọc đúng theo quyền truy cập.
-
-## 5. Checklist chạy lại trên Postman
-
-- [ ] Chọn đúng Environment.
-- [ ] Xác nhận `{{baseUrl}}` là `http://localhost:8080`.
-- [ ] Xác nhận `{{DOCTOR_TOKEN}}` có giá trị hợp lệ; không chụp/lưu token thật trong bằng chứng.
-- [ ] Chạy `PROFILE-01` với `userId=2` và lưu status/body.
-- [ ] Chạy các trường hợp thiếu/rỗng/sai `userId`.
-- [ ] Chạy các trường hợp không token/token không hợp lệ.
-- [ ] Chạy `APPT-01` với `doctorId` hợp lệ và lưu status/body.
-- [ ] Chạy các trường hợp thiếu/rỗng/sai `doctorId`.
-- [ ] Chạy các trường hợp không token/token không hợp lệ.
-- [ ] Ghi thời gian phản hồi nếu cần theo tiêu chí của nhóm.
-- [ ] Cập nhật bảng kiểm thử theo kết quả thực tế và đính kèm ảnh đã che dữ liệu nhạy cảm.
-
-## 6. Bằng chứng kiểm thử
-
-6.1. Ảnh bằng chứng API GET Doctor Profile
-
-PROFILE-01 — `userId=2`, `200 OK`
-![PROFILE-01 userId=2](evidence/profile-01-forbidden.png)
-
-
-PROFILE-02 — `userId=`, `500 Internal Server Error`
-![PROFILE-02 userId=](evidence/profile-02-missing-userId.png)
-
-
-
-PROFILE-03 — `Thiếu userId`, `500 Internal Server Error`
-![PROFILE-03 Thiếu userId](evidence/profile-03-unknown-userId.png)
-
-
-PROFILE-04 — `Không có token`, `403 Forbidden`
-![PROFILE-04 Không có token ](evidence/profile-04-no-token.png)
-
-
-PROFILE-05 — `Token giả/không hợp lệ`, `403 Forbidden`
-![PROFILE-05 Token giả/không hợp lệ ](evidence/profile-05-invalid-token.png)
-
-
-6.2. Ảnh bằng chứng API GET Doctor Appointments
-
-APPT-01 — `doctorId=2`, `200 OK`, `response []`
-![APPT-01 doctorId=2 ](evidence/appointments-01-valid-doctorId.png)
-
-
-APPT-02 — `doctorId=`, `500 Internal Server Error`	
-![APPT-02 doctorId= ](evidence/appointments-02-missing-doctorId.png)
-
-
-APPT-03 — `Thiếu doctorId`, `500 Internal Server Error`
-![APPT-03 Thiếu doctorId ](evidence/appointments-03-unknown-doctorId.png)
-
-
-APPT-04 — `Không có token`, `403 Forbidden`
-![APPT-04 Không có token ](evidence/appointments-04-no-token.png)
-
-APPT-05 — `Token giả/không hợp lệ`, `403 Forbidden`
-![APPT-05 Token giả/không hợp lệ ](evidence/appointments-05-invalid-token.png)
-
-## 7. Kết luận
-
-- Phạm vi rà soát gồm 2 endpoint GET: hồ sơ bác sĩ và danh sách lịch hẹn.
-- `PROFILE-01` đã được xác nhận theo ảnh Postman: `200 OK` cho request `userId=2`; response có `user.id=2` và `role=DOCTOR`.
-- Các kết quả khác trong bảng vẫn cần được đối chiếu với ảnh response/log trước khi xem là đã xác nhận.
-- Nếu lỗi thiếu/rỗng tham số trả `500`, nên xem xét chuẩn hóa thành `400 Bad Request` theo hợp đồng API.
-- Chưa đủ bằng chứng để kết luận toàn bộ hai API đạt yêu cầu hoặc xác nhận nguyên nhân lỗi phân quyền.
-
-## 8. Liên kết công việc
-
-- Jira task: Chưa cập nhật.
-- GitHub commit: Cập nhật sau khi commit và push.
-- Pull Request: Cập nhật nếu quy trình của nhóm sử dụng Pull Request.
-
----
-
+- `backend/src/main/java/com/hospital/management/controller/DoctorController.java`
+- `backend/src/main/java/com/hospital/management/service/DoctorService.java`
+- `backend/src/main/java/com/hospital/management/service/AppointmentService.java` và `backend/src/main/java/com/hospital/management/repository/AppointmentRepository.java`
+- `backend/src/main/java/com/hospital/management/config/SecurityConfig.java`: `/api/doctor/**` yêu cầu role `DOCTOR`.
+- `backend/src/main/java/com/hospital/management/security/JwtAuthenticationFilter.java` và `backend/src/main/java/com/hospital/management/util/JwtUtil.java`
+- `backend/src/main/java/com/hospital/management/exception/GlobalExceptionHandler.java`

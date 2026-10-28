@@ -1,210 +1,131 @@
-# Báo cáo rà soát API — Hải Bằng — Tuần 03
+# Thiết kế bộ test case BVA — API hồ sơ bệnh án và kê đơn của bác sĩ
 
-## 1. Thông tin chung
+## 1. Mục tiêu
 
-- **Người thực hiện:** Hải Bằng
-- **Công cụ:** Postman
-- **API rà soát:**
-  1. `GET /api/doctor/medical-records`
-  2. `POST /api/doctor/prescriptions`
-- **Mục tiêu:** Rà soát phản hồi API, tham số đầu vào, body, headers, xác thực và các trường hợp dữ liệu phù hợp.
-- **Môi trường:** `HMS Local` *(xác nhận lại nếu bạn sử dụng environment khác).*
-- **Thời điểm thực hiện:** 23/10/2026 (theo thời gian hiển thị trên ảnh bằng chứng).
+Thiết kế test case theo phương pháp **Boundary Value Analysis (BVA)** cho hai API của bác sĩ; xác định phân vùng hợp lệ/không hợp lệ, kiểm tra các giá trị biên của dữ liệu đầu vào và ghi rõ kết quả mong đợi để thực thi trên Postman.
 
-> Báo cáo này được lập theo cấu trúc file mẫu và danh sách 21 ảnh bằng chứng bạn cung cấp. Tên file ảnh được đối chiếu theo ảnh thư mục Windows. Status code và response cụ thể cần được điền từ nội dung từng ảnh Postman; không suy đoán kết quả từ tên file. Chỉ xác nhận bug sau khi đối chiếu yêu cầu nghiệp vụ và/hoặc mã nguồn.
+## 2. Phạm vi API
 
-## 2. Cấu hình request quan sát/kiểm tra
+1. `GET /api/doctor/medical-records` — Query parameter: `doctorId`
+2. `POST /api/doctor/prescriptions` — Query parameter: `doctorId`; body: `PrescriptionRequest`
 
-### 2.1. GET `/api/doctor/medical-records`
+> **Lưu ý về căn cứ:** Các điều kiện bắt buộc bên dưới được đối chiếu với `DoctorController.java`, `PrescriptionRequest.java` và `PrescriptionService.java` trong mã nguồn được cung cấp. Mã nguồn không khai báo min/max cho ID, không khai báo giới hạn độ dài cho các chuỗi thuốc và không khai báo min/max cho `duration`. Vì vậy, các giá trị `1`, `2` được dùng làm dữ liệu fixture nếu chúng tồn tại trong môi trường test; không được xem là giới hạn nghiệp vụ đã xác nhận.
 
-- **Method:** `GET`
-- **URL dự kiến:** `{{baseUrl}}/api/doctor/medical-records`
-- **Query parameter:** `doctorId`
-- **Headers:** Kiểm tra các header theo cấu hình request thực tế.
-- **Authorization:** Có các trường hợp kiểm thử không token và token không hợp lệ; xác nhận loại token và cấu hình thực tế trong Postman.
-- **Response:** Ghi status code và body đúng như Postman hiển thị cho từng test case ở mục 3.
+## 3. API GET `/api/doctor/medical-records`
 
-### 2.2. POST `/api/doctor/prescriptions`
+### 3.1. Bảng điều kiện test
 
-- **Method:** `POST`
-- **URL dự kiến:** `{{baseUrl}}/api/doctor/prescriptions`
-- **Query parameter:** `doctorId`
-- **Body:** `PrescriptionRequest` dạng JSON (ghi lại cấu trúc body thực tế đang sử dụng trong Postman).
-- **Headers:** Kiểm tra `Content-Type: application/json` nếu gửi JSON và các header cần thiết khác.
-- **Authorization:** Có các trường hợp kiểm thử không token và token không hợp lệ; xác nhận cấu hình thực tế trong Postman.
-- **Response:** Ghi status code và body đúng như Postman hiển thị cho từng test case ở mục 4.
+| Conditions | Valid Partitions | Tag | Invalid Partitions | Tag | Valid Boundaries | Tag |
+|---|---|---|---|---|---|---|
+| `doctorId` | ID bác sĩ tồn tại trong dữ liệu test, ví dụ `1` hoặc `2` | V1 | Thiếu `doctorId` | X1 | ID bác sĩ tồn tại nhỏ nhất trong fixture, ví dụ `1` | B1 |
+|  |  |  | Không phải số nguyên (`abc`) | X2 | ID bác sĩ tồn tại kế tiếp trong fixture, ví dụ `2` | B2 |
+|  |  |  | Vượt miền `Long`: `9223372036854775808` | X3 | Giá trị số nguyên lớn nhất của `Long`: `9223372036854775807` | B3 |
+|  |  |  | ID không tồn tại, ví dụ `999999` | X4 | `0` và `-1` để kiểm tra ID không dương | B4 |
+|  |  |  |  |  | Giá trị số nguyên nhỏ nhất của `Long`: `-9223372036854775808` | B5 |
 
-## 3. Kết quả kiểm thử — GET medical records
+> Controller nhận `doctorId` kiểu `Long` và gọi `findByDoctorId(doctorId)` trực tiếp; không thấy kiểm tra min/max hay kiểm tra bác sĩ tồn tại trong endpoint GET. Vì vậy, với ID số nhưng không có bản ghi, kết quả dự kiến theo truy vấn là `200 OK` cùng danh sách rỗng `[]`. Thiếu/sai định dạng/vượt miền `Long` thường bị Spring từ chối khi bind tham số; hãy ghi lại status/body thực tế khi chạy.
 
-| Test ID | Trường hợp | Kết quả thực tế trên Postman | Nhận xét ban đầu |
+### 3.2. Thiết kế test cases
+
+| Test Case | Input | Expected Outcome | New Tags Covered |
 |---|---|---|---|
-| GET-01 | `doctorId=1` | Chưa ghi nhận status code/body trong bản tổng hợp này. | Đối chiếu dữ liệu trả về với dữ liệu thử nghiệm mong đợi. |
-| GET-02 | `doctorId=99999` | Chưa ghi nhận status code/body trong bản tổng hợp này. | Xác minh hành vi khi ID không tồn tại; không kết luận chỉ từ tên ảnh. |
-| GET-03 | `doctorId=abc` | Chưa ghi nhận status code/body trong bản tổng hợp này. | Kiểm tra xử lý tham số sai định dạng. |
-| GET-04 | Thiếu `doctorId` | Chưa ghi nhận status code/body trong bản tổng hợp này. | Kiểm tra cách API xử lý query parameter bị thiếu. |
-| GET-05 | `doctorId` âm | Chưa ghi nhận status code/body trong bản tổng hợp này. | Đối chiếu với quy tắc hợp lệ của ID. |
-| GET-06 | `doctorId=0` | Chưa ghi nhận status code/body trong bản tổng hợp này. | Đối chiếu với quy tắc hợp lệ của ID. |
-| GET-07 | Không có token | Chưa ghi nhận status code/body trong bản tổng hợp này. | Xác minh theo cấu hình bảo mật thực tế. |
-| GET-08 | Token không hợp lệ | Chưa ghi nhận status code/body trong bản tổng hợp này. | Xác minh theo yêu cầu xác thực và phân quyền. |
+| GET-BVA-01 | `GET /api/doctor/medical-records?doctorId=1` với bác sĩ `1` tồn tại | `200 OK`; trả danh sách hồ sơ bệnh án của bác sĩ `1` (danh sách có thể rỗng nếu fixture chưa có hồ sơ) | V1, B1 |
+| GET-BVA-02 | `GET /api/doctor/medical-records?doctorId=2` với bác sĩ `2` tồn tại | `200 OK`; chỉ trả hồ sơ thuộc bác sĩ `2` | B2 |
+| GET-BVA-03 | `GET /api/doctor/medical-records?doctorId=999999` | Dự kiến `200 OK`, body `[]` nếu không có hồ sơ gắn với ID này; xác nhận bằng thực thi | X4 |
+| GET-BVA-04 | `GET /api/doctor/medical-records` (không gửi `doctorId`) | Request bị từ chối do thiếu query parameter; ghi status/body thực tế (thường là `4xx`) | X1 |
+| GET-BVA-05 | `GET /api/doctor/medical-records?doctorId=abc` | Request bị từ chối do không bind được sang `Long`; ghi status/body thực tế (thường là `400 Bad Request`) | X2 |
+| GET-BVA-06 | `GET /api/doctor/medical-records?doctorId=9223372036854775808` | Request bị từ chối do vượt miền `Long`; ghi status/body thực tế | X3 |
+| GET-BVA-07 | Gửi lần lượt `doctorId=0` và `doctorId=-1` | Không có validation dương ở controller; dự kiến `200 OK` với `[]` nếu không có hồ sơ tương ứng. Ghi nhận kết quả thực tế | B4 |
+| GET-BVA-08 | `GET /api/doctor/medical-records?doctorId=9223372036854775807` | Giá trị nằm trong miền `Long`; dự kiến `200 OK` và `[]` nếu không có hồ sơ tương ứng | B3 |
+| GET-BVA-09 | `GET /api/doctor/medical-records?doctorId=-9223372036854775808` | Giá trị nằm trong miền `Long`; dự kiến `200 OK` và `[]` nếu không có hồ sơ tương ứng | B5 |
 
-### 3.1. Tổng kết API GET
+## 4. API POST `/api/doctor/prescriptions`
 
-- **Số trường hợp có ảnh bằng chứng:** 8.
-- Các ảnh được đặt tên để thể hiện lần lượt ID hợp lệ, ID không tồn tại, sai định dạng, thiếu tham số, ID âm, ID bằng 0, không token và token không hợp lệ.
-- Cần bổ sung status code và response từ Postman trước khi hoàn thiện kết luận.
-- Không kết luận bug chỉ dựa trên status code nếu chưa đối chiếu hợp đồng API và yêu cầu nghiệp vụ.
+### 4.1. Bảng điều kiện test
 
-## 4. Kết quả kiểm thử — POST prescriptions
+| Conditions | Valid Partitions | Tag | Invalid Partitions | Tag | Valid Boundaries | Tag |
+|---|---|---|---|---|---|---|
+| `doctorId` (query) | ID bác sĩ tồn tại | V1 | Thiếu hoặc sai định dạng | X1, X2 | ID bác sĩ tồn tại nhỏ nhất trong fixture, ví dụ `1` | B1 |
+|  |  |  | ID bác sĩ không tồn tại | X3 | `0`, `-1`, và các giá trị biên miền `Long` để xác minh hành vi | B2 |
+| `patientId` (body) | ID bệnh nhân tồn tại | V2 | `null`/thiếu; bệnh nhân không tồn tại | X4, X5 | ID bệnh nhân tồn tại nhỏ nhất trong fixture, ví dụ `1` | B3 |
+| `appointmentId` (body) | ID lịch hẹn tồn tại | V3 | `null`/thiếu; lịch hẹn không tồn tại | X6, X7 | ID lịch hẹn tồn tại nhỏ nhất trong fixture, ví dụ `1` | B4 |
+| `medication` | Chuỗi không rỗng và không chỉ gồm khoảng trắng | V4 | `null`, thiếu, `""` hoặc chỉ khoảng trắng | X8 | Chuỗi 1 ký tự, ví dụ `"A"` | B5 |
+| `dosage` | Chuỗi không rỗng và không chỉ gồm khoảng trắng | V5 | `null`, thiếu, `""` hoặc chỉ khoảng trắng | X9 | Chuỗi 1 ký tự, ví dụ `"1"` | B6 |
+| `frequency` | Chuỗi không rỗng và không chỉ gồm khoảng trắng | V6 | `null`, thiếu, `""` hoặc chỉ khoảng trắng | X10 | Chuỗi 1 ký tự, ví dụ `"1"` | B7 |
+| `duration` | Có thể bỏ qua hoặc gửi số nguyên vì DTO không khai báo validation cho trường này | V7 | Chưa có miền giá trị không hợp lệ được khai báo trong DTO | — | `null`, `0`, `1` (kiểm tra hành vi, không khẳng định 0 là hợp lệ về nghiệp vụ) | B8 |
+| `instructions` | Có thể bỏ qua hoặc gửi chuỗi | V8 | Chưa có giới hạn độ dài/điều kiện nội dung được khai báo trong DTO | — | Bỏ trống và chuỗi 1 ký tự | B9 |
 
-| Test ID | Trường hợp theo tên ảnh | Kết quả thực tế trên Postman | Nhận xét ban đầu |
+> `PrescriptionRequest` dùng `@NotNull` cho `patientId`, `appointmentId`; dùng `@NotBlank` cho `medication`, `dosage`, `frequency`. Không có annotation validation cho `duration` và `instructions`. Service kiểm tra bác sĩ, bệnh nhân và lịch hẹn có tồn tại; nếu không tìm thấy, sẽ phát sinh `ResourceNotFoundException`. Mã nguồn không khai báo giới hạn min/max cho ID, độ dài chuỗi hoặc `duration`, nên các test đó là kiểm tra hành vi chứ không phải khẳng định giới hạn nghiệp vụ.
+
+### 4.2. Body hợp lệ dùng làm dữ liệu nền
+
+Thay các ID ví dụ bằng ID thực sự tồn tại trong môi trường test. Đảm bảo lịch hẹn `1` phù hợp với dữ liệu fixture.
+
+```json
+{
+  "patientId": 1,
+  "appointmentId": 1,
+  "medication": "Paracetamol",
+  "dosage": "500 mg",
+  "frequency": "2 lần/ngày",
+  "duration": 5,
+  "instructions": "Uống sau ăn"
+}
+```
+
+### 4.3. Thiết kế test cases
+
+| Test Case | Input | Expected Outcome | New Tags Covered |
 |---|---|---|---|
-| POST-01 | Gửi request thành công | Chưa ghi nhận status code/body trong bản tổng hợp này. | Xác nhận response và dữ liệu đơn thuốc được tạo/trả về theo yêu cầu. |
-| POST-02 | Không tìm thấy bệnh nhân | Chưa ghi nhận status code/body trong bản tổng hợp này. | Xác minh thông báo và hành vi khi bệnh nhân không tồn tại. |
-| POST-03 | Không tìm thấy lịch hẹn | Chưa ghi nhận status code/body trong bản tổng hợp này. | Xác minh thông báo và hành vi khi lịch hẹn không tồn tại. |
-| POST-04 | JSON không hợp lệ | Chưa ghi nhận status code/body trong bản tổng hợp này. | Kiểm tra xử lý body không phải JSON hợp lệ. |
-| POST-05 | Thiếu `patientId` | Chưa ghi nhận status code/body trong bản tổng hợp này. | Đối chiếu trường bắt buộc với `PrescriptionRequest` và hợp đồng API. |
-| POST-06 | Thiếu `appointmentId` | Chưa ghi nhận status code/body trong bản tổng hợp này. | Đối chiếu trường bắt buộc với `PrescriptionRequest` và hợp đồng API. |
-| POST-07 | Thiếu medication | Chưa ghi nhận status code/body trong bản tổng hợp này. | Xác minh validation cho thông tin thuốc. |
-| POST-08 | Thiếu dosage | Chưa ghi nhận status code/body trong bản tổng hợp này. | Xác minh validation cho liều dùng. |
-| POST-09 | Thiếu frequency | Chưa ghi nhận status code/body trong bản tổng hợp này. | Xác minh validation cho tần suất dùng thuốc. |
-| POST-10 | Thiếu instructions | Chưa ghi nhận status code/body trong bản tổng hợp này. | Xác minh trường này có bắt buộc theo yêu cầu/API hay không. |
-| POST-11 | Duration không hợp lệ | Chưa ghi nhận status code/body trong bản tổng hợp này. | Đối chiếu với quy tắc hợp lệ của thời lượng điều trị. |
-| POST-12 | Không có token | Chưa ghi nhận status code/body trong bản tổng hợp này. | Xác minh theo cấu hình bảo mật thực tế. |
-| POST-13 | Token không hợp lệ | Chưa ghi nhận status code/body trong bản tổng hợp này. | Xác minh theo yêu cầu xác thực và phân quyền. |
+| POST-BVA-01 | `POST /api/doctor/prescriptions?doctorId=1`; body hợp lệ ở trên; bác sĩ, bệnh nhân và lịch hẹn tồn tại | `200 OK`; tạo đơn thuốc, response có dữ liệu đơn thuốc mới | V1, V2, V3, V4, V5, V6, B1, B3, B4 |
+| POST-BVA-02 | Cùng request hợp lệ nhưng bỏ `duration` và `instructions` | Dự kiến `200 OK`; DTO không đánh dấu hai trường này là bắt buộc | V7, V8, B9 |
+| POST-BVA-03 | Gửi lần lượt `medication=""`, `medication="   "` | Validation từ chối vì `@NotBlank`; dự kiến `400 Bad Request` | X8 |
+| POST-BVA-04 | Gửi lần lượt `dosage=""`, `dosage="   "` | Validation từ chối vì `@NotBlank`; dự kiến `400 Bad Request` | X9 |
+| POST-BVA-05 | Gửi lần lượt `frequency=""`, `frequency="   "` | Validation từ chối vì `@NotBlank`; dự kiến `400 Bad Request` | X10 |
+| POST-BVA-06 | Bỏ `patientId` khỏi body hoặc đặt `"patientId": null` | Validation từ chối vì `@NotNull`; dự kiến `400 Bad Request` | X4 |
+| POST-BVA-07 | Bỏ `appointmentId` khỏi body hoặc đặt `"appointmentId": null` | Validation từ chối vì `@NotNull`; dự kiến `400 Bad Request` | X6 |
+| POST-BVA-08 | Body hợp lệ nhưng `patientId=999999` không tồn tại | Service không tìm thấy bệnh nhân; dự kiến `404 Not Found` theo xử lý `ResourceNotFoundException` | X5 |
+| POST-BVA-09 | Body hợp lệ nhưng `appointmentId=999999` không tồn tại | Service không tìm thấy lịch hẹn; dự kiến `404 Not Found` | X7 |
+| POST-BVA-10 | `doctorId=999999` với body hợp lệ | Service không tìm thấy bác sĩ; dự kiến `404 Not Found` | X3 |
+| POST-BVA-11 | Bỏ query parameter `doctorId` | Request bị từ chối do thiếu tham số bắt buộc; ghi status/body thực tế | X1 |
+| POST-BVA-12 | Gửi `doctorId=abc` | Request bị từ chối do không bind được sang `Long`; dự kiến `400 Bad Request` | X2 |
+| POST-BVA-13 | Body hợp lệ, lần lượt đặt `duration` là `null`, `0`, `1` | DTO không có validation min/max cho `duration`; ghi nhận request có được tạo hay không. Không tự kết luận `0` là hợp lệ theo nghiệp vụ | B8 |
+| POST-BVA-14 | Body hợp lệ nhưng `doctorId=0` hoặc `doctorId=-1` | ID không có validation dương ở controller; service sẽ tìm bác sĩ theo ID và dự kiến trả `404 Not Found` nếu không tồn tại | B2 |
+| POST-BVA-15 | Body JSON sai cú pháp, ví dụ `{ "patientId": 1,` | Request bị từ chối khi parse JSON; dự kiến `400 Bad Request` | X11 |
+| POST-BVA-16 | `doctorId=9223372036854775808` | Query vượt miền `Long`; request bị từ chối khi bind tham số | X12 |
+| POST-BVA-17 | Body hợp lệ nhưng `patientId=0` hoặc `patientId=-1` | Không có validation dương cho ID trong DTO; dự kiến `404 Not Found` nếu không có bệnh nhân tương ứng | B3 |
+| POST-BVA-18 | Body hợp lệ nhưng `appointmentId=0` hoặc `appointmentId=-1` | Không có validation dương cho ID trong DTO; dự kiến `404 Not Found` nếu không có lịch hẹn tương ứng | B4 |
+| POST-BVA-19 | Body hợp lệ; lần lượt dùng `medication="A"`, `dosage="1"`, `frequency="1"` | Các chuỗi 1 ký tự không rỗng; validation `@NotBlank` cho phép qua bước kiểm tra này. Kết quả cuối phụ thuộc dữ liệu và quy tắc nghiệp vụ khác | B5, B6, B7 |
 
-### 4.1. Tổng kết API POST
+## 5. Tiền điều kiện chạy test
 
-- **Số trường hợp có ảnh bằng chứng:** 13.
-- Các tên ảnh cho thấy phạm vi gồm tạo đơn thuốc, dữ liệu bệnh nhân/lịch hẹn không tồn tại, body/field đầu vào và xác thực.
-- Cần bổ sung status code, response thực tế và nhận xét sau khi mở từng ảnh Postman.
-- Phân biệt JSON không hợp lệ với JSON hợp lệ nhưng thiếu trường hoặc sai kiểu dữ liệu.
-- Chỉ xác nhận lỗi sau khi đối chiếu hợp đồng API, DTO/validation và quy tắc nghiệp vụ.
+- Dùng môi trường test và token hợp lệ có role `DOCTOR`; controller có `@PreAuthorize("hasRole('DOCTOR')")`.
+- Chuẩn bị bác sĩ, bệnh nhân và lịch hẹn tồn tại; dùng ID đúng theo dữ liệu trong database thay vì mặc định rằng ID `1` luôn tồn tại.
+- Với POST, dùng body hợp lệ làm dữ liệu nền và chỉ thay đổi trường đang kiểm tra để kết quả dễ phân tích.
+- Với các test tạo đơn thuốc thành công, kiểm tra database hoặc GET tương ứng để xác nhận bản ghi đã được tạo; tránh dùng lại dữ liệu nếu điều đó gây trùng lặp ngoài ý muốn.
+- Ghi lại **status code, response body, kết quả thực tế và ảnh Postman** cho mỗi trường hợp.
+- Các dòng ghi “gửi lần lượt” là nhiều request riêng biệt, mỗi request chỉ thay đổi giá trị được nêu.
 
-## 5. Vấn đề cần xác minh
+## 6. Căn cứ mã nguồn
 
-### Issue 1 — Xử lý query parameter `doctorId`
+- `backend/src/main/java/com/hospital/management/controller/DoctorController.java`
+- `backend/src/main/java/com/hospital/management/dto/PrescriptionRequest.java`
+- `backend/src/main/java/com/hospital/management/service/MedicalRecordService.java`
+- `backend/src/main/java/com/hospital/management/service/PrescriptionService.java`
+- `backend/src/main/java/com/hospital/management/repository/MedicalRecordRepository.java`
+- `backend/src/main/java/com/hospital/management/repository/PrescriptionRepository.java`
 
-- **Test case liên quan:** GET-02 đến GET-06, tùy kết quả thực tế.
-- **Kết quả quan sát:** Bổ sung status code và response từ Postman.
-- **Kết quả mong đợi:** Đối chiếu tài liệu API, yêu cầu nghiệp vụ hoặc quy ước lỗi của dự án.
-- **Nhận định:** Nếu chưa đủ căn cứ, ghi “cần xác minh”, không tự kết luận bug.
+## 7. Trạng thái và bàn giao
 
-### Issue 2 — Validation của `PrescriptionRequest`
+- **Trạng thái Jira:** `In Review` — chờ trưởng nhóm kiểm tra.
+- **GitHub path đề xuất:** `docs/api-review/hai-bang/doctor-medical-records-prescriptions-bva-test-cases.md`
+- **GitHub branch:** cập nhật theo branch/task Jira của nhóm.
+- **Commit / Pull Request:** bổ sung link sau khi commit, push và tạo PR (nếu nhóm sử dụng PR).
 
-- **Test case liên quan:** POST-04 đến POST-11.
-- **Kết quả quan sát:** Bổ sung status code và response thực tế.
-- **Kết quả mong đợi:** Đối chiếu các trường bắt buộc và quy tắc nghiệp vụ của đơn thuốc.
-- **Nhận định:** Phân biệt JSON không hợp lệ với JSON hợp lệ nhưng thiếu trường/sai kiểu dữ liệu.
+## 8. Tiêu chí nghiệm thu
 
-### Issue 3 — Xác thực và phân quyền
-
-- **Test case liên quan:** GET-07, GET-08, POST-12 và POST-13.
-- **Kết quả quan sát:** Bổ sung status code và response thực tế cho từng trường hợp.
-- **Nhận định:** Kiểm tra token và quyền truy cập theo cấu hình thực tế; không kết luận lỗi phân quyền chỉ dựa trên tên ảnh.
-
-## 6. Bằng chứng Postman
-
-> Các liên kết ảnh dưới đây dùng đường dẫn tương đối `evidence/<tên-file>.png`. Để hiển thị đúng trên GitHub, đặt file báo cáo tại `docs/api-review/hai-bang/` và các ảnh tại `docs/api-review/hai-bang/evidence/`. Phần mở rộng `.png` được thêm theo cột Type hiển thị là PNG File trong Windows.
-
-### 6.1. API GET `/api/doctor/medical-records`
-
-**GET-01 — `doctorId=1`**
-
-![GET-01 doctorId=1](evidence/get-01-doctorId-1.png)
-
-**GET-02 — `doctorId=99999`**
-
-![GET-02 doctorId=99999](evidence/get-02-doctorId-99999.png)
-
-**GET-03 — `doctorId=abc`**
-
-![GET-03 doctorId abc](evidence/get-03-doctorId-abc.png)
-
-**GET-04 — Thiếu `doctorId`**
-
-![GET-04 thiếu doctorId](evidence/get-04-missing-doctorId.png)
-
-**GET-05 — `doctorId` âm**
-
-![GET-05 doctorId âm](evidence/get-05-doctorId-negative.png)
-
-**GET-06 — `doctorId=0`**
-
-![GET-06 doctorId 0](evidence/get-06-doctorId-0.png)
-
-**GET-07 — Không có token**
-
-![GET-07 không có token](evidence/get-07-no-token.png)
-
-**GET-08 — Token không hợp lệ**
-
-![GET-08 token không hợp lệ](evidence/get-08-invalid-token.png)
-
-### 6.2. API POST `/api/doctor/prescriptions`
-
-**POST-01 — Thành công**
-
-![POST-01 success](evidence/post-01-success.png)
-
-**POST-02 — Không tìm thấy bệnh nhân**
-
-![POST-02 patient not found](evidence/post-02-patient-not-found.png)
-
-**POST-03 — Không tìm thấy lịch hẹn**
-
-![POST-03 appointment not found](evidence/post-03-appointment-not-found.png)
-
-**POST-04 — JSON không hợp lệ**
-
-![POST-04 invalid JSON](evidence/post-04-invalid-json.png)
-
-**POST-05 — Thiếu `patientId`**
-
-![POST-05 thiếu patientId](evidence/post-05-missing-patientid.png)
-
-**POST-06 — Thiếu `appointmentId`**
-
-![POST-06 thiếu appointmentId](evidence/post-06-missing-appointmentid.png)
-
-**POST-07 — Thiếu medication**
-
-![POST-07 thiếu medication](evidence/post-07-missing-medication.png)
-
-**POST-08 — Thiếu dosage**
-
-![POST-08 thiếu dosage](evidence/post-08-missing-dosage.png)
-
-**POST-09 — Thiếu frequency**
-
-![POST-09 thiếu frequency](evidence/post-09-missing-frequency.png)
-
-**POST-10 — Thiếu instructions**
-
-![POST-10 thiếu instructions](evidence/post-10-missing-instructions.png)
-
-**POST-11 — Duration không hợp lệ**
-
-![POST-11 invalid duration](evidence/post-11-invalid-duration.png)
-
-**POST-12 — Không có token**
-
-![POST-12 không có token](evidence/post-12-no-token.png)
-
-**POST-13 — Token không hợp lệ**
-
-![POST-13 token không hợp lệ](evidence/post-13-invalid-token.png)
-
-## 7. Liên kết công việc
-
-- **Jira task:** [Bổ sung link task Jira]
-- **GitHub branch:** [Bổ sung tên nhánh cá nhân]
-- **GitHub commit:** [Bổ sung link commit sau khi commit và push]
-- **Pull Request:** [Bổ sung link PR nếu nhóm sử dụng PR]
-
-## 8. Kết luận
-
-- Đã lập báo cáo cho **2 API**, gồm **8 trường hợp GET** và **13 trường hợp POST** theo danh sách ảnh bằng chứng được cung cấp.
-- Các đường dẫn ảnh được viết tương đối từ file báo cáo tới thư mục `evidence/`.
-- Cần điền status code và response từ từng ảnh Postman trước khi gửi leader review.
-- Đây là báo cáo rà soát ban đầu; các bất thường chỉ được xác nhận là bug sau khi đối chiếu yêu cầu nghiệp vụ và/hoặc mã nguồn.
-- **Trạng thái leader review:** Chờ leader review/xác nhận.
+- Có bảng điều kiện test và phân vùng hợp lệ/không hợp lệ cho cả hai API.
+- Có test case hợp lệ, không hợp lệ và các giá trị biên quan trọng.
+- Mỗi test case ghi rõ input, expected outcome và tag điều kiện được bao phủ.
+- Phân biệt rõ kết quả dự kiến dựa trên mã nguồn với kết quả thực tế cần xác minh khi chạy Postman.
+- File được lưu đúng thư mục và push lên GitHub để leader review.

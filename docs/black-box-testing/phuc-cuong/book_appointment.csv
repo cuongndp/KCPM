@@ -1,0 +1,17 @@
+caseId,caseName,patientQuery,doctorId,departmentId,dateMode,timeOffsetSeconds,fixedAppointmentDateTime,reason,notes,expectedStatus,expectedBodyKind,expectedBodyContains,epTags,bvaTags,preconditions
+TC-POST-001,Đặt lịch hợp lệ nominal,?patientId=1,1,1,offset,86400,,Khám tổng quát,,200,appointment_scheduled,,V1;V2;V3;V4;V5;V6;V7,B3,"Patient 1 tồn tại; doctor 1 khả dụng thuộc khoa 1; chọn slot chưa bị đặt"
+TC-POST-002,Thời gian trước hiện tại một giây,?patientId=1,1,1,offset,-1,,Khám tổng quát,,400,any,,V1;V2;V3;V4;X11,,Các fixture khác hợp lệ; datetime được sinh theo giờ Asia/Ho_Chi_Minh
+TC-POST-003,Thời gian đúng ngưỡng hiện tại,?patientId=1,1,1,offset,0,,Khám tổng quát,,400,any,,V1;V2;V3;V4;X11,B1,Các fixture khác hợp lệ; điều kiện backend yêu cầu datetime lớn hơn now
+TC-POST-004,Thời gian sau hiện tại một giây,?patientId=1,3,1,offset,1,,Khám tổng quát,,200,appointment_scheduled,,V1;V2;V3;V4;V5;V6,B2,"Doctor 3 khả dụng thuộc khoa 1; slot chưa bị đặt; chạy ngay trên môi trường local để giảm trễ"
+TC-POST-005,Thiếu patientId,,1,1,offset,86400,,Khám tổng quát,,400,any,,X1,,Để patientQuery trống; các trường body còn lại hợp lệ
+TC-POST-006,patientId sai kiểu,?patientId=abc,1,1,offset,86400,,Khám tổng quát,,400,any,,X1,,Các trường body còn lại hợp lệ
+TC-POST-007,patientId không tồn tại,?patientId=999999,1,1,offset,86400,,Khám tổng quát,,404,any,,X2,,ID bệnh nhân 999999 không tồn tại
+TC-POST-008,doctorId null,?patientId=1,null,1,offset,86400,,Khám tổng quát,,400,any,,X3,,Patient 1 tồn tại; department 1 tồn tại và hoạt động
+TC-POST-009,doctorId không tồn tại,?patientId=1,999999,1,offset,86400,,Khám tổng quát,,404,any,,X4,,Patient 1 tồn tại; department 1 hoạt động
+TC-POST-010,Bác sĩ tồn tại nhưng không khả dụng,?patientId=1,4,1,offset,86400,,Khám tổng quát,,500,any,,X5,,Tạo hoặc cấu hình doctor 4 tồn tại nhưng available=false và thuộc khoa 1; mã nguồn hiện trả HTTP 500
+TC-POST-011,departmentId null,?patientId=1,1,null,offset,86400,,Khám tổng quát,,400,any,,X6,,Patient 1 và doctor 1 tồn tại
+TC-POST-012,Khoa không tồn tại,?patientId=1,1,999999,offset,86400,,Khám tổng quát,,404,any,,X7,,Patient 1 và doctor 1 tồn tại
+TC-POST-014,Bác sĩ không thuộc khoa đã chọn,?patientId=1,1,2,offset,86400,,Khám tổng quát,,400,any,,V1;V2;V3;X9,,Doctor 1 thuộc khoa 1; khoa 2 tồn tại và đang hoạt động
+TC-POST-015,appointmentDateTime rỗng,?patientId=1,1,1,empty,,,Khám tổng quát,,400,any,,V1;V2;V3;X10,,Các fixture khác hợp lệ; collection gửi datetime rỗng
+TC-POST-016,appointmentDateTime sai định dạng,?patientId=1,1,1,invalid,,,Khám tổng quát,,400,any,,V1;V2;V3;X10,,Các fixture khác hợp lệ; collection gửi not-a-date
+TC-POST-017,Slot bác sĩ đã bị đặt,?patientId=1,1,1,fixed,,2099-12-31T23:59:59,Khám tổng quát,,500,any,,V1;V2;V3;V4;V5;X12,,Tạo lịch chưa hủy của doctor 1 đúng slot 2099-12-31T23:59:59; mã nguồn hiện trả HTTP 500

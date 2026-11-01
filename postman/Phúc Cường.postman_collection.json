@@ -1,10 +1,10 @@
 {
   "info": {
-    "_postman_id": "06a65d1d-c4ba-4953-9110-ffc59438b8d4",
+    "_postman_id": "13919a75-d4bc-477b-a7d2-6213254304c4",
     "name": "Phúc Cường",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-    "_exporter_id": "46953631",
-    "_collection_link": "https://go.postman.co/collection/58629851-06a65d1d-c4ba-4953-9110-ffc59438b8d4?source=collection_link"
+    "_exporter_id": "59371956",
+    "_collection_link": "https://go.postman.co/collection/59371956-13919a75-d4bc-477b-a7d2-6213254304c4?source=collection_link"
   },
   "item": [
     {
@@ -23,7 +23,7 @@
         "method": "GET",
         "header": [],
         "url": {
-          "raw": "{{baseUrl}}/api/patient/doctors/available",
+          "raw": "{{baseUrl}}/api/patient/doctors/available{{departmentQuery}}",
           "host": [
             "{{baseUrl}}"
           ],
@@ -31,7 +31,7 @@
             "api",
             "patient",
             "doctors",
-            "available"
+            "available{{departmentQuery}}"
           ]
         },
         "description": "Mục đích  \nLấy danh sách bác sĩ đang nhận khám.\n\nMethod  \nGET\n\nURL  \n{{baseUrl}}/api/patient/doctors/available\n\nXác thực  \nBearer Token của tài khoản có role PATIENT.\n\nQuery Params  \ndepartmentId (không bắt buộc): ID khoa muốn lọc.  \nNếu không truyền, API lấy bác sĩ khả dụng ở các khoa.  \nVí dụ: departmentId = 2\n\nRequest Body  \nKhông có.\n\nResponse thành công  \nHTTP 200 OK  \nTrả về mảng Doctor. Mỗi bác sĩ có thể gồm:\n\n- id: ID hồ sơ bác sĩ\n    \n- user: thông tin tài khoản bác sĩ (id, username, email, firstName, lastName, phoneNumber, role, active...)\n    \n- department: thông tin khoa (id, name, description, active...)\n    \n- specialization: chuyên môn\n    \n- qualification: bằng cấp\n    \n- experience: số năm kinh nghiệm\n    \n- available: trạng thái nhận khám\n    \n- consultationFee: phí khám\n    \n- createdAt, updatedAt: thời điểm tạo/cập nhật\n    \n\nVí dụ response:  \n\\[  \n{  \n\"id\": 2,  \n\"user\": {  \n\"id\": 5,  \n\"username\": \"bacsitim\",  \n\"firstName\": \"Minh\",  \n\"lastName\": \"An\",  \n\"role\": \"DOCTOR\",  \n\"active\": true  \n},  \n\"department\": {  \n\"id\": 2,  \n\"name\": \"Tim mạch\",  \n\"active\": true  \n},  \n\"specialization\": \"Tim mạch\",  \n\"qualification\": \"Bác sĩ chuyên khoa I\",  \n\"experience\": 8,  \n\"available\": true,  \n\"consultationFee\": 0  \n}  \n\\]\n\nNếu chưa có bác sĩ khả dụng, response là \\[\\]."
@@ -121,7 +121,7 @@
           "bearer": [
             {
               "key": "token",
-              "value": "{{token}}",
+              "value": "{{PATIENT_TOKEN}}",
               "type": "string"
             }
           ]
@@ -129,20 +129,14 @@
         "method": "GET",
         "header": [],
         "url": {
-          "raw": "{{baseUrl}}/api/patient/appointments?patientId=1",
+          "raw": "{{baseUrl}}/api/patient/appointments{{patientQuery}}",
           "host": [
             "{{baseUrl}}"
           ],
           "path": [
             "api",
             "patient",
-            "appointments"
-          ],
-          "query": [
-            {
-              "key": "patientId",
-              "value": "1"
-            }
+            "appointments{{patientQuery}}"
           ]
         },
         "description": "Mục đích  \nLấy danh sách lịch hẹn theo ID hồ sơ bệnh nhân.\n\nMethod  \nGET\n\nURL  \n{{baseUrl}}/api/patient/appointments\n\nXác thực  \nBearer Token của tài khoản có role PATIENT.\n\nQuery Params  \npatientId (bắt buộc): ID hồ sơ bệnh nhân, không phải userId.  \nLấy giá trị id từ API GET /api/patient/profile?userId={{userId}}.\n\nRequest Body  \nKhông có.\n\nResponse thành công  \nHTTP 200 OK  \nTrả về mảng Appointment. Mỗi phần tử có:\n\n- id: ID lịch hẹn\n    \n- patient: thông tin bệnh nhân\n    \n- doctor: thông tin bác sĩ và khoa\n    \n- appointmentDateTime: ngày giờ khám, dạng YYYY-MM-DDTHH:mm:ss\n    \n- status: SCHEDULED, CONFIRMED, COMPLETED, CANCELLED hoặc NO_SHOW\n    \n- reason: lý do khám\n    \n- notes: ghi chú\n    \n- reminderSent: trạng thái đã gửi nhắc lịch\n    \n- followUpRequired: có yêu cầu tái khám hay không\n    \n- createdAt, updatedAt: thời điểm tạo/cập nhật\n    \n\nVí dụ response:  \n\\[  \n{  \n\"id\": 10,  \n\"appointmentDateTime\": \"2026-10-10T09:00:00\",  \n\"status\": \"CONFIRMED\",  \n\"reason\": \"Khám định kỳ\",  \n\"notes\": \"Ghi chú mẫu\",  \n\"reminderSent\": false,  \n\"followUpRequired\": false  \n}  \n\\]\n\nNếu bệnh nhân chưa có lịch hẹn, response là \\[\\]."
@@ -237,7 +231,7 @@
           "bearer": [
             {
               "key": "token",
-              "value": "{{token}}",
+              "value": "{{PATIENT_TOKEN}}",
               "type": "string"
             }
           ]
@@ -246,7 +240,7 @@
         "header": [],
         "body": {
           "mode": "raw",
-          "raw": "{\r\n  \"departmentId\": 1,\r\n  \"doctorId\": 2,\r\n  \"appointmentDateTime\": \"2026-10-10T09:00:00\",\r\n  \"reason\": \"Khám sức khỏe định kỳ\",\r\n  \"notes\": \"Ghi chú mẫu\"\r\n}",
+          "raw": "{\r\n  \"departmentId\": {{departmentId}},\r\n  \"doctorId\": {{doctorId}},\r\n  \"appointmentDateTime\": \"{{resolvedAppointmentDateTime}}\",\r\n  \"reason\": \"{{reason}}\",\r\n  \"notes\": \"{{notes}}\"\r\n}",
           "options": {
             "raw": {
               "language": "json"
@@ -254,20 +248,14 @@
           }
         },
         "url": {
-          "raw": "{{baseUrl}}/api/patient/appointments?patientId=1",
+          "raw": "{{baseUrl}}/api/patient/appointments{{patientQuery}}",
           "host": [
             "{{baseUrl}}"
           ],
           "path": [
             "api",
             "patient",
-            "appointments"
-          ],
-          "query": [
-            {
-              "key": "patientId",
-              "value": "1"
-            }
+            "appointments{{patientQuery}}"
           ]
         },
         "description": "Mục đích  \nTạo lịch hẹn khám cho bệnh nhân với bác sĩ thuộc khoa đã chọn.\n\nMethod  \nPOST\n\nURL  \n{{baseUrl}}/api/patient/appointments\n\nXác thực  \nBearer Token của tài khoản có role PATIENT.\n\nQuery Params  \npatientId (bắt buộc): ID hồ sơ bệnh nhân, không phải userId.\n\nHeaders  \nContent-Type: application/json\n\nRequest Body  \nChọn Body > raw > JSON.\n\nCác trường:\n\n- departmentId (bắt buộc): ID khoa.\n    \n- doctorId (bắt buộc): ID hồ sơ bác sĩ.\n    \n- appointmentDateTime (bắt buộc): giờ khám định dạng YYYY-MM-DDTHH:mm:ss; phải ở tương lai.\n    \n- reason: lý do khám.\n    \n- notes: ghi chú thêm.\n    \n\nVí dụ:  \n{  \n\"departmentId\": 2,  \n\"doctorId\": 3,  \n\"appointmentDateTime\": \"2026-10-10T09:00:00\",  \n\"reason\": \"Khám sức khỏe định kỳ\",  \n\"notes\": \"Ghi chú mẫu\"  \n}\n\nQuy tắc xử lý  \nBackend kiểm tra khoa tồn tại và đang hoạt động, bệnh nhân/bác sĩ tồn tại, bác sĩ đang khả dụng và thuộc khoa đã chọn, thời gian ở tương lai, đồng thời kiểm tra lịch bác sĩ bị trùng.\n\nResponse thành công  \nHTTP 200 OK  \nTrả về object Appointment vừa tạo, có id mới và status ban đầu là SCHEDULED."
@@ -485,20 +473,14 @@
         "method": "GET",
         "header": [],
         "url": {
-          "raw": "{{baseUrl}}/api/patient/medical-history?patientId=1",
+          "raw": "{{baseUrl}}/api/patient/medical-history{{patientQuery}}",
           "host": [
             "{{baseUrl}}"
           ],
           "path": [
             "api",
             "patient",
-            "medical-history"
-          ],
-          "query": [
-            {
-              "key": "patientId",
-              "value": "1"
-            }
+            "medical-history{{patientQuery}}"
           ]
         },
         "description": "Mục đích  \nLấy danh sách hồ sơ khám theo ID hồ sơ bệnh nhân.\n\nMethod  \nGET\n\nURL  \n{{baseUrl}}/api/patient/medical-history\n\nXác thực  \nBearer Token của tài khoản có role PATIENT.\n\nQuery Params  \npatientId (bắt buộc): ID hồ sơ bệnh nhân, không phải userId.\n\nRequest Body  \nKhông có.\n\nResponse thành công  \nHTTP 200 OK  \nTrả về mảng MedicalRecord. Mỗi hồ sơ có:\n\n- id: ID hồ sơ khám\n    \n- patient: thông tin bệnh nhân\n    \n- doctor: thông tin bác sĩ\n    \n- diagnosis: chẩn đoán\n    \n- symptoms: triệu chứng\n    \n- consultationNotes: ghi chú buổi khám\n    \n- labResults: kết quả xét nghiệm\n    \n- recommendations: khuyến nghị\n    \n- createdAt, updatedAt: thời điểm tạo/cập nhật\n    \n\nVí dụ:  \n\\[  \n{  \n\"id\": 4,  \n\"diagnosis\": \"Huyết áp cần theo dõi\",  \n\"symptoms\": \"Đôi lúc chóng mặt nhẹ\",  \n\"consultationNotes\": \"Tình trạng ổn định\",  \n\"labResults\": \"Huyết áp trong giới hạn theo dõi\",  \n\"recommendations\": \"Đo huyết áp mỗi ngày và tái khám đúng hẹn\"  \n}  \n\\]\n\nNếu chưa có hồ sơ khám, response là \\[\\]."
@@ -593,7 +575,7 @@
           "bearer": [
             {
               "key": "token",
-              "value": "{{token}}",
+              "value": "{{PATIENT_TOKEN}}",
               "type": "string"
             }
           ]
@@ -601,20 +583,14 @@
         "method": "GET",
         "header": [],
         "url": {
-          "raw": "{{baseUrl}}/api/patient/prescriptions?patientId=1",
+          "raw": "{{baseUrl}}/api/patient/prescriptions{{patientQuery}}",
           "host": [
             "{{baseUrl}}"
           ],
           "path": [
             "api",
             "patient",
-            "prescriptions"
-          ],
-          "query": [
-            {
-              "key": "patientId",
-              "value": "1"
-            }
+            "prescriptions{{patientQuery}}"
           ]
         },
         "description": "Mục đích  \nLấy danh sách đơn thuốc theo ID hồ sơ bệnh nhân.\n\nMethod  \nGET\n\nURL  \n{{baseUrl}}/api/patient/prescriptions\n\nXác thực  \nBearer Token của tài khoản có role PATIENT.\n\nQuery Params  \npatientId (bắt buộc): ID hồ sơ bệnh nhân, không phải userId.\n\nRequest Body  \nKhông có.\n\nResponse thành công  \nHTTP 200 OK  \nTrả về mảng Prescription. Mỗi đơn thuốc có:\n\n- id: ID đơn thuốc\n    \n- patient: thông tin bệnh nhân\n    \n- doctor: thông tin bác sĩ\n    \n- appointment: lịch khám liên quan, có thể null\n    \n- medication: tên thuốc\n    \n- dosage: liều lượng\n    \n- frequency: tần suất dùng\n    \n- duration: số ngày dùng, có thể null\n    \n- instructions: hướng dẫn dùng thuốc\n    \n- notificationSent: trạng thái gửi thông báo\n    \n- createdAt, updatedAt: thời điểm tạo/cập nhật\n    \n\nVí dụ:  \n\\[  \n{  \n\"id\": 3,  \n\"medication\": \"Thuốc hỗ trợ điều trị\",  \n\"dosage\": \"Một viên\",  \n\"frequency\": \"Mỗi ngày một lần\",  \n\"duration\": 7,  \n\"instructions\": \"Dùng sau bữa sáng theo hướng dẫn của bác sĩ\",  \n\"notificationSent\": false  \n}  \n\\]\n\nNếu chưa có đơn thuốc, response là \\[\\]."
@@ -742,6 +718,53 @@
       }
     ]
   },
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "const mode = pm.iterationData.get('dateMode');",
+          "if (mode === 'offset') {",
+          "  const offset = Number(pm.iterationData.get('timeOffsetSeconds'));",
+          "  if (!Number.isFinite(offset)) throw new Error('timeOffsetSeconds must be numeric');",
+          "  const format = (date) => Object.fromEntries(new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Ho_Chi_Minh', year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit', hourCycle: 'h23' }).formatToParts(date).filter(part => part.type !== 'literal').map(part => [part.type, part.value]));",
+          "  const current = new Date();",
+          "  const now = format(current);",
+          "  const base = Date.UTC(Number(now.year), Number(now.month) - 1, Number(now.day), Number(now.hour), Number(now.minute), Number(now.second));",
+          "  const target = new Date(base + offset * 1000 + current.getUTCMilliseconds());",
+          "  const pad = (value) => String(value).padStart(2, '0');",
+          "  pm.variables.set('resolvedAppointmentDateTime', `${target.getUTCFullYear()}-${pad(target.getUTCMonth() + 1)}-${pad(target.getUTCDate())}T${pad(target.getUTCHours())}:${pad(target.getUTCMinutes())}:${pad(target.getUTCSeconds())}`);",
+          "} else if (mode === 'invalid') {",
+          "  pm.variables.set('resolvedAppointmentDateTime', 'not-a-date');",
+          "} else if (mode === 'empty') {",
+          "  pm.variables.set('resolvedAppointmentDateTime', '');",
+          "} else if (mode === 'fixed') {",
+          "  pm.variables.set('resolvedAppointmentDateTime', pm.iterationData.get('fixedAppointmentDateTime'));",
+          "}"
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "const expectedStatusValue = pm.iterationData.get('expectedStatus');",
+          "if (expectedStatusValue !== undefined && expectedStatusValue !== '') {",
+          "  const caseId = pm.iterationData.get('caseId') || 'manual request';",
+          "  const expectedStatus = Number(expectedStatusValue);",
+          "  pm.test(`${caseId}: HTTP status`, () => pm.response.to.have.status(expectedStatus));",
+          "  const bodyKind = pm.iterationData.get('expectedBodyKind');",
+          "  if (bodyKind === 'array_non_empty') pm.test(`${caseId}: non-empty response array`, () => pm.expect(pm.response.json()).to.be.an('array').that.is.not.empty);",
+          "  if (bodyKind === 'array_empty') pm.test(`${caseId}: empty response array`, () => pm.expect(pm.response.json()).to.deep.equal([]));",
+          "  if (bodyKind === 'appointment_scheduled') pm.test(`${caseId}: appointment is scheduled`, () => pm.expect(pm.response.json().status).to.equal('SCHEDULED'));",
+          "  if (bodyKind === 'text_contains') pm.test(`${caseId}: response text`, () => pm.expect(pm.response.text()).to.include(pm.iterationData.get('expectedBodyContains')));",
+          "}"
+        ]
+      }
+    }
+  ],
   "variable": [
     {
       "key": "token",
@@ -749,10 +772,34 @@
     },
     {
       "key": "departmentId",
-      "value": ""
+      "value": "1"
     },
     {
       "key": "PATIENT_TOKEN",
+      "value": ""
+    },
+    {
+      "key": "departmentQuery",
+      "value": ""
+    },
+    {
+      "key": "patientQuery",
+      "value": "?patientId=1"
+    },
+    {
+      "key": "doctorId",
+      "value": "2"
+    },
+    {
+      "key": "resolvedAppointmentDateTime",
+      "value": "2099-12-31T23:59:59"
+    },
+    {
+      "key": "reason",
+      "value": ""
+    },
+    {
+      "key": "notes",
       "value": ""
     }
   ]

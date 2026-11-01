@@ -1,0 +1,183 @@
+{
+	"id": "fd6966ff-0018-4dfd-82e8-0d6b1d0fa385",
+	"name": "Phúc Cường",
+	"timestamp": "2026-11-01T08:51:39.993Z",
+	"collection_id": "59371956-13919a75-d4bc-477b-a7d2-6213254304c4",
+	"folder_id": 0,
+	"environment_id": "59371956-21297581-6f48-4310-b77d-d5be594b141a",
+	"totalPass": 11,
+	"delay": 0,
+	"persist": true,
+	"status": "finished",
+	"startedAt": "2026-11-01T08:51:35.599Z",
+	"totalFail": 7,
+	"results": [
+		{
+			"id": "35511eaa-9e60-4b00-91f2-d08d63094034",
+			"name": "api/patient/appointments",
+			"url": "http://localhost:8080/api/patient/appointments?patientId=1",
+			"time": 47,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"TC-POST-017: HTTP status": false
+			},
+			"testPassFailCounts": {
+				"TC-POST-001: HTTP status": {
+					"pass": 1,
+					"fail": 0
+				},
+				"TC-POST-001: appointment is scheduled": {
+					"pass": 1,
+					"fail": 0
+				},
+				"TC-POST-002: HTTP status": {
+					"pass": 1,
+					"fail": 0
+				},
+				"TC-POST-003: HTTP status": {
+					"pass": 1,
+					"fail": 0
+				},
+				"TC-POST-004: HTTP status": {
+					"pass": 0,
+					"fail": 1
+				},
+				"TC-POST-004: appointment is scheduled": {
+					"pass": 0,
+					"fail": 1
+				},
+				"TC-POST-005: HTTP status": {
+					"pass": 0,
+					"fail": 1
+				},
+				"TC-POST-006: HTTP status": {
+					"pass": 0,
+					"fail": 1
+				},
+				"TC-POST-007: HTTP status": {
+					"pass": 1,
+					"fail": 0
+				},
+				"TC-POST-008: HTTP status": {
+					"pass": 1,
+					"fail": 0
+				},
+				"TC-POST-009: HTTP status": {
+					"pass": 1,
+					"fail": 0
+				},
+				"TC-POST-010: HTTP status": {
+					"pass": 0,
+					"fail": 1
+				},
+				"TC-POST-011: HTTP status": {
+					"pass": 1,
+					"fail": 0
+				},
+				"TC-POST-012: HTTP status": {
+					"pass": 1,
+					"fail": 0
+				},
+				"TC-POST-014: HTTP status": {
+					"pass": 1,
+					"fail": 0
+				},
+				"TC-POST-015: HTTP status": {
+					"pass": 1,
+					"fail": 0
+				},
+				"TC-POST-016: HTTP status": {
+					"pass": 0,
+					"fail": 1
+				},
+				"TC-POST-017: HTTP status": {
+					"pass": 0,
+					"fail": 1
+				}
+			},
+			"times": [
+				561,
+				47,
+				28,
+				28,
+				17,
+				18,
+				24,
+				32,
+				24,
+				28,
+				18,
+				19,
+				30,
+				20,
+				19,
+				47
+			],
+			"allTests": [
+				{
+					"TC-POST-001: HTTP status": true,
+					"TC-POST-001: appointment is scheduled": true
+				},
+				{
+					"TC-POST-002: HTTP status": true
+				},
+				{
+					"TC-POST-003: HTTP status": true
+				},
+				{
+					"TC-POST-004: HTTP status": false,
+					"TC-POST-004: appointment is scheduled": false
+				},
+				{
+					"TC-POST-005: HTTP status": false
+				},
+				{
+					"TC-POST-006: HTTP status": false
+				},
+				{
+					"TC-POST-007: HTTP status": true
+				},
+				{
+					"TC-POST-008: HTTP status": true
+				},
+				{
+					"TC-POST-009: HTTP status": true
+				},
+				{
+					"TC-POST-010: HTTP status": false
+				},
+				{
+					"TC-POST-011: HTTP status": true
+				},
+				{
+					"TC-POST-012: HTTP status": true
+				},
+				{
+					"TC-POST-014: HTTP status": true
+				},
+				{
+					"TC-POST-015: HTTP status": true
+				},
+				{
+					"TC-POST-016: HTTP status": false
+				},
+				{
+					"TC-POST-017: HTTP status": false
+				}
+			]
+		}
+	],
+	"count": 16,
+	"totalTime": 960,
+	"collection": {
+		"requests": [
+			{
+				"id": "35511eaa-9e60-4b00-91f2-d08d63094034",
+				"method": "POST"
+			}
+		]
+	}
+}

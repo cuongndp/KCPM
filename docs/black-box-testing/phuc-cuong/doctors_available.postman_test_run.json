@@ -1,0 +1,92 @@
+{
+	"id": "61d26fff-2752-47fa-aedd-dcf81f870526",
+	"name": "Phúc Cường Copy",
+	"timestamp": "2026-11-01T07:26:01.923Z",
+	"collection_id": "59371956-13919a75-d4bc-477b-a7d2-6213254304c4",
+	"folder_id": 0,
+	"environment_id": "59371956-21297581-6f48-4310-b77d-d5be594b141a",
+	"totalPass": 5,
+	"delay": 0,
+	"persist": true,
+	"status": "finished",
+	"startedAt": "2026-11-01T07:25:59.044Z",
+	"totalFail": 2,
+	"results": [
+		{
+			"id": "c118579a-de48-4aa9-a7cb-378bbebf67eb",
+			"name": "api/patient/doctors/available",
+			"url": "http://localhost:8080/api/patient/doctors/available",
+			"time": 22,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"TC-DOC-004: HTTP status": false
+			},
+			"testPassFailCounts": {
+				"TC-DOC-001: HTTP status": {
+					"pass": 1,
+					"fail": 0
+				},
+				"TC-DOC-001: non-empty response array": {
+					"pass": 1,
+					"fail": 0
+				},
+				"TC-DOC-002: HTTP status": {
+					"pass": 1,
+					"fail": 0
+				},
+				"TC-DOC-002: non-empty response array": {
+					"pass": 1,
+					"fail": 0
+				},
+				"TC-DOC-003: HTTP status": {
+					"pass": 1,
+					"fail": 0
+				},
+				"TC-DOC-003: empty response array": {
+					"pass": 0,
+					"fail": 1
+				},
+				"TC-DOC-004: HTTP status": {
+					"pass": 0,
+					"fail": 1
+				}
+			},
+			"times": [
+				340,
+				34,
+				23,
+				22
+			],
+			"allTests": [
+				{
+					"TC-DOC-001: HTTP status": true,
+					"TC-DOC-001: non-empty response array": true
+				},
+				{
+					"TC-DOC-002: HTTP status": true,
+					"TC-DOC-002: non-empty response array": true
+				},
+				{
+					"TC-DOC-003: HTTP status": true,
+					"TC-DOC-003: empty response array": false
+				},
+				{
+					"TC-DOC-004: HTTP status": false
+				}
+			]
+		}
+	],
+	"count": 4,
+	"totalTime": 419,
+	"collection": {
+		"requests": [
+			{
+				"id": "c118579a-de48-4aa9-a7cb-378bbebf67eb",
+				"method": "GET"
+			}
+		]
+	}
+}

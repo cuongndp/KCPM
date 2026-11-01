@@ -1,0 +1,87 @@
+{
+	"id": "fa4e4457-7038-45c4-afbf-845bcf370c36",
+	"name": "Phúc Cường",
+	"timestamp": "2026-11-01T08:19:50.472Z",
+	"collection_id": "59371956-13919a75-d4bc-477b-a7d2-6213254304c4",
+	"folder_id": 0,
+	"environment_id": "59371956-21297581-6f48-4310-b77d-d5be594b141a",
+	"totalPass": 3,
+	"delay": 0,
+	"persist": true,
+	"status": "finished",
+	"startedAt": "2026-11-01T08:19:47.923Z",
+	"totalFail": 3,
+	"results": [
+		{
+			"id": "abd33d41-e188-44db-91a2-b96604058f5a",
+			"name": "api/patient/medical-history",
+			"url": "http://localhost:8080/api/patient/medical-history?patientId=1%0A",
+			"time": 24,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"TC-HIST-004: HTTP status": false
+			},
+			"testPassFailCounts": {
+				"TC-HIST-001: HTTP status": {
+					"pass": 1,
+					"fail": 0
+				},
+				"TC-HIST-001: non-empty response array": {
+					"pass": 0,
+					"fail": 1
+				},
+				"TC-HIST-002: HTTP status": {
+					"pass": 1,
+					"fail": 0
+				},
+				"TC-HIST-002: empty response array": {
+					"pass": 1,
+					"fail": 0
+				},
+				"TC-HIST-003: HTTP status": {
+					"pass": 0,
+					"fail": 1
+				},
+				"TC-HIST-004: HTTP status": {
+					"pass": 0,
+					"fail": 1
+				}
+			},
+			"times": [
+				76,
+				25,
+				20,
+				24
+			],
+			"allTests": [
+				{
+					"TC-HIST-001: HTTP status": true,
+					"TC-HIST-001: non-empty response array": false
+				},
+				{
+					"TC-HIST-002: HTTP status": true,
+					"TC-HIST-002: empty response array": true
+				},
+				{
+					"TC-HIST-003: HTTP status": false
+				},
+				{
+					"TC-HIST-004: HTTP status": false
+				}
+			]
+		}
+	],
+	"count": 4,
+	"totalTime": 145,
+	"collection": {
+		"requests": [
+			{
+				"id": "abd33d41-e188-44db-91a2-b96604058f5a",
+				"method": "GET"
+			}
+		]
+	}
+}

@@ -1,0 +1,87 @@
+{
+	"id": "b8008994-276e-489a-8314-06f656dccc7c",
+	"name": "Phúc Cường",
+	"timestamp": "2026-11-01T08:55:19.052Z",
+	"collection_id": "59371956-13919a75-d4bc-477b-a7d2-6213254304c4",
+	"folder_id": 0,
+	"environment_id": "59371956-21297581-6f48-4310-b77d-d5be594b141a",
+	"totalPass": 4,
+	"delay": 0,
+	"persist": true,
+	"status": "finished",
+	"startedAt": "2026-11-01T08:55:16.531Z",
+	"totalFail": 2,
+	"results": [
+		{
+			"id": "679efea3-9057-4e38-9cf3-2e2755b9c818",
+			"name": "api/patient/appointments",
+			"url": "http://localhost:8080/api/patient/appointments?patientId=abc",
+			"time": 15,
+			"responseCode": {
+				"code": 500,
+				"name": "Internal Server Error"
+			},
+			"tests": {
+				"TC-GETAPP-004: HTTP status": false
+			},
+			"testPassFailCounts": {
+				"TC-GETAPP-001: HTTP status": {
+					"pass": 1,
+					"fail": 0
+				},
+				"TC-GETAPP-001: non-empty response array": {
+					"pass": 1,
+					"fail": 0
+				},
+				"TC-GETAPP-002: HTTP status": {
+					"pass": 1,
+					"fail": 0
+				},
+				"TC-GETAPP-002: empty response array": {
+					"pass": 1,
+					"fail": 0
+				},
+				"TC-GETAPP-003: HTTP status": {
+					"pass": 0,
+					"fail": 1
+				},
+				"TC-GETAPP-004: HTTP status": {
+					"pass": 0,
+					"fail": 1
+				}
+			},
+			"times": [
+				69,
+				22,
+				14,
+				15
+			],
+			"allTests": [
+				{
+					"TC-GETAPP-001: HTTP status": true,
+					"TC-GETAPP-001: non-empty response array": true
+				},
+				{
+					"TC-GETAPP-002: HTTP status": true,
+					"TC-GETAPP-002: empty response array": true
+				},
+				{
+					"TC-GETAPP-003: HTTP status": false
+				},
+				{
+					"TC-GETAPP-004: HTTP status": false
+				}
+			]
+		}
+	],
+	"count": 4,
+	"totalTime": 120,
+	"collection": {
+		"requests": [
+			{
+				"id": "679efea3-9057-4e38-9cf3-2e2755b9c818",
+				"method": "GET"
+			}
+		]
+	}
+}

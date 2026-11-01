@@ -1,0 +1,87 @@
+{
+	"id": "9f597d28-0079-4a13-be52-8597f0eef493",
+	"name": "Phúc Cường",
+	"timestamp": "2026-11-01T08:36:23.533Z",
+	"collection_id": "59371956-13919a75-d4bc-477b-a7d2-6213254304c4",
+	"folder_id": 0,
+	"environment_id": "59371956-21297581-6f48-4310-b77d-d5be594b141a",
+	"totalPass": 4,
+	"delay": 0,
+	"persist": true,
+	"status": "finished",
+	"startedAt": "2026-11-01T08:36:20.847Z",
+	"totalFail": 2,
+	"results": [
+		{
+			"id": "7cfc3129-4124-41b0-ae45-c0163689987f",
+			"name": "api/patient/prescriptions",
+			"url": "http://localhost:8080/api/patient/prescriptions?patientId=abc",
+			"time": 15,
+			"responseCode": {
+				"code": 500,
+				"name": "Internal Server Error"
+			},
+			"tests": {
+				"TC-PRES-004: HTTP status": false
+			},
+			"testPassFailCounts": {
+				"TC-PRES-001: HTTP status": {
+					"pass": 1,
+					"fail": 0
+				},
+				"TC-PRES-001: non-empty response array": {
+					"pass": 1,
+					"fail": 0
+				},
+				"TC-PRES-002: HTTP status": {
+					"pass": 1,
+					"fail": 0
+				},
+				"TC-PRES-002: empty response array": {
+					"pass": 1,
+					"fail": 0
+				},
+				"TC-PRES-003: HTTP status": {
+					"pass": 0,
+					"fail": 1
+				},
+				"TC-PRES-004: HTTP status": {
+					"pass": 0,
+					"fail": 1
+				}
+			},
+			"times": [
+				31,
+				27,
+				15,
+				15
+			],
+			"allTests": [
+				{
+					"TC-PRES-001: HTTP status": true,
+					"TC-PRES-001: non-empty response array": true
+				},
+				{
+					"TC-PRES-002: HTTP status": true,
+					"TC-PRES-002: empty response array": true
+				},
+				{
+					"TC-PRES-003: HTTP status": false
+				},
+				{
+					"TC-PRES-004: HTTP status": false
+				}
+			]
+		}
+	],
+	"count": 4,
+	"totalTime": 88,
+	"collection": {
+		"requests": [
+			{
+				"id": "7cfc3129-4124-41b0-ae45-c0163689987f",
+				"method": "GET"
+			}
+		]
+	}
+}

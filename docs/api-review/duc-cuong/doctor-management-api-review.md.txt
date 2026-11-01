@@ -1,0 +1,61 @@
+# Báo cáo rà soát API quản lý bác sĩ — Đức Cường — Tuần 03
+
+## 1. Thông tin chung
+- **Người thực hiện:** Đức Cường
+- **Công cụ:** Postman
+- **API rà soát:**
+  1. `GET /api/admin/doctors`
+  2. `POST /api/admin/doctors`
+- **Mục tiêu:** Rà soát phản hồi API, tham số đầu vào, body, headers, xác thực và các trường hợp dữ liệu phù hợp.
+- **Môi trường:** HMS Local
+- **Thời điểm thực hiện:** Tháng 10/2026
+
+---
+
+## 2. Kết quả kiểm thử — GET /api/admin/doctors
+| Test ID | Trường hợp | Status Code | Kết quả thực tế / Phản hồi |
+| :--- | :--- | :--- | :--- |
+| **GET-01** | Lấy danh sách bác sĩ với Token hợp lệ | 200 OK | Trả về danh sách mảng JSON chứa thông tin các bác sĩ thành công. |
+| **GET-02** | Không có token (No Auth) | 403 Forbidden | Hệ thống chặn quyền truy cập khi thiếu token xác thực. |
+
+### Bằng chứng Postman (GET):
+* **GET-01 (Valid Token):**  
+  `![GET-01](evidence/GET-001-valid-token.png.png)`
+* **GET-02 (No Token):**  
+  `![GET-02](evidence/GET-002-no-token.png.png)`
+
+---
+
+## 3. Kết quả kiểm thử — POST /api/admin/doctors
+| Test ID | Trường hợp | Status Code | Kết quả thực tế / Phản hồi |
+| :--- | :--- | :--- | :--- |
+| **POST-02** | Trùng tài khoản/hồ sơ đã tồn tại | 409 Conflict | Trả về thông báo: *"Tài khoản này đã có hồ sơ bác sĩ."* |
+| **POST-03** | Không có token | 403 Forbidden | Chặn yêu cầu tạo dữ liệu khi thiếu thông tin xác thực. |
+| **POST-04** | Thiếu trường bắt buộc trong Body | 403 / 400 | Yêu cầu không được phép hoặc thiếu dữ liệu validation. |
+
+### Bằng chứng Postman (POST):
+* **POST-02 (Existing Profile):**  
+  `![POST-02](evidence/POST-002-existing-doctor-profile.png.png)`
+* **POST-03 (No Token):**  
+  `![POST-03](evidence/POST-003-no-token.png.png)`
+* **POST-04 (Missing Field):**  
+  `![POST-04](evidence/POST-004-missing-required-field.png.png)`
+
+---
+
+## 4. Vấn đề cần xác minh
+- **Issue 1:** Hành vi xác thực của hệ thống trả về mã `403 Forbidden` thay vì `401 Unauthorized` khi thiếu token.
+- **Issue 2:** Phản hồi `409 Conflict` khi tạo trùng hồ sơ bác sĩ hoạt động chính xác theo đúng ràng buộc nghiệp vụ.
+
+---
+
+## 5. Liên kết công việc
+- **Jira task:** [Bổ sung link task Jira của bạn]
+- **GitHub branch:** [Điền tên nhánh của bạn]
+
+---
+
+## 6. Kết luận
+- Đã hoàn thành kiểm thử toàn diện cho 2 API quản lý bác sĩ (`GET` và `POST`).
+- Các minh chứng hình ảnh đã được lưu trữ đồng bộ trong thư mục `evidence/`.
+- **Trạng thái:** Chờ leader review và xác nhận.

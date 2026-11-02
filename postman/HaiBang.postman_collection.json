@@ -1,14 +1,25 @@
 {
   "info": {
-    "_postman_id": "08c6051a-8495-410f-96e7-5cba49a62851",
+    "_postman_id": "59497a7a-dc8f-4135-bb64-aca16eff1112",
     "name": "Hải Bằng",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-    "_exporter_id": "46953631",
-    "_collection_link": "https://go.postman.co/collection/46953631-08c6051a-8495-410f-96e7-5cba49a62851?source=collection_link"
+    "_exporter_id": "59397912",
+    "_collection_link": "https://go.postman.co/collection/59397912-59497a7a-dc8f-4135-bb64-aca16eff1112?source=collection_link"
   },
   "item": [
     {
       "name": "api/doctor/medical-records",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "const caseId = pm.iterationData.get(\"caseId\");\r\nconst expectedStatus = Number(pm.iterationData.get(\"expectedStatus\"));\r\n\r\npm.test(caseId + \" - Kiểm tra kết quả API\", function () {\r\n    pm.expect(pm.response.code).to.eql(expectedStatus);\r\n});"
+            ]
+          }
+        }
+      ],
       "request": {
         "auth": {
           "type": "bearer",
@@ -23,20 +34,14 @@
         "method": "GET",
         "header": [],
         "url": {
-          "raw": "{{baseUrl}}/api/doctor/medical-records?doctorId=2",
+          "raw": "{{baseUrl}}/api/doctor/medical-records{{queryString}}",
           "host": [
             "{{baseUrl}}"
           ],
           "path": [
             "api",
             "doctor",
-            "medical-records"
-          ],
-          "query": [
-            {
-              "key": "doctorId",
-              "value": "2"
-            }
+            "medical-records{{queryString}}"
           ]
         },
         "description": "Lấy danh sách hồ sơ bệnh án liên quan đến một bác sĩ cụ thể. Endpoint này được sử dụng bởi bác sĩ đã xác thực hoặc nhân viên quản trị để truy cập các hồ sơ bệnh án của bệnh nhân được liên kết với bác sĩ đó.\n\n**Tham số truy vấn (Query Parameters):**\n\n| Tham số | Kiểu dữ liệu | Bắt buộc | Mô tả |\n| --- | --- | --- | --- |\n| `doctorId` | integer | Có | Mã định danh duy nhất của bác sĩ cần lấy hồ sơ bệnh án. |\n\n**Trường hợp sử dụng:**\n\nSử dụng endpoint này khi bác sĩ cần xem tất cả hồ sơ bệnh án được giao cho họ — ví dụ: để xem lại lịch sử bệnh nhân, theo dõi quá trình điều trị, hoặc chuẩn bị cho các cuộc hẹn sắp tới"
@@ -125,6 +130,17 @@
     },
     {
       "name": "api/doctor/prescriptions",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "const caseId = pm.iterationData.get(\"caseId\");\r\nconst expectedStatus = Number(\r\n    pm.iterationData.get(\"expectedStatus\")\r\n);\r\n\r\npm.test(caseId + \" - Kiểm tra kết quả API\", function () {\r\n    pm.expect(pm.response.code).to.eql(expectedStatus);\r\n});"
+            ]
+          }
+        }
+      ],
       "request": {
         "auth": {
           "type": "bearer",
@@ -140,7 +156,7 @@
         "header": [],
         "body": {
           "mode": "raw",
-          "raw": "{\r\n    \"patientId\": 1,\r\n    \"appointmentId\": 1,\r\n    \"medication\": \"Paracetamol\",\r\n    \"dosage\": \"500mg\",\r\n    \"frequency\": \"2 times/day\",\r\n    \"duration\": 5,\r\n    \"instructions\": \"Take after meals\"\r\n}",
+          "raw": "{\r\n    \"patientId\": {{patientId}},\r\n    \"appointmentId\": {{appointmentId}},\r\n    \"medication\": \"{{medication}}\",\r\n    \"dosage\": \"{{dosage}}\",\r\n    \"frequency\": \"{{frequency}}\",\r\n    \"duration\": {{duration}},\r\n    \"instructions\": \"{{instructions}}\"\r\n}",
           "options": {
             "raw": {
               "language": "json"
@@ -148,20 +164,14 @@
           }
         },
         "url": {
-          "raw": "{{baseUrl}}/api/doctor/prescriptions?doctorId=2",
+          "raw": "{{baseUrl}}/api/doctor/prescriptions{{doctorQuery}}",
           "host": [
             "{{baseUrl}}"
           ],
           "path": [
             "api",
             "doctor",
-            "prescriptions"
-          ],
-          "query": [
-            {
-              "key": "doctorId",
-              "value": "2"
-            }
+            "prescriptions{{doctorQuery}}"
           ]
         },
         "description": "## Tạo đơn thuốc\n\nTạo một đơn thuốc mới cho bệnh nhân, được bác sĩ kê sau khi khám bệnh.\n\n### Endpoint\n\n`POST {{baseUrl}}/api/doctor/prescriptions`\n\n### Tham số Query\n\n| Tham số | Kiểu dữ liệu | Bắt buộc | Mô tả |\n| --- | --- | --- | --- |\n| doctorId | integer | Có | ID của bác sĩ thực hiện kê đơn thuốc |\n\n### Body yêu cầu\n\nContent-Type: `application/json`\n\n| Trường | Kiểu dữ liệu | Bắt buộc | Mô tả |\n| --- | --- | --- | --- |\n| patientId | integer | Có | ID của bệnh nhân nhận đơn thuốc |\n| appointmentId | integer | Có | ID của lịch hẹn khám liên quan |\n| medication | string | Có | Tên thuốc được kê |\n| dosage | string | Có | Liều lượng thuốc (ví dụ: `500mg`) |\n| frequency | string | Có | Tần suất uống thuốc (ví dụ: `2 lần/ngày`) |\n| duration | integer | Có | Thời gian dùng thuốc (tính theo ngày) |\n| instructions | string | Không | Hướng dẫn bổ sung khi dùng thuốc (ví dụ: `Uống sau khi ăn`) |\n\n### Ví dụ Body yêu cầu\n\n``` json\n{\n    \"patientId\": 1,\n    \"appointmentId\": 1,\n    \"medication\": \"Paracetamol\",\n    \"dosage\": \"500mg\",\n    \"frequency\": \"2 lần/ngày\",\n    \"duration\": 5,\n    \"instructions\": \"Uống sau khi ăn\"\n}\n\n ```\n\n### Xác thực\n\nEndpoint này yêu cầu token hợp lệ của bác sĩ. Hãy đảm bảo biến `token` đã được thiết lập trong collection hoặc header xác thực phù hợp đã được đính kèm."
@@ -259,6 +269,17 @@
     },
     {
       "name": "api/doctor/prescriptions",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "const caseId = pm.iterationData.get(\"caseId\");\r\nconst expectedStatus = Number(pm.iterationData.get(\"expectedStatus\"));\r\n\r\npm.test(caseId + \" - Kiểm tra kết quả API\", function () {\r\n    pm.expect(pm.response.code).to.eql(expectedStatus);\r\n});"
+            ]
+          }
+        }
+      ],
       "request": {
         "auth": {
           "type": "bearer",
@@ -273,20 +294,14 @@
         "method": "GET",
         "header": [],
         "url": {
-          "raw": "{{baseUrl}}/api/doctor/prescriptions?doctorId=2",
+          "raw": "{{baseUrl}}/api/doctor/prescriptions{{queryString}}",
           "host": [
             "{{baseUrl}}"
           ],
           "path": [
             "api",
             "doctor",
-            "prescriptions"
-          ],
-          "query": [
-            {
-              "key": "doctorId",
-              "value": "2"
-            }
+            "prescriptions{{queryString}}"
           ]
         },
         "description": "Lấy danh sách đơn thuốc liên quan đến một bác sĩ cụ thể. Endpoint này được sử dụng bởi bác sĩ đã xác thực hoặc nhân viên quản trị để truy cập các đơn thuốc đã được kê bởi bác sĩ đó.\n\n**Tham số truy vấn (Query Parameters):**\n\n| Tham số | Kiểu dữ liệu | Bắt buộc | Mô tả |\n| --- | --- | --- | --- |\n| `doctorId` | integer | Có | Mã định danh duy nhất của bác sĩ cần lấy danh sách đơn thuốc. |\n\n**Trường hợp sử dụng:**\n\nSử dụng endpoint này khi bác sĩ cần xem tất cả đơn thuốc đã được kê bởi họ — ví dụ: để theo dõi lịch sử kê đơn, kiểm tra các loại thuốc đã chỉ định cho bệnh nhân, hoặc hỗ trợ quản lý điều trị."
@@ -375,6 +390,17 @@
     },
     {
       "name": "api/patient/profile",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "const caseId = pm.iterationData.get(\"caseId\");\r\nconst expectedStatus = Number(pm.iterationData.get(\"expectedStatus\"));\r\n\r\npm.test(caseId + \" - Kiểm tra kết quả API\", function () {\r\n    pm.expect(pm.response.code).to.eql(expectedStatus);\r\n});"
+            ]
+          }
+        }
+      ],
       "request": {
         "auth": {
           "type": "bearer",
@@ -389,20 +415,14 @@
         "method": "GET",
         "header": [],
         "url": {
-          "raw": "{{baseUrl}}/api/patient/profile?userId=3",
+          "raw": "{{baseUrl}}/api/patient/profile{{queryString}}",
           "host": [
             "{{baseUrl}}"
           ],
           "path": [
             "api",
             "patient",
-            "profile"
-          ],
-          "query": [
-            {
-              "key": "userId",
-              "value": "3"
-            }
+            "profile{{queryString}}"
           ]
         },
         "description": "## Lấy hồ sơ bệnh nhân\n\nTruy xuất thông tin hồ sơ của một bệnh nhân cụ thể dựa trên ID người dùng. Endpoint này trả về dữ liệu cá nhân và hồ sơ y tế liên quan đến tài khoản bệnh nhân được chỉ định.\n\n---\n\n### Phương thức & URL\n\n```\nGET {{baseUrl}}/api/patient/profile\n\n ```\n\n---\n\n### Tham số truy vấn (Query Parameters)\n\n| Tham số | Kiểu | Bắt buộc | Mô tả |\n| --- | --- | --- | --- |\n| `userId` | number | ✅ Có | ID của bệnh nhân cần lấy hồ sơ. |\n\n**Ví dụ:**\n\n```\nGET {{baseUrl}}/api/patient/profile?userId=3\n\n ```\n\n---\n\n### Xác thực (Authentication)\n\nEndpoint này yêu cầu token xác thực hợp lệ. Đính kèm token vào header của request:\n\n```\nAuthorization: Bearer {{patientToken}}\n\n ```\n\n> Token có thể được lấy sau khi đăng nhập thành công và nên được lưu vào biến môi trường `patientToken`. \n  \n\n---\n\n### Ghi chú\n\nĐể lấy hồ sơ của bệnh nhân có ID là `3`, gửi request `GET` đến `{{baseUrl}}/api/patient/profile?userId=3` kèm theo bearer token hợp lệ. Phản hồi sẽ chứa thông tin chi tiết của bệnh nhân như họ tên, ngày sinh, thông tin liên hệ và tóm tắt lịch sử bệnh án."
@@ -491,6 +511,17 @@
     },
     {
       "name": "api/patient/departments",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "const caseId = pm.iterationData.get(\"caseId\");\r\nconst expectedStatus = Number(pm.iterationData.get(\"expectedStatus\"));\r\n\r\npm.test(caseId + \" - Kiểm tra kết quả API\", function () {\r\n    pm.expect(pm.response.code).to.eql(expectedStatus);\r\n});"
+            ]
+          }
+        }
+      ],
       "request": {
         "auth": {
           "type": "bearer",

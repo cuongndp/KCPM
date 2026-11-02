@@ -1,10 +1,10 @@
 {
   "info": {
-    "_postman_id": "83ef6d2f-b6c7-42f1-baec-2fda62da1334",
+    "_postman_id": "62357cf8-a098-49c4-9eff-34fcff637e01",
     "name": "Quốc Thắng",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-    "_exporter_id": "46953631",
-    "_collection_link": "https://go.postman.co/collection/46953631-83ef6d2f-b6c7-42f1-baec-2fda62da1334?source=collection_link"
+    "_exporter_id": "59398501",
+    "_collection_link": "https://go.postman.co/collection/59398501-62357cf8-a098-49c4-9eff-34fcff637e01?source=collection_link"
   },
   "item": [
     {
@@ -15,7 +15,7 @@
           "script": {
             "type": "text/javascript",
             "exec": [
-              "pm.test('200 OK', function () {\n    pm.response.to.have.status(200);\n});\n\npm.test('Thong bao thanh cong', function () {\n    pm.expect(pm.response.text()).to.include('registered successfully');\n});"
+              "const data = pm.iterationData.toObject();\n\nconsole.log(\"TEST CASE:\", data[\"Mã test case\"]);\nconsole.log(\"BODY CSV:\", data[\"requestBody\"]);\nconsole.log(\"STATUS MONG ĐỢI:\", data[\"Mã trạng thái mong đợi\"]);\nconsole.log(\"STATUS THỰC TẾ:\", pm.response.code);\n\npm.test(\"CSV có dữ liệu đầu vào\", function () {\n    pm.expect(data[\"requestBody\"]).to.exist;\n});\n\npm.test(\"Mã HTTP đúng với CSV\", function () {\n    pm.expect(pm.response.code).to.eql(\n        Number(data[\"Mã trạng thái mong đợi\"])\n    );\n});"
             ]
           }
         }
@@ -30,7 +30,7 @@
         ],
         "body": {
           "mode": "raw",
-          "raw": "{\n  \"username\": \"4\",\n  \"password\": \"4\",\n  \"email\": \"khach.test@example.com\",\n  \"firstName\": \"Khách\",\n  \"lastName\": \"Test\",\n  \"phoneNumber\": \"0912345678\",\n  \"role\": \"PATIENT\",\n  \"address\": \"123 Nguyễn Huệ, Q.1, TP.HCM\",\n  \"dateOfBirth\": \"1995-05-20\",\n  \"bloodGroup\": \"O+\",\n  \"emergencyContact\": \"0912345678\"\n}",
+          "raw": "{{requestBody}}",
           "options": {
             "raw": {
               "language": "json"
@@ -148,7 +148,16 @@
           "script": {
             "type": "text/javascript",
             "exec": [
-              "pm.test('200 OK', function () {\n    pm.response.to.have.status(200);\n});\n\npm.test('Tra ve danh sach khoa', function () {\n    const jsonData = pm.response.json();\n    pm.expect(jsonData).to.be.an('array');\n    pm.expect(jsonData.length).to.be.above(0);\n});"
+              "const expected = Number(\n    pm.iterationData.get(\"Mã trạng thái mong đợi\")\n);\n\nconst testCase = pm.iterationData.get(\"Mã test case\");\n\nconsole.log(\"Test case:\", testCase);\nconsole.log(\"Expected:\", expected);\nconsole.log(\"Actual:\", pm.response.code);\n\npm.test(\"Kiểm tra mã HTTP theo CSV\", function () {\n    pm.response.to.have.status(expected);\n});"
+            ]
+          }
+        },
+        {
+          "listen": "prerequest",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "const mode = pm.iterationData.get(\"authMode\");\r\n\r\nif (mode === \"ADMIN\") {\r\n    pm.request.headers.upsert({\r\n        key: \"Authorization\",\r\n        value: \"Bearer \" + pm.environment.get(\"ADMIN_TOKEN\")\r\n    });\r\n}\r\nelse if (mode === \"PATIENT\") {\r\n    pm.request.headers.upsert({\r\n        key: \"Authorization\",\r\n        value: \"Bearer \" + pm.environment.get(\"PATIENT_TOKEN\")\r\n    });\r\n}\r\nelse if (mode === \"DOCTOR\") {\r\n    pm.request.headers.upsert({\r\n        key: \"Authorization\",\r\n        value: \"Bearer \" + pm.environment.get(\"DOCTOR_TOKEN\")\r\n    });\r\n}\r\nelse if (mode === \"INVALID\") {\r\n    pm.request.headers.upsert({\r\n        key: \"Authorization\",\r\n        value: pm.collectionVariables.get(\"bearer_token_162i\")\r\n    });\r\n}\r\nelse if (mode === \"NONE\") {\r\n    pm.request.headers.remove(\"Authorization\");\r\n}"
             ]
           }
         }
@@ -263,7 +272,16 @@
           "script": {
             "type": "text/javascript",
             "exec": [
-              "pm.test('200 OK', function () {\n    pm.response.to.have.status(200);\n});\n\nconst jsonData = pm.response.json();\npm.test('Tra ve department da tao', function () {\n    pm.expect(jsonData.id).to.be.a('number');\n    pm.expect(jsonData.name).to.eql('Khoa Da Nghiem Thu');\n});\n\nif (jsonData.id) {\n    pm.collectionVariables.set('departmentId', jsonData.id);\n    console.log('Da luu departmentId = ' + jsonData.id);\n}"
+              "const expectedStatus = Number(\n    pm.iterationData.get(\"Mã trạng thái mong đợi\")\n);\n\npm.test(\"Kiểm tra mã trạng thái HTTP\", function () {\n    pm.response.to.have.status(expectedStatus);\n});\n\npm.test(\"Kiểm tra API có phản hồi\", function () {\n    pm.expect(pm.response.code).to.be.a(\"number\");\n});"
+            ]
+          }
+        },
+        {
+          "listen": "prerequest",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "const authMode = pm.iterationData.get(\"authMode\");\r\n\r\nif (authMode === \"ADMIN\") {\r\n    pm.request.headers.upsert({\r\n        key: \"Authorization\",\r\n        value: \"Bearer \" + pm.environment.get(\"ADMIN_TOKEN\")\r\n    });\r\n} else if (authMode === \"NONE\") {\r\n    pm.request.headers.remove(\"Authorization\");\r\n} else if (authMode === \"INVALID\") {\r\n    pm.request.headers.upsert({\r\n        key: \"Authorization\",\r\n        value: pm.collectionVariables.get(\"bearer_token_0s7j\")\r\n    });\r\n}"
             ]
           }
         }
@@ -288,7 +306,7 @@
         ],
         "body": {
           "mode": "raw",
-          "raw": "{\n  \"name\": \"Khoa Da Nghiem Thu\",\n  \"description\": \"Khoa tao moi phuc vu nghiem thu W1-01\",\n  \"active\": true\n}",
+          "raw": "{{requestBody}}",
           "options": {
             "raw": {
               "language": "json"
@@ -406,7 +424,16 @@
           "script": {
             "type": "text/javascript",
             "exec": [
-              "pm.test('200 OK', function () {\n    pm.response.to.have.status(200);\n});\n\npm.test('Thong bao xoa thanh cong', function () {\n    pm.expect(pm.response.text()).to.include('deleted successfully');\n});"
+              "const expectedStatus = Number(\n    pm.iterationData.get(\"Mã trạng thái mong đợi\")\n);\n\npm.test(\"Kiểm tra mã trạng thái HTTP\", function () {\n    pm.response.to.have.status(expectedStatus);\n});\n\npm.test(\"Kiểm tra API có phản hồi\", function () {\n    pm.expect(pm.response.code).to.be.a(\"number\");\n});"
+            ]
+          }
+        },
+        {
+          "listen": "prerequest",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "const authMode = pm.iterationData.get(\"authMode\");\r\nconst id = pm.iterationData.get(\"departmentId\");\r\n\r\nif (id === \"CREATED\") {\r\n    pm.variables.set(\r\n        \"departmentId\",\r\n        pm.environment.get(\"createdDepartmentId\")\r\n    );\r\n} else {\r\n    pm.variables.set(\"departmentId\", id);\r\n}\r\n\r\nif (authMode === \"ADMIN\") {\r\n    pm.request.headers.upsert({\r\n        key: \"Authorization\",\r\n        value: \"Bearer \" + pm.environment.get(\"ADMIN_TOKEN\")\r\n    });\r\n} else if (authMode === \"PATIENT\") {\r\n    pm.request.headers.upsert({\r\n        key: \"Authorization\",\r\n        value: \"Bearer \" + pm.environment.get(\"PATIENT_TOKEN\")\r\n    });\r\n} else if (authMode === \"NONE\") {\r\n    pm.request.headers.remove(\"Authorization\");\r\n} else if (authMode === \"INVALID\") {\r\n    pm.request.headers.upsert({\r\n        key: \"Authorization\",\r\n        value: pm.collectionVariables.get(\"bearer_token_0s7j\")\r\n    });\r\n}"
             ]
           }
         }
@@ -532,6 +559,30 @@
     {
       "key": "departmentId",
       "value": ""
+    },
+    {
+      "key": "bearer_token_162i",
+      "secret": true,
+      "source": {
+        "provider": "postman",
+        "postman": {
+          "type": "cloud",
+          "secretId": "3c45c09f-d1e5-48f0-acf8-500dedad3443",
+          "vaultId": "7762763a-1983-46f2-9990-a07b5902f5c7"
+        }
+      }
+    },
+    {
+      "key": "bearer_token_0s7j",
+      "secret": true,
+      "source": {
+        "provider": "postman",
+        "postman": {
+          "type": "cloud",
+          "secretId": "9d35b8bc-7fe7-4ebd-8435-109f9e891821",
+          "vaultId": "7762763a-1983-46f2-9990-a07b5902f5c7"
+        }
+      }
     }
   ]
 }

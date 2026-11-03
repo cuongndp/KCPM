@@ -1,0 +1,69 @@
+{
+	"id": "b1cdda7a-0da4-4bf8-8f50-bc5aeb08da80",
+	"name": "Quốc Thắng",
+	"timestamp": "2026-11-02T09:32:33.030Z",
+	"collection_id": "59398501-62357cf8-a098-49c4-9eff-34fcff637e01",
+	"folder_id": 0,
+	"environment_id": "59398501-5e646825-e9b3-48d4-927a-5287d85d7782",
+	"totalPass": 1,
+	"delay": 0,
+	"persist": true,
+	"status": "finished",
+	"startedAt": "2026-11-02T09:32:30.000Z",
+	"totalFail": 4,
+	"results": [
+		{
+			"id": "92909f1e-6c08-483b-81c4-24d3e6cbbc1b",
+			"name": "api/admin/departments",
+			"url": "http://localhost:8080/api/admin/departments",
+			"time": 61,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"Kiểm tra mã HTTP theo CSV": false
+			},
+			"testPassFailCounts": {
+				"Kiểm tra mã HTTP theo CSV": {
+					"pass": 1,
+					"fail": 4
+				}
+			},
+			"times": [
+				48,
+				50,
+				57,
+				61,
+				61
+			],
+			"allTests": [
+				{
+					"Kiểm tra mã HTTP theo CSV": true
+				},
+				{
+					"Kiểm tra mã HTTP theo CSV": false
+				},
+				{
+					"Kiểm tra mã HTTP theo CSV": false
+				},
+				{
+					"Kiểm tra mã HTTP theo CSV": false
+				},
+				{
+					"Kiểm tra mã HTTP theo CSV": false
+				}
+			]
+		}
+	],
+	"count": 5,
+	"totalTime": 277,
+	"collection": {
+		"requests": [
+			{
+				"id": "92909f1e-6c08-483b-81c4-24d3e6cbbc1b",
+				"method": "GET"
+			}
+		]
+	}
+}

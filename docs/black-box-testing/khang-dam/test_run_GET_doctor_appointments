@@ -1,0 +1,145 @@
+{
+	"id": "c5045a69-4fed-4219-9c3d-a97b6408b48c",
+	"name": "Khang Đàm",
+	"timestamp": "2026-11-03T01:28:07.325Z",
+	"collection_id": "58709658-c3c4f6d4-9e89-42d6-aa1f-46a86adb3e61",
+	"folder_id": 0,
+	"environment_id": "0",
+	"totalPass": 38,
+	"delay": 0,
+	"persist": true,
+	"status": "finished",
+	"startedAt": "2026-11-03T01:28:04.447Z",
+	"totalFail": 17,
+	"results": [
+		{
+			"id": "84b7376b-bf45-4f3d-934d-976461ad1e44",
+			"name": "api/doctor/appointments",
+			"url": "http://localhost:8080/api/doctor/appointments?doctorId=1",
+			"time": 46,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"Status code matches CSV": true,
+				"CSV có mã HTTP mong đợi hợp lệ": true,
+				"Response time dưới 2000ms": true,
+				"Response trả về JSON hợp lệ": true,
+				"Response có cấu trúc hợp lệ": true
+			},
+			"testPassFailCounts": {
+				"Status code matches CSV": {
+					"pass": 3,
+					"fail": 15
+				},
+				"CSV có mã HTTP mong đợi hợp lệ": {
+					"pass": 9,
+					"fail": 1
+				},
+				"Response time dưới 2000ms": {
+					"pass": 10,
+					"fail": 0
+				},
+				"Response trả về JSON hợp lệ": {
+					"pass": 10,
+					"fail": 0
+				},
+				"Response có cấu trúc hợp lệ": {
+					"pass": 6,
+					"fail": 0
+				}
+			},
+			"times": [
+				22,
+				33,
+				13,
+				13,
+				17,
+				13,
+				22,
+				26,
+				32,
+				46
+			],
+			"allTests": [
+				{
+					"Status code matches CSV": true,
+					"CSV có mã HTTP mong đợi hợp lệ": true,
+					"Response time dưới 2000ms": true,
+					"Response trả về JSON hợp lệ": true,
+					"Response có cấu trúc hợp lệ": true
+				},
+				{
+					"Status code matches CSV": true,
+					"CSV có mã HTTP mong đợi hợp lệ": true,
+					"Response time dưới 2000ms": true,
+					"Response trả về JSON hợp lệ": true,
+					"Response có cấu trúc hợp lệ": true
+				},
+				{
+					"Status code matches CSV": false,
+					"CSV có mã HTTP mong đợi hợp lệ": true,
+					"Response time dưới 2000ms": true,
+					"Response trả về JSON hợp lệ": true
+				},
+				{
+					"Status code matches CSV": false,
+					"CSV có mã HTTP mong đợi hợp lệ": true,
+					"Response time dưới 2000ms": true,
+					"Response trả về JSON hợp lệ": true
+				},
+				{
+					"Status code matches CSV": false,
+					"CSV có mã HTTP mong đợi hợp lệ": true,
+					"Response time dưới 2000ms": true,
+					"Response trả về JSON hợp lệ": true
+				},
+				{
+					"Status code matches CSV": false,
+					"CSV có mã HTTP mong đợi hợp lệ": true,
+					"Response time dưới 2000ms": true,
+					"Response trả về JSON hợp lệ": true
+				},
+				{
+					"Status code matches CSV": false,
+					"CSV có mã HTTP mong đợi hợp lệ": false,
+					"Response time dưới 2000ms": true,
+					"Response trả về JSON hợp lệ": true,
+					"Response có cấu trúc hợp lệ": true
+				},
+				{
+					"Status code matches CSV": false,
+					"CSV có mã HTTP mong đợi hợp lệ": true,
+					"Response time dưới 2000ms": true,
+					"Response trả về JSON hợp lệ": true,
+					"Response có cấu trúc hợp lệ": true
+				},
+				{
+					"Status code matches CSV": false,
+					"CSV có mã HTTP mong đợi hợp lệ": true,
+					"Response time dưới 2000ms": true,
+					"Response trả về JSON hợp lệ": true,
+					"Response có cấu trúc hợp lệ": true
+				},
+				{
+					"Status code matches CSV": true,
+					"CSV có mã HTTP mong đợi hợp lệ": true,
+					"Response time dưới 2000ms": true,
+					"Response trả về JSON hợp lệ": true,
+					"Response có cấu trúc hợp lệ": true
+				}
+			]
+		}
+	],
+	"count": 10,
+	"totalTime": 237,
+	"collection": {
+		"requests": [
+			{
+				"id": "84b7376b-bf45-4f3d-934d-976461ad1e44",
+				"method": "GET"
+			}
+		]
+	}
+}

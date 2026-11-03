@@ -1,0 +1,154 @@
+{
+	"id": "b212a2c3-eb81-4852-85fa-f28b2178b22c",
+	"name": "Khang Đàm",
+	"timestamp": "2026-11-03T03:00:58.855Z",
+	"collection_id": "58709658-c3c4f6d4-9e89-42d6-aa1f-46a86adb3e61",
+	"folder_id": 0,
+	"environment_id": "0",
+	"totalPass": 29,
+	"delay": 0,
+	"persist": true,
+	"status": "finished",
+	"startedAt": "2026-11-03T03:00:55.543Z",
+	"totalFail": 11,
+	"results": [
+		{
+			"id": "daf904b0-d498-474d-b9f5-aa3ed04bd7f9",
+			"name": "api/doctor/medical-records",
+			"url": "http://localhost:8080/api/doctor/medical-records?doctorId=1&patientId=1",
+			"time": 11,
+			"responseCode": {
+				"code": 500,
+				"name": "Internal Server Error"
+			},
+			"tests": {
+				"Status code is successful": false,
+				"Response is valid JSON": true
+			},
+			"testPassFailCounts": {
+				"Status code is successful": {
+					"pass": 9,
+					"fail": 11
+				},
+				"Response is valid JSON": {
+					"pass": 20,
+					"fail": 0
+				}
+			},
+			"times": [
+				34,
+				9,
+				8,
+				13,
+				10,
+				11,
+				11,
+				15,
+				16,
+				56,
+				158,
+				56,
+				45,
+				15,
+				15,
+				32,
+				20,
+				20,
+				23,
+				11
+			],
+			"allTests": [
+				{
+					"Status code is successful": true,
+					"Response is valid JSON": true
+				},
+				{
+					"Status code is successful": false,
+					"Response is valid JSON": true
+				},
+				{
+					"Status code is successful": false,
+					"Response is valid JSON": true
+				},
+				{
+					"Status code is successful": false,
+					"Response is valid JSON": true
+				},
+				{
+					"Status code is successful": false,
+					"Response is valid JSON": true
+				},
+				{
+					"Status code is successful": false,
+					"Response is valid JSON": true
+				},
+				{
+					"Status code is successful": false,
+					"Response is valid JSON": true
+				},
+				{
+					"Status code is successful": false,
+					"Response is valid JSON": true
+				},
+				{
+					"Status code is successful": false,
+					"Response is valid JSON": true
+				},
+				{
+					"Status code is successful": true,
+					"Response is valid JSON": true
+				},
+				{
+					"Status code is successful": true,
+					"Response is valid JSON": true
+				},
+				{
+					"Status code is successful": true,
+					"Response is valid JSON": true
+				},
+				{
+					"Status code is successful": true,
+					"Response is valid JSON": true
+				},
+				{
+					"Status code is successful": false,
+					"Response is valid JSON": true
+				},
+				{
+					"Status code is successful": false,
+					"Response is valid JSON": true
+				},
+				{
+					"Status code is successful": true,
+					"Response is valid JSON": true
+				},
+				{
+					"Status code is successful": true,
+					"Response is valid JSON": true
+				},
+				{
+					"Status code is successful": true,
+					"Response is valid JSON": true
+				},
+				{
+					"Status code is successful": true,
+					"Response is valid JSON": true
+				},
+				{
+					"Status code is successful": false,
+					"Response is valid JSON": true
+				}
+			]
+		}
+	],
+	"count": 20,
+	"totalTime": 578,
+	"collection": {
+		"requests": [
+			{
+				"id": "daf904b0-d498-474d-b9f5-aa3ed04bd7f9",
+				"method": "POST"
+			}
+		]
+	}
+}

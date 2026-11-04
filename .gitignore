@@ -113,3 +113,4 @@ lerna-debug.log*
 
 # Application specific
 application-local.properties
+.vs/

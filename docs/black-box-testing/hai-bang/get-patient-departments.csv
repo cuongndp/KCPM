@@ -1,0 +1,4 @@
+﻿caseId,caseName,queryString,expectedStatus,expectedBodyKind,expectedBodyContains,epTags,bvaTags,preconditions
+TC-DP-001,Lấy danh sách khoa đang hoạt động,,200,array_non_empty,,V1,,PATIENT_TOKEN hợp lệ; môi trường có ít nhất một khoa đang hoạt động
+TC-DP-002,Không có khoa nào đang hoạt động,,200,array_empty,,V2,,PATIENT_TOKEN hợp lệ; môi trường kiểm thử không có khoa nào ở trạng thái active
+TC-DP-003,Gửi query parameter không được API hỗ trợ,?unexpected=value,200,array,,V1,,PATIENT_TOKEN hợp lệ; có ít nhất một khoa đang hoạt động; xác nhận API không sử dụng query parameter unexpected để lọc dữ liệu

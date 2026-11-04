@@ -1,0 +1,7 @@
+﻿Mã test case,Tên test case,Mô tả kiểm thử,departmentId,authMode,Mã trạng thái mong đợi,Kết quả mong đợi,EP Tags,BVA Tags,Điều kiện tiên quyết,Mã trạng thái thực tế,Kết quả thực tế,Kết quả kiểm thử
+DEPT-DELETE-01,Xóa khoa tồn tại,Xóa khoa vừa được tạo thành công ở API POST trước đó,CREATED,ADMIN,200,Xóa thành công và API trả thông báo xác nhận,EP-Valid,Không áp dụng,Đã tạo khoa và lưu ID vào biến createdDepartmentId,,,
+DEPT-DELETE-02,Xóa khoa không tồn tại,Thử xóa khoa có ID không tồn tại,999999,ADMIN,404,API thông báo không tìm thấy khoa,EP-Invalid,Không áp dụng,ID 999999 chưa tồn tại trong cơ sở dữ liệu,,,
+DEPT-DELETE-03,ID không phải số,Truyền chuỗi thay vì ID kiểu số Long,abc,ADMIN,400,API từ chối giá trị ID không hợp lệ,EP-WrongType,Không áp dụng,Có token ADMIN hợp lệ,,,
+DEPT-DELETE-04,Không gửi token,Gọi API khi không có Authorization,CREATED,NONE,401,API từ chối vì chưa xác thực,EP-Unauthorized,Không áp dụng,Không gửi Authorization header,,,
+DEPT-DELETE-05,Token không hợp lệ,Gọi API bằng token giả,CREATED,INVALID,401,API từ chối token không hợp lệ,EP-Unauthorized,Không áp dụng,Dùng token không hợp lệ,,,
+DEPT-DELETE-06,Tài khoản PATIENT,Gọi API bằng token của PATIENT,CREATED,PATIENT,403,API từ chối vì không đủ quyền ADMIN,EP-Forbidden,Không áp dụng,Có PATIENT_TOKEN hợp lệ,,,

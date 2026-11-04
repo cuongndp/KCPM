@@ -1,0 +1,24 @@
+{
+	"id": "6ae864ae704fd35028f1d3c5",
+	"name": "Hải Bằng",
+	"timestamp": "2026-11-02T10:23:42.459Z",
+	"collection_id": "7bBb17868D4F0Bb0f2f1EC3c",
+	"folder_id": 0,
+	"environment_id": "9df4cd57-d374-41d5-a6af-0ac4f7a2f59f",
+	"totalPass": 2,
+	"delay": 0,
+	"persist": true,
+	"status": "finished",
+	"startedAt": "2026-11-02T10:23:42.087Z",
+	"totalFail": 2,
+	"results": [],
+	"count": 4,
+	"totalTime": 0,
+	"collection": {
+		"requests": [
+			{
+				"id": "964DE95dBE3EFCaBCbFCBFad"
+			}
+		]
+	}
+}

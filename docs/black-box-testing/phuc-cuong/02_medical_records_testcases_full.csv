@@ -1,0 +1,23 @@
+﻿caseId,description,doctorId,authMode,requestBody,expectedStatus,expectedResult
+MR-01,Tạo hồ sơ với đầy đủ dữ liệu hợp lệ,1,DOCTOR,"{""patientId"":1,""diagnosis"":""Cảm cúm"",""symptoms"":""Sốt, ho"",""consultationNotes"":""Nghỉ ngơi"",""labResults"":""Chưa có"",""recommendations"":""Uống đủ nước""}",200,Tạo hồ sơ bệnh án thành công
+MR-02,Tạo hồ sơ chỉ với hai trường bắt buộc,1,DOCTOR,"{""patientId"":1,""diagnosis"":""Khám tổng quát""}",200,Các trường mô tả tùy chọn được bỏ qua
+MR-03,Diagnosis có đúng một ký tự không trắng,1,DOCTOR,"{""patientId"":1,""diagnosis"":""A""}",200,Hợp lệ theo NotBlank
+MR-04,Diagnosis có nội dung dài hơn một ký tự,1,DOCTOR,"{""patientId"":1,""diagnosis"":""Viêm họng cấp""}",200,Hợp lệ theo NotBlank
+MR-05,Các trường mô tả tùy chọn là chuỗi rỗng,1,DOCTOR,"{""patientId"":1,""diagnosis"":""Khám tổng quát"",""symptoms"":"""",""consultationNotes"":"""",""labResults"":"""",""recommendations"":""""}",200,DTO không đặt NotBlank cho trường tùy chọn
+MR-06,Các trường mô tả tùy chọn là null,1,DOCTOR,"{""patientId"":1,""diagnosis"":""Khám tổng quát"",""symptoms"":null,""consultationNotes"":null,""labResults"":null,""recommendations"":null}",200,DTO không đặt NotNull cho trường tùy chọn
+MR-07,patientId null,1,DOCTOR,"{""patientId"":null,""diagnosis"":""Cảm cúm""}",400,Validation NotNull thất bại
+MR-08,Thiếu patientId,1,DOCTOR,"{""diagnosis"":""Cảm cúm""}",400,Validation NotNull thất bại
+MR-09,patientId không tồn tại,1,DOCTOR,"{""patientId"":99999999,""diagnosis"":""Cảm cúm""}",404,Không tìm thấy Patient
+MR-10,Diagnosis rỗng,1,DOCTOR,"{""patientId"":1,""diagnosis"":""""}",400,Validation NotBlank thất bại
+MR-11,Diagnosis chỉ có khoảng trắng,1,DOCTOR,"{""patientId"":1,""diagnosis"":""   ""}",400,Validation NotBlank thất bại
+MR-12,Diagnosis null,1,DOCTOR,"{""patientId"":1,""diagnosis"":null}",400,Validation NotBlank thất bại
+MR-13,Thiếu diagnosis,1,DOCTOR,"{""patientId"":1}",400,Validation NotBlank thất bại
+MR-14,doctorId không tồn tại,99999999,DOCTOR,"{""patientId"":1,""diagnosis"":""Cảm cúm""}",404,Không tìm thấy Doctor
+MR-15,doctorId không phải số,abc,DOCTOR,"{""patientId"":1,""diagnosis"":""Cảm cúm""}",400,Lỗi chuyển kiểu RequestParam Long
+MR-16,doctorId để trống,,DOCTOR,"{""patientId"":1,""diagnosis"":""Cảm cúm""}",400,Lỗi thiếu/không hợp lệ RequestParam
+MR-17,Không gửi Bearer Token,1,NONE,"{""patientId"":1,""diagnosis"":""Cảm cúm""}",401,Từ chối xác thực
+MR-18,Bearer Token không hợp lệ,1,INVALID,"{""patientId"":1,""diagnosis"":""Cảm cúm""}",401,Từ chối xác thực
+MR-19,Dùng PATIENT_TOKEN gọi API chỉ dành cho DOCTOR,1,PATIENT,"{""patientId"":1,""diagnosis"":""Cảm cúm""}",403,Từ chối phân quyền
+MR-20,Dùng ADMIN_TOKEN gọi API chỉ dành cho DOCTOR,1,ADMIN,"{""patientId"":1,""diagnosis"":""Cảm cúm""}",403,Từ chối phân quyền
+MR-21,patientId bằng 0 (không có @Positive; kiểm tra không tồn tại),1,DOCTOR,"{""patientId"":0,""diagnosis"":""Cảm cúm""}",404,ID không tìm thấy nếu DB không có patient id 0
+MR-22,patientId âm (không có @Positive; kiểm tra không tồn tại),1,DOCTOR,"{""patientId"":-1,""diagnosis"":""Cảm cúm""}",404,ID không tìm thấy nếu DB không có patient id âm

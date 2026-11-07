@@ -1,0 +1,17 @@
+﻿caseId,description,requestBody,expectedStatus,expectedRole,expectedResult
+LOGIN-01,Đăng nhập ADMIN với tài khoản mẫu,"{""username"":""1"",""password"":""1""}",200,ADMIN,Trả token và role ADMIN
+LOGIN-02,Đăng nhập DOCTOR với tài khoản mẫu,"{""username"":""2"",""password"":""2""}",200,DOCTOR,Trả token và role DOCTOR
+LOGIN-03,Đăng nhập PATIENT với tài khoản mẫu,"{""username"":""3"",""password"":""3""}",200,PATIENT,Trả token và role PATIENT
+LOGIN-04,ADMIN nhập sai mật khẩu,"{""username"":""1"",""password"":""wrong-password""}",401,,Từ chối đăng nhập
+LOGIN-05,DOCTOR nhập sai mật khẩu,"{""username"":""2"",""password"":""wrong-password""}",401,,Từ chối đăng nhập
+LOGIN-06,PATIENT nhập sai mật khẩu,"{""username"":""3"",""password"":""wrong-password""}",401,,Từ chối đăng nhập
+LOGIN-07,Username không tồn tại,"{""username"":""user_not_exists_999"",""password"":""123456""}",401,,Từ chối đăng nhập
+LOGIN-08,Username rỗng,"{""username"":"""",""password"":""1""}",401,,Từ chối đăng nhập
+LOGIN-09,Password rỗng,"{""username"":""1"",""password"":""""}",401,,Từ chối đăng nhập
+LOGIN-10,Username null,"{""username"":null,""password"":""1""}",401,,Từ chối đăng nhập (cần xác nhận handler)
+LOGIN-11,Password null,"{""username"":""1"",""password"":null}",401,,Từ chối đăng nhập (cần xác nhận handler)
+LOGIN-12,Thiếu username,"{""password"":""1""}",401,,Từ chối đăng nhập (cần xác nhận handler)
+LOGIN-13,Thiếu password,"{""username"":""1""}",401,,Từ chối đăng nhập (cần xác nhận handler)
+LOGIN-14,Username có khoảng trắng đầu/cuối,"{""username"":"" 2 "",""password"":""2""}",401,,Không tự trim username; dự kiến không xác thực
+LOGIN-15,Password sai chữ hoa/thường,"{""username"":""2"",""password"":""2A""}",401,,Password phân biệt chữ hoa/thường
+LOGIN-16,Username hợp lệ nhưng password chỉ có khoảng trắng,"{""username"":""2"",""password"":""   ""}",401,,Từ chối đăng nhập

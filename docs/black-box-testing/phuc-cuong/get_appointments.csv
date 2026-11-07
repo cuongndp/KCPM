@@ -1,5 +1,0 @@
-caseId,caseName,patientQuery,expectedStatus,expectedBodyKind,expectedBodyContains,epTags,bvaTags,preconditions
-TC-GETAPP-001,Bệnh nhân có lịch hẹn,?patientId=1,200,array_non_empty,,V1,,Bệnh nhân 1 có ít nhất một lịch hẹn
-TC-GETAPP-002,Bệnh nhân không có lịch hẹn,?patientId=999999,200,array_empty,,V2,,ID 999999 không có lịch hẹn; API không kiểm tra sự tồn tại bệnh nhân
-TC-GETAPP-003,Thiếu patientId,,400,any,,X1,,Để patientQuery trống để không gửi query parameter
-TC-GETAPP-004,patientId không phải số,?patientId=abc,400,any,,X2,,PATIENT_TOKEN hợp lệ

@@ -1,5 +1,0 @@
-﻿caseId,caseName,queryString,expectedStatus,expectedBodyKind,expectedBodyContains,epTags,bvaTags,preconditions
-TC-PP-001,Lấy hồ sơ bệnh nhân với userId hợp lệ,?userId=3,200,object,,V1,,PATIENT_TOKEN hợp lệ; userId=3 có hồ sơ bệnh nhân
-TC-PP-002,userId không có hồ sơ bệnh nhân,?userId=99999,404,any,,X1,,PATIENT_TOKEN hợp lệ; userId=99999 không liên kết hồ sơ bệnh nhân; xác nhận status thực tế theo exception handler
-TC-PP-003,Thiếu userId,,400,any,,X2,,PATIENT_TOKEN hợp lệ
-TC-PP-004,userId không chuyển đổi được sang Long,?userId=abc,400,any,,X3,,PATIENT_TOKEN hợp lệ

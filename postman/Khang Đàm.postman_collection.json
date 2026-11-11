@@ -1,10 +1,9 @@
 {
   "info": {
-    "_postman_id": "c3c4f6d4-9e89-42d6-aa1f-46a86adb3e61",
+    "_postman_id": "c0e60e57-c88e-451f-b37b-622e278fb598",
     "name": "Khang Đàm",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-    "_exporter_id": "58709658",
-    "_collection_link": "https://go.postman.co/collection/58709658-c3c4f6d4-9e89-42d6-aa1f-46a86adb3e61?source=collection_link"
+    "_exporter_id": "58629869"
   },
   "item": [
     {
@@ -353,18 +352,39 @@
           "listen": "test",
           "script": {
             "exec": [
-              "const rawStatus = pm.iterationData.get(\"Expected_HTTP_Status\");",
               "",
-              "pm.test(\"CSV status check\", function () {",
-              "    if (rawStatus !== undefined) {",
-              "        const expectedStatus = Number(rawStatus);",
-              "        pm.expect(Number.isNaN(expectedStatus)).to.be.false;",
+              "// 1. Đọc HTTP Status mong đợi từ CSV",
+              "const rawStatus = pm.iterationData.get(\"Expected_HTTP_Status\");",
+              "const expectedStatus = Number(rawStatus);",
+              "",
+              "// 2. Kiểm tra dữ liệu CSV",
+              "pm.test(\"CSV Expected Status is valid\", function () {",
+              "    pm.expect(rawStatus).to.not.be.undefined;",
+              "    pm.expect(String(rawStatus).trim()).to.not.be.empty;",
+              "    pm.expect(Number.isInteger(expectedStatus)).to.be.true;",
+              "});",
+              "",
+              "// 3. Kiểm tra HTTP Status thực tế",
+              "if (",
+              "    rawStatus !== undefined &&",
+              "    String(rawStatus).trim() !== \"\" &&",
+              "    Number.isInteger(expectedStatus)",
+              ") {",
+              "    pm.test(\"CSV status check\", function () {",
               "        pm.response.to.have.status(expectedStatus);",
-              "    } else {",
-              "        // Fallback or skip if no iteration data is provided",
-              "        pm.expect(true).to.be.true;",
-              "    }",
-              "});"
+              "    });",
+              "}",
+              "",
+              "// 4. Ghi thông tin vào Console",
+              "console.log(\"Test Case:\", pm.iterationData.get(\"TestCase_ID\"));",
+              "console.log(\"Appointment ID:\", pm.iterationData.get(\"appointmentId\"));",
+              "console.log(\"Expected Status:\", expectedStatus);",
+              "console.log(\"Actual Status:\", pm.response.code);",
+              "console.log(",
+              "    \"Result:\",",
+              "    pm.response.code === expectedStatus ? \"PASS\" : \"FAIL\"",
+              ");",
+              ""
             ],
             "type": "text/javascript",
             "packages": {},
@@ -628,21 +648,55 @@
       ]
     },
     {
-      "name": "api/doctor/medical-records",
+      "name": "api/patient/appointments/{{appointmentId}}",
       "event": [
         {
           "listen": "test",
           "script": {
             "exec": [
-              "pm.test(\"Status code is successful\", function () {\r",
-              "    pm.expect(pm.response.code).to.be.oneOf([200, 201]);\r",
+              "\r",
+              "// Lấy HTTP Status mong đợi từ file CSV\r",
+              "const expectedStatus = Number(\r",
+              "    pm.iterationData.get(\"Expected_HTTP_Status\")\r",
+              ");\r",
+              "\r",
+              "// Lấy HTTP Status thực tế\r",
+              "const actualStatus = pm.response.code;\r",
+              "\r",
+              "// Lấy appointmentId từ CSV\r",
+              "const appointmentId = pm.iterationData.get(\"appointmentId\");\r",
+              "\r",
+              "// Kiểm tra request có phản hồi\r",
+              "pm.test(\"Server returned a response\", function () {\r",
+              "    pm.expect(actualStatus).to.be.a(\"number\");\r",
               "});\r",
               "\r",
-              "pm.test(\"Response is valid JSON\", function () {\r",
-              "    if (pm.response.code !== 204) {\r",
-              "        pm.response.to.be.json;\r",
-              "    }\r",
-              "});"
+              "// Kiểm tra HTTP Status\r",
+              "pm.test(\"HTTP Status matches expected result\", function () {\r",
+              "    pm.expect(actualStatus).to.eql(expectedStatus);\r",
+              "});\r",
+              "\r",
+              "// Kiểm tra method\r",
+              "pm.test(\"Request method is DELETE\", function () {\r",
+              "    pm.expect(pm.request.method).to.eql(\"DELETE\");\r",
+              "});\r",
+              "\r",
+              "// Kiểm tra appointmentId\r",
+              "pm.test(\"Appointment ID is provided\", function () {\r",
+              "    pm.expect(appointmentId).to.not.be.undefined;\r",
+              "    pm.expect(String(appointmentId)).to.not.be.empty;\r",
+              "});\r",
+              "\r",
+              "// In kết quả vào Postman Console\r",
+              "console.log(\"Test Case:\", pm.iterationData.get(\"TestCase_ID\"));\r",
+              "console.log(\"Appointment ID:\", appointmentId);\r",
+              "console.log(\"Expected Status:\", expectedStatus);\r",
+              "console.log(\"Actual Status:\", actualStatus);\r",
+              "console.log(\r",
+              "    \"Result:\",\r",
+              "    actualStatus === expectedStatus ? \"PASS\" : \"FAIL\"\r",
+              ");\r",
+              ""
             ],
             "type": "text/javascript",
             "packages": {},
@@ -656,152 +710,27 @@
           "bearer": [
             {
               "key": "token",
-              "value": "{{DOCTOR_TOKEN}}",
+              "value": "{{PATIENT_TOKEN}}",
               "type": "string"
             }
           ]
         },
-        "method": "POST",
-        "header": [
-          {
-            "key": "Content-Type",
-            "value": "application/json"
-          },
-          {
-            "key": "Accept",
-            "value": "application/json"
-          }
-        ],
-        "body": {
-          "mode": "raw",
-          "raw": "{{body}}",
-          "options": {
-            "raw": {
-              "language": "json"
-            }
-          }
-        },
+        "method": "DELETE",
+        "header": [],
         "url": {
-          "raw": "{{baseUrl}}/api/doctor/medical-records?doctorId={{doctorId}}&patientId={{patientId}}",
+          "raw": "{{baseUrl}}/api/patient/appointments/{{appointmentId}}",
           "host": [
             "{{baseUrl}}"
           ],
           "path": [
             "api",
-            "doctor",
-            "medical-records"
-          ],
-          "query": [
-            {
-              "key": "doctorId",
-              "value": "{{doctorId}}"
-            },
-            {
-              "key": "patientId",
-              "value": "{{patientId}}"
-            }
+            "patient",
+            "appointments",
+            "{{appointmentId}}"
           ]
         }
       },
-      "response": [
-        {
-          "name": "OK",
-          "originalRequest": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              },
-              {
-                "key": "Accept",
-                "value": "application/json"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\r\n  \"patientId\": {{patientId}},\r\n  \"diagnosis\": \"Cảm cúm thông thường\",\r\n  \"symptoms\": \"Sốt nhẹ, ho, đau họng\",\r\n  \"consultationNotes\": \"Bệnh nhân tỉnh táo, dấu hiệu sinh tồn ổn định.\",\r\n  \"labResults\": \"Chưa có xét nghiệm đặc biệt.\",\r\n  \"recommendations\": \"Nghỉ ngơi, uống đủ nước và theo dõi nhiệt độ.\"\r\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            },
-            "url": {
-              "raw": "{{baseUrl}}/api/doctor/medical-records?doctorId=2",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "doctor",
-                "medical-records"
-              ],
-              "query": [
-                {
-                  "key": "doctorId",
-                  "value": "2"
-                }
-              ]
-            }
-          },
-          "status": "OK",
-          "code": 200,
-          "_postman_previewlanguage": "json",
-          "header": [
-            {
-              "key": "vary",
-              "value": "Origin, Access-Control-Request-Method, Access-Control-Request-Headers"
-            },
-            {
-              "key": "x-content-type-options",
-              "value": "nosniff"
-            },
-            {
-              "key": "x-xss-protection",
-              "value": "0"
-            },
-            {
-              "key": "cache-control",
-              "value": "no-cache, no-store, max-age=0, must-revalidate"
-            },
-            {
-              "key": "pragma",
-              "value": "no-cache"
-            },
-            {
-              "key": "expires",
-              "value": "0"
-            },
-            {
-              "key": "x-frame-options",
-              "value": "DENY"
-            },
-            {
-              "key": "content-type",
-              "value": "application/json"
-            },
-            {
-              "key": "transfer-encoding",
-              "value": "chunked"
-            },
-            {
-              "key": "date",
-              "value": "Sun, 11 Oct 2026 05:26:54 GMT"
-            },
-            {
-              "key": "keep-alive",
-              "value": "timeout=60"
-            },
-            {
-              "key": "connection",
-              "value": "keep-alive"
-            }
-          ],
-          "cookie": [],
-          "body": "{\n  \"id\": 2,\n  \"patient\": {\n    \"id\": 1,\n    \"user\": {\n      \"id\": 3,\n      \"username\": \"3\",\n      \"email\": \"sample-patient@hospital.test\",\n      \"firstName\": \"Patient\",\n      \"lastName\": \"Demo\",\n      \"phoneNumber\": \"0900000000\",\n      \"role\": \"PATIENT\",\n      \"active\": true,\n      \"createdAt\": \"2026-10-04T11:42:19.263869\",\n      \"updatedAt\": \"2026-10-11T12:11:01.890687\"\n    },\n    \"address\": \"Địa chỉ mẫu\",\n    \"dateOfBirth\": null,\n    \"bloodGroup\": \"O+\",\n    \"emergencyContact\": \"0900000000\",\n    \"allergies\": null,\n    \"createdAt\": \"2026-10-04T11:42:19.331667\",\n    \"updatedAt\": \"2026-10-04T11:42:19.331667\"\n  },\n  \"doctor\": {\n    \"id\": 2,\n    \"user\": {\n      \"id\": 2,\n      \"username\": \"2\",\n      \"email\": \"sample-doctor@hospital.test\",\n      \"firstName\": \"Doctor\",\n      \"lastName\": \"Demo\",\n      \"phoneNumber\": \"0900000000\",\n      \"role\": \"DOCTOR\",\n      \"active\": true,\n      \"createdAt\": \"2026-10-04T11:42:19.191763\",\n      \"updatedAt\": \"2026-10-11T12:11:01.798904\"\n    },\n    \"department\": {\n      \"id\": 1,\n      \"name\": \"Y học tổng quát\",\n      \"description\": \"Khám và tư vấn sức khỏe tổng quát\",\n      \"active\": true,\n      \"createdAt\": \"2026-10-04T04:42:18.32039\",\n      \"updatedAt\": \"2026-10-04T04:42:18.32039\"\n    },\n    \"specialization\": \"Y học tổng quát\",\n    \"qualification\": \"Bác sĩ đa khoa\",\n    \"experience\": 2,\n    \"available\": true,\n    \"consultationFee\": 0,\n    \"createdAt\": \"2026-10-05T11:46:13.526642\",\n    \"updatedAt\": \"2026-10-05T11:50:14.90142\"\n  },\n  \"diagnosis\": \"Cảm cúm thông thường\",\n  \"symptoms\": \"Sốt nhẹ, ho, đau họng\",\n  \"consultationNotes\": \"Bệnh nhân tỉnh táo, dấu hiệu sinh tồn ổn định.\",\n  \"labResults\": \"Chưa có xét nghiệm đặc biệt.\",\n  \"recommendations\": \"Nghỉ ngơi, uống đủ nước và theo dõi nhiệt độ.\",\n  \"createdAt\": \"2026-10-11T12:26:54.682209663\",\n  \"updatedAt\": \"2026-10-11T12:26:54.682209663\"\n}"
-        }
-      ]
+      "response": []
     }
   ],
   "event": [
@@ -833,16 +762,7 @@
       "value": ""
     },
     {
-      "key": "DOCTOR_TOKEN",
-      "secret": true,
-      "source": {
-        "provider": "postman",
-        "postman": {
-          "type": "cloud",
-          "secretId": "7497dcf9-6a46-434c-a446-1ab5553b4aff",
-          "vaultId": "f71e16c5-95d1-4af7-9eb3-e6e7e94b545d"
-        }
-      }
+      "key": "DOCTOR_TOKEN"
     },
     {
       "key": "status",

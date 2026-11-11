@@ -1,0 +1,24 @@
+﻿caseId,description,doctorId,authMode,requestBody,expectedStatus,expectedResult
+AVA-01,"doctorId hợp lệ nhỏ nhất đang có trong dữ liệu (Doctor ID 1), available=false",1,ADMIN,"{""available"":false}",200,"Cập nhật thành công; response có ""available"": false"
+AVA-02,"doctorId hợp lệ tiếp theo trong dữ liệu (Doctor ID 2), available=true",2,ADMIN,"{""available"":true}",200,"Cập nhật thành công; response có ""available"": true"
+AVA-03,doctorId bằng 0,0,ADMIN,"{""available"":true}",404,Không tìm thấy Doctor nếu DB không có ID 0; source không khai báo @Min/@Positive
+AVA-04,doctorId bằng -1,-1,ADMIN,"{""available"":true}",404,Không tìm thấy Doctor nếu DB không có ID âm; source không khai báo @Min/@Positive
+AVA-05,"doctorId không tồn tại, giá trị lớn",99999999,ADMIN,"{""available"":true}",404,Không tìm thấy Doctor
+AVA-06,doctorId là giá trị nhỏ nhất của Java Long,-9223372036854775808,ADMIN,"{""available"":true}",404,Giá trị biểu diễn được bằng Long; không tìm thấy Doctor nếu không có bản ghi
+AVA-07,doctorId ngay trên giá trị nhỏ nhất của Java Long,-9223372036854775807,ADMIN,"{""available"":true}",404,Giá trị biểu diễn được bằng Long; không tìm thấy Doctor nếu không có bản ghi
+AVA-08,doctorId ngay dưới giá trị lớn nhất của Java Long,9223372036854775806,ADMIN,"{""available"":true}",404,Giá trị biểu diễn được bằng Long; không tìm thấy Doctor nếu không có bản ghi
+AVA-09,doctorId là giá trị lớn nhất của Java Long,9223372036854775807,ADMIN,"{""available"":true}",404,Giá trị biểu diễn được bằng Long; không tìm thấy Doctor nếu không có bản ghi
+AVA-10,doctorId nhỏ hơn Long.MIN_VALUE,-9223372036854775809,ADMIN,"{""available"":true}",400,Không chuyển đổi được PathVariable sang Long
+AVA-11,doctorId lớn hơn Long.MAX_VALUE,9223372036854775808,ADMIN,"{""available"":true}",400,Không chuyển đổi được PathVariable sang Long
+AVA-12,doctorId chứa ký tự không phải số,abc,ADMIN,"{""available"":true}",400,Lỗi chuyển đổi PathVariable Long
+AVA-13,available=false (giá trị Boolean hợp lệ thứ nhất),1,ADMIN,"{""available"":false}",200,"Cập nhật thành công; response có ""available"": false"
+AVA-14,available=true (giá trị Boolean hợp lệ thứ hai),1,ADMIN,"{""available"":true}",200,"Cập nhật thành công; response có ""available"": true"
+AVA-15,available=null,1,ADMIN,"{""available"":null}",400,Validation @NotNull thất bại
+AVA-16,Thiếu thuộc tính available,1,ADMIN,{},400,Validation @NotNull thất bại vì available bị thiếu
+AVA-17,available là chuỗi rỗng,1,ADMIN,"{""available"":""""}",400,Không chuyển đổi được chuỗi rỗng sang Boolean (xác nhận theo Jackson config)
+AVA-18,available sai kiểu chuỗi yes,1,ADMIN,"{""available"":""yes""}",400,Lỗi parse/binding JSON do giá trị không phải Boolean
+AVA-19,available là số 1,1,ADMIN,"{""available"":1}",,Ghi nhận hành vi Jackson binding thực tế; không chốt status trước vì tùy cấu hình
+AVA-20,Không gửi Bearer Token,1,NONE,"{""available"":true}",401,Từ chối xác thực; không cập nhật Doctor
+AVA-21,Bearer Token không hợp lệ,1,INVALID,"{""available"":true}",401,Từ chối xác thực; không cập nhật Doctor
+AVA-22,Dùng DOCTOR_TOKEN gọi API chỉ dành cho ADMIN,1,DOCTOR,"{""available"":true}",403,Từ chối phân quyền; không cập nhật Doctor
+AVA-23,Dùng PATIENT_TOKEN gọi API chỉ dành cho ADMIN,1,PATIENT,"{""available"":true}",403,Từ chối phân quyền; không cập nhật Doctor

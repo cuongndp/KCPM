@@ -1,0 +1,15 @@
+﻿caseId,description,departmentId,authMode,requestBody,expectedStatus,expectedResult
+DEL-01,"departmentId tại giá trị hợp lệ (khoa Đông y, ID 67)",67,ADMIN,,200,Xóa Department thành công
+DEL-02,"departmentId tại giá trị hợp lệ khác (khoa Ngoại, ID 71)",71,ADMIN,,200,Xóa Department thành công; chỉ chạy nếu DEL-01 không được thực hiện hoặc dùng DB test riêng
+DEL-03,departmentId bằng 0 (giá trị dưới miền ID dương thường dùng),0,ADMIN,,404,Không tìm thấy Department nếu DB không có ID 0; source không khai báo @Min/@Positive
+DEL-04,departmentId bằng -1 (giá trị âm),-1,ADMIN,,404,Không tìm thấy Department nếu DB không có ID âm; source không khai báo @Min/@Positive
+DEL-05,"departmentId không tồn tại, giá trị lớn",99999999,ADMIN,,404,Không tìm thấy Department
+DEL-06,departmentId là giá trị nhỏ nhất của Java Long,-9.22E+18,ADMIN,,404,Giá trị biểu diễn được bằng Long; không tìm thấy Department nếu không có bản ghi
+DEL-07,departmentId ngay trên giá trị nhỏ nhất của Java Long,-9.22E+18,ADMIN,,404,Giá trị biểu diễn được bằng Long; không tìm thấy Department nếu không có bản ghi
+DEL-08,departmentId ngay dưới giá trị lớn nhất của Java Long,9.22E+18,ADMIN,,404,Giá trị biểu diễn được bằng Long; không tìm thấy Department nếu không có bản ghi
+DEL-09,departmentId chứa ký tự không phải số,abc,ADMIN,,400,Lỗi chuyển đổi PathVariable Long
+DEL-10,Không gửi Bearer Token,70,NONE,,403,Từ chối xác thực; Department không bị xóa
+DEL-11,Bearer Token không hợp lệ,70,INVALID,,403,Từ chối xác thực; Department không bị xóa
+DEL-12,Dùng DOCTOR_TOKEN gọi API chỉ dành cho ADMIN,70,DOCTOR,,403,Từ chối phân quyền; Department không bị xóa
+DEL-13,Dùng PATIENT_TOKEN gọi API chỉ dành cho ADMIN,70,PATIENT,,403,Từ chối phân quyền; Department không bị xóa
+DEL-14,Xóa Department ID 1 đang có Doctor ID 1 liên kết (kiểm tra cascade),1,ADMIN,,200,Chỉ chạy thủ công trên DB test riêng; có thể xóa Doctor liên kết do cascade/orphanRemoval

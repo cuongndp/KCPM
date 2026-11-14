@@ -113,3 +113,18 @@ lerna-debug.log*
 
 # Application specific
 application-local.properties
+
+# Visual Studio
+.vs/
+*.suo
+*.user
+*.rsuser
+*.sln.docstates
+*.sqlite
+*.slnx.sqlite
+
+# Postman cache
+.postman/
+
+# Build output cho mọi module Maven
+**/target/

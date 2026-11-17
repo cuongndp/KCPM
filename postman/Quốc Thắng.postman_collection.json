@@ -13,10 +13,44 @@
         {
           "listen": "test",
           "script": {
-            "type": "text/javascript",
             "exec": [
-              "\nconst data = pm.iterationData.toObject();\n\nconsole.log(\"TEST CASE:\", data.testCaseId);\nconsole.log(\"SCENARIO:\", data.testScenario);\nconsole.log(\"REQUEST BODY:\", data.requestBody);\nconsole.log(\"STATUS MONG ĐỢI:\", data.expectedStatus);\nconsole.log(\"STATUS THỰC TẾ:\", pm.response.code);\n\n// Kiểm tra dữ liệu CSV\npm.test(\"CSV có dữ liệu đầu vào\", function () {\n    pm.expect(data.requestBody).to.exist;\n    pm.expect(data.testCaseId).to.exist;\n});\n\n// Lấy mã HTTP từ expectedStatus\npm.test(\"Mã HTTP đúng với CSV\", function () {\n    const expectedStatuses = String(data.expectedStatus)\n        .match(/\\d{3}/g)\n        .map(Number);\n\n    pm.expect(\n        expectedStatuses,\n        \"Không đọc được mã HTTP mong đợi\"\n    ).to.not.be.empty;\n\n    pm.expect(\n        expectedStatuses,\n        \"Mong đợi: \" + expectedStatuses.join(\" hoặc \") +\n        \" | Thực tế: \" + pm.response.code\n    ).to.include(pm.response.code);\n});\n"
-            ]
+              "",
+              "const data = pm.iterationData.toObject();",
+              "",
+              "console.log(\"TEST CASE:\", data.testCaseId);",
+              "console.log(\"SCENARIO:\", data.testScenario);",
+              "console.log(\"REQUEST BODY:\", data.requestBody);",
+              "console.log(\"STATUS MONG ĐỢI:\", data.expectedStatus);",
+              "console.log(\"STATUS THỰC TẾ:\", pm.response.code);",
+              "",
+              "// Kiểm tra dữ liệu CSV",
+              "pm.test(\"CSV có dữ liệu đầu vào\", function () {",
+              "    pm.expect(data.requestBody).to.exist;",
+              "    pm.expect(data.testCaseId).to.exist;",
+              "});",
+              "",
+              "// Lấy mã HTTP từ expectedStatus",
+              "pm.test(\"Mã HTTP đúng với CSV\", function () {",
+              "    const expectedStatuses = String(data.expectedStatus)",
+              "        .match(/\\d{3}/g)",
+              "        .map(Number);",
+              "",
+              "    pm.expect(",
+              "        expectedStatuses,",
+              "        \"Không đọc được mã HTTP mong đợi\"",
+              "    ).to.not.be.empty;",
+              "",
+              "    pm.expect(",
+              "        expectedStatuses,",
+              "        \"Mong đợi: \" + expectedStatuses.join(\" hoặc \") +",
+              "        \" | Thực tế: \" + pm.response.code",
+              "    ).to.include(pm.response.code);",
+              "});",
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
           }
         }
       ],
@@ -30,7 +64,7 @@
         ],
         "body": {
           "mode": "raw",
-          "raw": "{\r\n    \"username\": \"testuser2026\",\r\n    \"email\": \"testuser2026@example.com\",\r\n    \"password\": \"StrongPass@123\",\r\n    \"firstName\": \"Test\",\r\n    \"lastName\": \"User\",\r\n    \"phoneNumber\": \"0901234567\"\r\n}",
+          "raw": "{\r\n  \"username\": \"testuser2026\",\r\n  \"email\": \"testuser2026@example.com\",\r\n  \"password\": \"StrongPass@123\",\r\n  \"firstName\": \"Test\",\r\n  \"lastName\": \"User\",\r\n  \"phoneNumber\": \"0901234567\",\r\n  \"role\": \"PATIENT\"\r\n}",
           "options": {
             "raw": {
               "language": "json"

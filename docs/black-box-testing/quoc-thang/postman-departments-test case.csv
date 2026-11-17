@@ -1,0 +1,25 @@
+testCaseId,testScenario,requestBody,expectedStatus
+DEPT-001,Create new department,"{""name"":""CSV Test Department 001"",""description"":""Created by Postman CSV test"",""active"":true}",200
+DEPT-002,Create another unique department,"{""name"":""CSV Test Department 002"",""description"":""Unique department case"",""active"":true}",200
+DEPT-003,Duplicate department name; known backend response is 500,"{""name"":""CSV Test Department 001"",""description"":""Duplicate name case"",""active"":true}",500
+DEPT-004,Department with Unicode name,"{""name"":""Khoa kiểm thử CSV 004"",""description"":""Kiểm thử dấu tiếng Việt"",""active"":true}",200
+DEPT-005,Optional description omitted,"{""name"":""CSV Test Department 005"",""active"":true}",200
+DEPT-006,Inactive department,"{""name"":""CSV Test Department 006"",""description"":""Inactive test case"",""active"":false}",200
+DEPT-007,Missing department name,"{""description"":""Missing name case"",""active"":true}",400
+DEPT-008,Null department name,"{""name"":null,""description"":""Null name case"",""active"":true}",400
+DEPT-009,Blank department name,"{""name"":"""",""description"":""Blank name case"",""active"":true}",400
+DEPT-010,Name has wrong JSON type,"{""name"":123,""description"":""Wrong type case"",""active"":true}",400
+DEPT-011,Create without authentication,"{""name"":""CSV Test Department 011"",""description"":""No token case"",""active"":true}",401
+DEPT-012,Create with expired token; configure EXPIRED_TOKEN,"{""name"":""CSV Test Department 012"",""description"":""Expired token case"",""active"":true}",401
+DEPT-013,Create with PATIENT token,"{""name"":""CSV Test Department 013"",""description"":""Patient role case"",""active"":true}",403
+DEPT-014,Create with DOCTOR token,"{""name"":""CSV Test Department 014"",""description"":""Doctor role case"",""active"":true}",403
+DEPT-015,Blank description,"{""name"":""CSV Test Department 015"",""description"":"""",""active"":true}",200
+DEPT-016,Null description,"{""name"":""CSV Test Department 016"",""description"":null,""active"":true}",200
+DEPT-017,Missing active flag,"{""name"":""CSV Test Department 017"",""description"":""Missing active flag""}",200
+DEPT-018,Null active flag,"{""name"":""CSV Test Department 018"",""description"":""Null active flag"",""active"":null}",400
+DEPT-019,Active flag has wrong type,"{""name"":""CSV Test Department 019"",""description"":""Invalid active type"",""active"":""true""}",400
+DEPT-020,Description has wrong type,"{""name"":""CSV Test Department 020"",""description"":123,""active"":true}",400
+DEPT-021,Whitespace-only department name,"{""name"":""   "",""description"":""Whitespace name case"",""active"":true}",400
+DEPT-022,Unknown extra field is ignored,"{""name"":""CSV Test Department 022"",""description"":""Extra field case"",""active"":true,""unexpectedField"":""probe""}",200
+DEPT-023,Empty JSON object,"{}",400
+DEPT-024,Malformed JSON body,{,400

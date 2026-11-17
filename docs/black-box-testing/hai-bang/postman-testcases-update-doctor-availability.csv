@@ -1,0 +1,14 @@
+TC_ID,requestBody,expectedStatus,authMode,doctorId
+TC-DAV-01,"{""available"":true}",200,ADMIN,1
+TC-DAV-02,"{""available"":false}",200,ADMIN,1
+TC-DAV-03,"{""available"":false}",409,ADMIN,2
+TC-DAV-04,"{""available"":true}",200,ADMIN,1
+TC-DAV-05,"{""available"":true}",404,ADMIN,999999999
+TC-DAV-06,"{""available"":true}",400,ADMIN,@@
+TC-DAV-07,{},400,ADMIN,1
+TC-DAV-08,"{""available"":""yes""}",400,ADMIN,1
+TC-DAV-09,"{""available"":null}",400,ADMIN,1
+TC-DAV-10,"{""available"":true}",401,NONE,1
+TC-DAV-11,"{""available"":true}",401,INVALID,1
+TC-DAV-12,"{""available"":true}",403,DOCTOR,1
+TC-DAV-13,"{""available"":true}",403,PATIENT,1

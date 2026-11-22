@@ -1,5 +1,0 @@
-caseId,caseName,patientQuery,expectedStatus,expectedBodyKind,expectedBodyContains,epTags,bvaTags,preconditions
-TC-PRES-001,Bệnh nhân có đơn thuốc,?patientId=1,200,array_non_empty,,V1,,Bệnh nhân 1 có ít nhất một đơn thuốc
-TC-PRES-002,Bệnh nhân không có đơn thuốc,?patientId=999998,200,array_empty,,V2,,ID 999999 không có đơn thuốc; API trả mảng rỗng
-TC-PRES-003,Thiếu patientId,,400,any,,X1,,Để patientQuery trống để không gửi query parameter
-TC-PRES-004,patientId không phải số,?patientId=abc,400,any,,X2,,PATIENT_TOKEN hợp lệ

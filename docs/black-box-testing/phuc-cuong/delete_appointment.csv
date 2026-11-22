@@ -1,4 +1,0 @@
-caseId,caseName,appointmentId,expectedStatus,expectedBodyKind,expectedBodyContains,epTags,bvaTags,preconditions
-TC-DEL-001,Hủy lịch hẹn tồn tại,1,200,text_contains,Appointment cancelled successfully,V1,,Tạo lịch hẹn dùng riêng cho kiểm thử; thay 999 bằng appointmentId thực tế; thao tác đổi trạng thái sang CANCELLED
-TC-DEL-002,appointmentId sai kiểu,abc,400,any,,X1,,PATIENT_TOKEN hợp lệ
-TC-DEL-003,appointmentId không tồn tại,999995,404,any,,X2,,Đảm bảo ID 999999 chưa được dùng

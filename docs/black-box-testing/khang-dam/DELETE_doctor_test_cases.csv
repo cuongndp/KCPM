@@ -1,0 +1,9 @@
+﻿TestCase_ID,doctorId,Expected_HTTP_Status,Description
+DEL_DOC_01,35,200,Xóa bác sĩ có doctorId = 35
+DEL_DOC_03,3,404,Xóa bác sĩ có doctorId = 3 không tồn tại
+DEL_DOC_04,999999,404,Xóa bác sĩ không tồn tại
+DEL_DOC_05,0,404,doctorId bằng 0
+DEL_DOC_06,-1,404,doctorId âm
+DEL_DOC_07,abc,400,doctorId không phải số
+DEL_DOC_08,1.5,400,doctorId là số thập phân
+DEL_DOC_09,2147483647,404,doctorId rất lớn nhưng không tồn tại

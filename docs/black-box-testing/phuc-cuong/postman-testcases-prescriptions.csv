@@ -1,0 +1,39 @@
+TC_ID,requestBody,expectedStatus,authMode,doctorId
+TC-PRS-01,"{""patientId"":1,""appointmentId"":1,""medication"":""Paracetamol"",""dosage"":""500mg"",""frequency"":""2 lần/ngày"",""duration"":5,""instructions"":""Uống sau ăn""}",200,DOCTOR,1
+TC-PRS-02,"{""patientId"":1,""appointmentId"":1,""medication"":""Paracetamol"",""dosage"":""500mg"",""frequency"":""2 lần/ngày""}",200,DOCTOR,1
+TC-PRS-03,"{""patientId"":1,""appointmentId"":1,""medication"":""Paracetamol"",""dosage"":""500mg"",""frequency"":""2 lần/ngày"",""duration"":null,""instructions"":null}",200,DOCTOR,1
+TC-PRS-04,"{""patientId"":1,""appointmentId"":1,""medication"":""Thuốc A"",""dosage"":""1 viên"",""frequency"":""Mỗi ngày"",""duration"":0}",400,DOCTOR,1
+TC-PRS-05,"{""patientId"":1,""appointmentId"":1,""medication"":""Thuốc A"",""dosage"":""1 viên"",""frequency"":""Mỗi ngày"",""duration"":-1}",400,DOCTOR,1
+TC-PRS-06,"{""patientId"":1,""appointmentId"":1,""medication"":""Thuốc A"",""dosage"":""1 viên"",""frequency"":""Mỗi ngày"",""duration"":2147483647}",400,DOCTOR,1
+TC-PRS-07,"{""patientId"":1,""appointmentId"":1,""medication"":"""",""dosage"":""500mg"",""frequency"":""2 lần/ngày""}",400,DOCTOR,1
+TC-PRS-08,"{""patientId"":1,""appointmentId"":1,""medication"":""   "",""dosage"":""500mg"",""frequency"":""2 lần/ngày""}",400,DOCTOR,1
+TC-PRS-09,"{""patientId"":1,""appointmentId"":1,""dosage"":""500mg"",""frequency"":""2 lần/ngày""}",400,DOCTOR,1
+TC-PRS-10,"{""patientId"":1,""appointmentId"":1,""medication"":null,""dosage"":""500mg"",""frequency"":""2 lần/ngày""}",400,DOCTOR,1
+TC-PRS-11,"{""patientId"":1,""appointmentId"":1,""medication"":""Thuốc A"",""dosage"":"""",""frequency"":""2 lần/ngày""}",400,DOCTOR,1
+TC-PRS-12,"{""patientId"":1,""appointmentId"":1,""medication"":""Thuốc A"",""dosage"":""   "",""frequency"":""2 lần/ngày""}",400,DOCTOR,1
+TC-PRS-13,"{""patientId"":1,""appointmentId"":1,""medication"":""Thuốc A"",""frequency"":""2 lần/ngày""}",400,DOCTOR,1
+TC-PRS-14,"{""patientId"":1,""appointmentId"":1,""medication"":""Thuốc A"",""dosage"":null,""frequency"":""2 lần/ngày""}",400,DOCTOR,1
+TC-PRS-15,"{""patientId"":1,""appointmentId"":1,""medication"":""Thuốc A"",""dosage"":""500mg"",""frequency"":""""}",400,DOCTOR,1
+TC-PRS-16,"{""patientId"":1,""appointmentId"":1,""medication"":""Thuốc A"",""dosage"":""500mg"",""frequency"":""   ""}",400,DOCTOR,1
+TC-PRS-17,"{""patientId"":1,""appointmentId"":1,""medication"":""Thuốc A"",""dosage"":""500mg""}",400,DOCTOR,1
+TC-PRS-18,"{""patientId"":1,""appointmentId"":1,""medication"":""Thuốc A"",""dosage"":""500mg"",""frequency"":null}",400,DOCTOR,1
+TC-PRS-19,"{""patientId"":1,""appointmentId"":1,""medication"":""A"",""dosage"":""B"",""frequency"":""C""}",200,DOCTOR,1
+TC-PRS-20,"{""appointmentId"":1,""medication"":""Thuốc A"",""dosage"":""500mg"",""frequency"":""Mỗi ngày""}",400,DOCTOR,1
+TC-PRS-21,"{""patientId"":null,""appointmentId"":1,""medication"":""Thuốc A"",""dosage"":""500mg"",""frequency"":""Mỗi ngày""}",400,DOCTOR,1
+TC-PRS-22,"{""patientId"":999999999,""appointmentId"":1,""medication"":""Thuốc A"",""dosage"":""500mg"",""frequency"":""Mỗi ngày""}",404,DOCTOR,1
+TC-PRS-23,"{""patientId"":1,""medication"":""Thuốc A"",""dosage"":""500mg"",""frequency"":""Mỗi ngày""}",400,DOCTOR,1
+TC-PRS-24,"{""patientId"":1,""appointmentId"":null,""medication"":""Thuốc A"",""dosage"":""500mg"",""frequency"":""Mỗi ngày""}",400,DOCTOR,1
+TC-PRS-25,"{""patientId"":1,""appointmentId"":999999999,""medication"":""Thuốc A"",""dosage"":""500mg"",""frequency"":""Mỗi ngày""}",404,DOCTOR,1
+TC-PRS-26,"{""patientId"":1,""appointmentId"":1,""medication"":""Paracetamol"",""dosage"":""500mg"",""frequency"":""2 lần/ngày"",""duration"":5,""instructions"":""Uống sau ăn""}",200,DOCTOR,1
+TC-PRS-27,"{""patientId"":1,""appointmentId"":1,""medication"":""Thuốc A"",""dosage"":""500mg"",""frequency"":""Mỗi ngày""}",400,DOCTOR,
+TC-PRS-28,"{""patientId"":1,""appointmentId"":1,""medication"":""Thuốc A"",""dosage"":""500mg"",""frequency"":""Mỗi ngày""}",404,DOCTOR,999999999
+TC-PRS-29,"{""patientId"":1,""appointmentId"":1,""medication"":""Thuốc A"",""dosage"":""500mg"",""frequency"":""Mỗi ngày""}",401,NONE,1
+TC-PRS-30,"{""patientId"":1,""appointmentId"":1,""medication"":""Thuốc A"",""dosage"":""500mg"",""frequency"":""Mỗi ngày""}",403,PATIENT,1
+TC-PRS-31,"{""patientId"":1,""appointmentId"":1,""medication"":""Thuốc A"",""dosage"":""500mg"",""frequency"":""Mỗi ngày""}",401,INVALID,1
+TC-PRS-32,"{""patientId"":1,""appointmentId"":1,""medication"":""Thuốc A"",""dosage"":""500mg"",""frequency"":""Mỗi ngày"",""duration"":3.5}",400,DOCTOR,1
+TC-PRS-33,"{""patientId"":1,""appointmentId"":1,""medication"":""Thuốc A"",""dosage"":""500mg"",""frequency"":""Mỗi ngày"",""duration"":""abc""}",400,DOCTOR,1
+TC-PRS-34,"{""patientId"":1,""appointmentId"":1,""medication"":""Thuốc A"",""dosage"":""500mg"",""frequency"":""Mỗi ngày"",""duration"":2147483648}",400,DOCTOR,1
+TC-PRS-35,"{""patientId"":1,""appointmentId"":2,""medication"":""Thuốc A"",""dosage"":""500mg"",""frequency"":""Mỗi ngày""}",400,DOCTOR,1
+TC-PRS-36,"{""patientId"":1,""appointmentId"":1,""medication"":""Thuốc A"",""dosage"":""500mg"",""frequency"":""Mỗi ngày"",""instructions"":""aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa""}",200,DOCTOR,1
+TC-PRS-37,"{""patientId"":1,""appointmentId"":1,""medication"":""Thuốc A"",""dosage"":""500mg"",""frequency"":""Mỗi ngày""}",403,DOCTOR,2
+TC-PRS-38,"{""patientId"":1,""appointmentId"":2,""medication"":""Thuốc A"",""dosage"":""500mg"",""frequency"":""Mỗi ngày""}",403,DOCTOR,1

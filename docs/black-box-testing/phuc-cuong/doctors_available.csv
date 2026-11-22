@@ -1,5 +1,0 @@
-caseId,caseName,departmentQuery,expectedStatus,expectedBodyKind,expectedBodyContains,epTags,bvaTags,preconditions
-TC-DOC-001,Không lọc theo khoa,,200,array_non_empty,,V1,,PATIENT_TOKEN hợp lệ; môi trường có ít nhất một bác sĩ khả dụng
-TC-DOC-002,Lọc khoa đang hoạt động,?departmentId=1,200,array_non_empty,,V2,,Khoa 1 đang hoạt động và có ít nhất một bác sĩ khả dụng
-TC-DOC-003,ID khoa hợp lệ nhưng không có kết quả,?departmentId=999999,200,array_empty,,V3,,ID 999999 không trùng khoa hoặc bác sĩ phù hợp
-TC-DOC-004,ID khoa không chuyển đổi được,?departmentId=abc,400,any,,X1,,PATIENT_TOKEN hợp lệ

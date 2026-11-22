@@ -1,0 +1,12 @@
+﻿TestCaseID,TestScenario,appointmentId,status,Authorization,Expected_HTTP_Status,Expected_Result_Notes,Actual_HTTP_Status
+PUT-001,Valid appointment and supported transition,1,CONFIRMED,Valid doctor token,200,Known success sample from collection,
+PUT-002,Unknown appointment ID,999999,CONFIRMED,Valid doctor token,404,Verify not-found behavior from backend,
+PUT-003,Non-numeric appointmentId,abc,CONFIRMED,Valid doctor token,400,Path binding response not documented,
+PUT-004,Zero appointmentId,0,CONFIRMED,Valid doctor token,400,No minimum ID constraint documented,
+PUT-005,Negative appointmentId,-1,CONFIRMED,Valid doctor token,400,No minimum ID constraint documented,
+PUT-006,Missing appointmentId,,CONFIRMED,Valid doctor token,404,Verify routing/binding response,
+PUT-007,Unsupported status value,1,INVALID_STATUS,Valid doctor token,400,Supported status enum not documented,
+PUT-008,Empty status,1,,Valid doctor token,400,Requiredness not documented,
+PUT-009,Missing status query parameter,1,,Valid doctor token,400,Requiredness not documented,
+PUT-010,Missing bearer token,1,CONFIRMED,No token,200,Authentication response not documented,
+PUT-011,Invalid/expired bearer token,1,CONFIRMED,Invalid token,200,Authentication response not documented,

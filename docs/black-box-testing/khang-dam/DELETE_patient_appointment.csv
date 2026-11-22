@@ -1,0 +1,11 @@
+﻿TestCase_ID,Description,appointmentId,Expected_HTTP_Status,Test_Type,Notes
+DEL-001,Xoa lich hen hop le thu nhat,1,200,Positive,"Can thay ID 1 bang appointmentId that, chua bi xoa va thuoc benh nhan dang dang nhap. Neu API tra 204, sua expected thanh 204."
+DEL-002,Xoa lich hen hop le thu hai,2,200,Positive,"Can thay ID 2 bang appointmentId that khac DEL-001, chua bi xoa va duoc phep xoa."
+DEL-003,Xoa lich hen hop le thu ba,3,200,Positive,"Can thay ID 3 bang appointmentId that khac hai test tren, chua bi xoa va duoc phep xoa."
+DEL-004,Xoa lich hen voi ID khong ton tai,999999,404,Negative,"ID gia lap lon, dung de kiem tra khong tim thay lich hen."
+DEL-005,Xoa lich hen voi ID bang 0,0,404,Negative,"Neu backend validate ID truoc khi truy van, co the tra 400 thay vi 404."
+DEL-006,Xoa lich hen voi ID am,-1,404,Negative,"Neu backend validate ID truoc khi truy van, co the tra 400 thay vi 404."
+DEL-007,Xoa lich hen voi ID la chu,abc,400,Negative,Kiem tra loi chuyen doi kieu du lieu Long.
+DEL-008,Xoa lich hen voi ID la so thap phan,1.5,400,Negative,Kiem tra ID khong phai so nguyen.
+DEL-009,Xoa lai lich hen da bi xoa,1,404,Negative,Chi chay sau DEL-001 va chi dung ID da xoa thanh cong; ID trung DEL-001 la co chu dich de kiem tra xoa lan hai.
+DEL-010,Xoa lich hen voi ID khong thuoc benh nhan dang dang nhap,4,403,Negative,Can thay ID 4 bang lich hen that cua benh nhan khac. Backend co the tra 404 de tranh lo thong tin tai nguyen.

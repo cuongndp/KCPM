@@ -1,5 +1,0 @@
-﻿caseId,caseName,queryString,expectedStatus,expectedBodyKind,expectedBodyContains,epTags,bvaTags,preconditions
-TC-GP-001,Lấy danh sách đơn thuốc của bác sĩ có dữ liệu,?doctorId=1,200,array_non_empty,,V1,,DOCTOR_TOKEN hợp lệ; doctorId=1 tồn tại và có ít nhất một đơn thuốc
-TC-GP-002,ID bác sĩ không có đơn thuốc phù hợp,?doctorId=99999,200,array_empty,,V2,,DOCTOR_TOKEN hợp lệ; xác nhận không có đơn thuốc thuộc doctorId=99999
-TC-GP-003,Thiếu doctorId,,400,any,,X1,,DOCTOR_TOKEN hợp lệ
-TC-GP-004,doctorId không chuyển đổi được sang Long,?doctorId=abc,400,any,,X2,,DOCTOR_TOKEN hợp lệ

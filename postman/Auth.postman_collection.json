@@ -1,10 +1,10 @@
 {
   "info": {
-    "_postman_id": "e5866f26-b837-4773-954d-0566c5b3c48f",
+    "_postman_id": "90efa1e1-8ebb-4ddb-bcf9-c566b6ea81cb",
     "name": "Auth",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-    "_exporter_id": "46953631",
-    "_collection_link": "https://go.postman.co/collection/46953631-e5866f26-b837-4773-954d-0566c5b3c48f?source=collection_link"
+    "_exporter_id": "59371956",
+    "_collection_link": "https://go.postman.co/collection/59371956-90efa1e1-8ebb-4ddb-bcf9-c566b6ea81cb?source=collection_link"
   },
   "item": [
     {
@@ -13,10 +13,64 @@
         {
           "listen": "test",
           "script": {
-            "type": "text/javascript",
             "exec": [
-              "\npm.test('200 OK', function () {\n    pm.response.to.have.status(200);\n});\n\nlet jsonData;\n\ntry {\n    jsonData = pm.response.json();\n} catch (error) {\n    console.log('Response khong phai JSON hop le');\n}\n\nif (jsonData && jsonData.token && jsonData.role) {\n    const role = String(jsonData.role).toUpperCase();\n    const variableName = role + '_TOKEN';\n\n    // Luu token vao Environment dang duoc chon\n    pm.environment.set(variableName, jsonData.token);\n\n    console.log('Da luu token vao Environment: ' + variableName);\n\n    pm.test('Co token dang nhap', function () {\n        pm.expect(jsonData.token).to.be.a('string').and.not.empty;\n    });\n} else {\n    console.log('Khong tim thay token hoac role trong response');\n}\n"
-            ]
+              "",
+              "const expectedStatus = Number(",
+              "    pm.iterationData.get(\"expectedStatus\")",
+              ");",
+              "",
+              "pm.test(\"Check Expected Status\", function () {",
+              "    pm.response.to.have.status(expectedStatus);",
+              "});",
+              "",
+              "let jsonData;",
+              "",
+              "try {",
+              "    jsonData = pm.response.json();",
+              "} catch (error) {",
+              "    console.log(\"Response khong phai JSON\");",
+              "}",
+              "",
+              "// Chỉ lưu token khi login thành công",
+              "if (",
+              "    pm.response.code >= 200 &&",
+              "    pm.response.code < 300 &&",
+              "    jsonData &&",
+              "    jsonData.token &&",
+              "    jsonData.role",
+              ") {",
+              "    const role = String(jsonData.role)",
+              "        .toUpperCase()",
+              "        .replace(/^ROLE_/, \"\")",
+              "        .trim();",
+              "",
+              "    const tokenMap = {",
+              "        ADMIN: \"ADMIN_TOKEN\",",
+              "        DOCTOR: \"DOCTOR_TOKEN\",",
+              "        PATIENT: \"PATIENT_TOKEN\"",
+              "    };",
+              "",
+              "    const variableName = tokenMap[role];",
+              "",
+              "    if (variableName) {",
+              "        pm.environment.set(",
+              "            variableName,",
+              "            jsonData.token",
+              "        );",
+              "",
+              "        console.log(\"Saved: \" + variableName);",
+              "    }",
+              "",
+              "    pm.test(\"Response co token\", function () {",
+              "        pm.expect(jsonData.token)",
+              "            .to.be.a(\"string\").and.not.empty;",
+              "    });",
+              "}",
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
           }
         }
       ],
@@ -30,7 +84,7 @@
         ],
         "body": {
           "mode": "raw",
-          "raw": "{\n  \"username\": \"2\",\n  \"password\": \"2\"\n}",
+          "raw": "{{requestBody}}",
           "options": {
             "raw": {
               "language": "json"
@@ -136,7 +190,7 @@
             }
           ],
           "cookie": [],
-          "body": "{\n  \"token\": \"eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiQURNSU4iLCJzdWIiOiIxIiwiaWF0IjoxNzkxNjk3NzQ1LCJleHAiOjE3OTE3ODQxNDV9.xYz3RqDutpPyq6NMCM-gYJjLcSPueriXi5_NskR6GyA\",\n  \"type\": \"Bearer\",\n  \"userId\": 1,\n  \"username\": \"1\",\n  \"role\": \"ADMIN\"\n}"
+          "body": "{\n  \"token\": \"{{json_web_token_0si4}}\",\n  \"type\": \"Bearer\",\n  \"userId\": 1,\n  \"username\": \"1\",\n  \"role\": \"ADMIN\"\n}"
         },
         {
           "name": "OK doctor",
@@ -223,7 +277,7 @@
             }
           ],
           "cookie": [],
-          "body": "{\n  \"token\": \"eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiRE9DVE9SIiwic3ViIjoiMiIsImlhdCI6MTc5MTY5Nzc2OSwiZXhwIjoxNzkxNzg0MTY5fQ.gIM4dacEz8Q1DWQjt5C-6ZWAbouVAxOY1E0Tlxrm0uU\",\n  \"type\": \"Bearer\",\n  \"userId\": 2,\n  \"username\": \"2\",\n  \"role\": \"DOCTOR\"\n}"
+          "body": "{\n  \"token\": \"{{json_web_token_056m}}\",\n  \"type\": \"Bearer\",\n  \"userId\": 2,\n  \"username\": \"2\",\n  \"role\": \"DOCTOR\"\n}"
         },
         {
           "name": "OK patient",
@@ -310,9 +364,20 @@
             }
           ],
           "cookie": [],
-          "body": "{\n  \"token\": \"eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiUEFUSUVOVCIsInN1YiI6IjMiLCJpYXQiOjE3OTE2OTc3OTAsImV4cCI6MTc5MTc4NDE5MH0.IEX3vxjS3HYki0W8-0MZRBqZTPj65uq_7tvMqEUzlCY\",\n  \"type\": \"Bearer\",\n  \"userId\": 3,\n  \"username\": \"3\",\n  \"role\": \"PATIENT\"\n}"
+          "body": "{\n  \"token\": \"{{json_web_token_0lno}}\",\n  \"type\": \"Bearer\",\n  \"userId\": 3,\n  \"username\": \"3\",\n  \"role\": \"PATIENT\"\n}"
         }
       ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "json_web_token_0lno"
+    },
+    {
+      "key": "json_web_token_056m"
+    },
+    {
+      "key": "json_web_token_0si4"
     }
   ]
 }

@@ -1,0 +1,522 @@
+{
+  "info": {
+    "_postman_id": "c7bdd31c-612b-4762-8cc2-f02b9898a9e2",
+    "name": "Quốc Thắng",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "59398392",
+    "_collection_link": "https://go.postman.co/collection/59398392-c7bdd31c-612b-4762-8cc2-f02b9898a9e2?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "api/auth/register",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "",
+              "const data = pm.iterationData.toObject();",
+              "",
+              "console.log(\"TEST CASE:\", data.testCaseId);",
+              "console.log(\"SCENARIO:\", data.testScenario);",
+              "console.log(\"REQUEST BODY:\", data.requestBody);",
+              "console.log(\"STATUS MONG ĐỢI:\", data.expectedStatus);",
+              "console.log(\"STATUS THỰC TẾ:\", pm.response.code);",
+              "",
+              "// Kiểm tra dữ liệu CSV",
+              "pm.test(\"CSV có dữ liệu đầu vào\", function () {",
+              "    pm.expect(data.requestBody).to.exist;",
+              "    pm.expect(data.testCaseId).to.exist;",
+              "});",
+              "",
+              "// Lấy mã HTTP từ expectedStatus",
+              "pm.test(\"Mã HTTP đúng với CSV\", function () {",
+              "    const expectedStatuses = String(data.expectedStatus)",
+              "        .match(/\\d{3}/g)",
+              "        .map(Number);",
+              "",
+              "    pm.expect(",
+              "        expectedStatuses,",
+              "        \"Không đọc được mã HTTP mong đợi\"",
+              "    ).to.not.be.empty;",
+              "",
+              "    pm.expect(",
+              "        expectedStatuses,",
+              "        \"Mong đợi: \" + expectedStatuses.join(\" hoặc \") +",
+              "        \" | Thực tế: \" + pm.response.code",
+              "    ).to.include(pm.response.code);",
+              "});",
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"username\": \"testuser2026\",\r\n  \"email\": \"testuser2026@example.com\",\r\n  \"password\": \"StrongPass@123\",\r\n  \"firstName\": \"Test\",\r\n  \"lastName\": \"User\",\r\n  \"phoneNumber\": \"0901234567\",\r\n  \"role\": \"PATIENT\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/auth/register",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "auth",
+            "register"
+          ]
+        },
+        "description": "Body: RegistrationRequest.\nBắt buộc: username, password, email, firstName, lastName, phoneNumber (10 chữ số), role.\nTu chọn: address, dateOfBirth, bloodGroup, emergencyContact.\nKhông cần Authorization.\nKết quả mong đợi: 200 OK, \"User registered successfully\".\n\nLƯU Ý BẢO MẬT: trường role do client gửi lên và backend không kiểm tra - đổi role thành ADMIN sẽ tạo được tài khoản quản trị. Xem mục Known Issues."
+      },
+      "response": [
+        {
+          "name": "OK",
+          "originalRequest": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"4\",\n  \"password\": \"4\",\n  \"email\": \"khach.test@example.com\",\n  \"firstName\": \"Khách\",\n  \"lastName\": \"Test\",\n  \"phoneNumber\": \"0912345678\",\n  \"role\": \"PATIENT\",\n  \"address\": \"123 Nguyễn Huệ, Q.1, TP.HCM\",\n  \"dateOfBirth\": \"1995-05-20\",\n  \"bloodGroup\": \"O+\",\n  \"emergencyContact\": \"0912345678\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/register",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "register"
+              ]
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "_postman_previewlanguage": "text",
+          "header": [
+            {
+              "key": "vary",
+              "value": "Origin, Access-Control-Request-Method, Access-Control-Request-Headers"
+            },
+            {
+              "key": "x-content-type-options",
+              "value": "nosniff"
+            },
+            {
+              "key": "x-xss-protection",
+              "value": "0"
+            },
+            {
+              "key": "cache-control",
+              "value": "no-cache, no-store, max-age=0, must-revalidate"
+            },
+            {
+              "key": "pragma",
+              "value": "no-cache"
+            },
+            {
+              "key": "expires",
+              "value": "0"
+            },
+            {
+              "key": "x-frame-options",
+              "value": "DENY"
+            },
+            {
+              "key": "content-type",
+              "value": "text/plain;charset=UTF-8"
+            },
+            {
+              "key": "content-length",
+              "value": "28"
+            },
+            {
+              "key": "date",
+              "value": "Sun, 11 Oct 2026 06:06:03 GMT"
+            },
+            {
+              "key": "keep-alive",
+              "value": "timeout=60"
+            },
+            {
+              "key": "connection",
+              "value": "keep-alive"
+            }
+          ],
+          "cookie": [],
+          "body": "User registered successfully"
+        }
+      ]
+    },
+    {
+      "name": "api/admin/departments",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "const expected = Number(\n    pm.iterationData.get(\"Mã trạng thái mong đợi\")\n);\n\nconst testCase = pm.iterationData.get(\"Mã test case\");\n\nconsole.log(\"Test case:\", testCase);\nconsole.log(\"Expected:\", expected);\nconsole.log(\"Actual:\", pm.response.code);\n\npm.test(\"Kiểm tra mã HTTP theo CSV\", function () {\n    pm.response.to.have.status(expected);\n});"
+            ]
+          }
+        },
+        {
+          "listen": "prerequest",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "const mode = pm.iterationData.get(\"authMode\");\r\n\r\nif (mode === \"ADMIN\") {\r\n    pm.request.headers.upsert({\r\n        key: \"Authorization\",\r\n        value: \"Bearer \" + pm.environment.get(\"ADMIN_TOKEN\")\r\n    });\r\n}\r\nelse if (mode === \"PATIENT\") {\r\n    pm.request.headers.upsert({\r\n        key: \"Authorization\",\r\n        value: \"Bearer \" + pm.environment.get(\"PATIENT_TOKEN\")\r\n    });\r\n}\r\nelse if (mode === \"DOCTOR\") {\r\n    pm.request.headers.upsert({\r\n        key: \"Authorization\",\r\n        value: \"Bearer \" + pm.environment.get(\"DOCTOR_TOKEN\")\r\n    });\r\n}\r\nelse if (mode === \"INVALID\") {\r\n    pm.request.headers.upsert({\r\n        key: \"Authorization\",\r\n        value: pm.collectionVariables.get(\"bearer_token_162i\")\r\n    });\r\n}\r\nelse if (mode === \"NONE\") {\r\n    pm.request.headers.remove(\"Authorization\");\r\n}"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{ADMIN_TOKEN}}",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/admin/departments",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "admin",
+            "departments"
+          ]
+        },
+        "description": "Yêu cầu Authorization: Bearer token của tài khoản ADMIN.\nKết quả mong đợi: 200 OK, mảng JSON các khoa/phòng (id, name, description, active, createdAt, updatedAt).\n\nLƯU Ý: dữ liệu seed trong data.sql bị lỗi encoding nên tên khoa có thể hiển thị sai dấu tiếng Việt. Xem mục Known Issues."
+      },
+      "response": [
+        {
+          "name": "OK",
+          "originalRequest": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/departments",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "departments"
+              ]
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "_postman_previewlanguage": "json",
+          "header": [
+            {
+              "key": "vary",
+              "value": "Origin, Access-Control-Request-Method, Access-Control-Request-Headers"
+            },
+            {
+              "key": "x-content-type-options",
+              "value": "nosniff"
+            },
+            {
+              "key": "x-xss-protection",
+              "value": "0"
+            },
+            {
+              "key": "cache-control",
+              "value": "no-cache, no-store, max-age=0, must-revalidate"
+            },
+            {
+              "key": "pragma",
+              "value": "no-cache"
+            },
+            {
+              "key": "expires",
+              "value": "0"
+            },
+            {
+              "key": "x-frame-options",
+              "value": "DENY"
+            },
+            {
+              "key": "content-type",
+              "value": "application/json"
+            },
+            {
+              "key": "transfer-encoding",
+              "value": "chunked"
+            },
+            {
+              "key": "date",
+              "value": "Sun, 11 Oct 2026 06:06:46 GMT"
+            },
+            {
+              "key": "keep-alive",
+              "value": "timeout=60"
+            },
+            {
+              "key": "connection",
+              "value": "keep-alive"
+            }
+          ],
+          "cookie": [],
+          "body": "[\n  {\n    \"id\": 1,\n    \"name\": \"Y học tổng quát\",\n    \"description\": \"Khám và tư vấn sức khỏe tổng quát\",\n    \"active\": true,\n    \"createdAt\": \"2026-10-04T04:42:18.32039\",\n    \"updatedAt\": \"2026-10-04T04:42:18.32039\"\n  },\n  {\n    \"id\": 2,\n    \"name\": \"Tim mạch\",\n    \"description\": \"Khám và điều trị bệnh tim mạch\",\n    \"active\": true,\n    \"createdAt\": \"2026-10-04T04:42:18.32039\",\n    \"updatedAt\": \"2026-10-04T04:42:18.32039\"\n  },\n  {\n    \"id\": 3,\n    \"name\": \"Chỉnh hình\",\n    \"description\": \"Khám và điều trị bệnh về xương khớp\",\n    \"active\": true,\n    \"createdAt\": \"2026-10-04T04:42:18.32039\",\n    \"updatedAt\": \"2026-10-04T04:42:18.32039\"\n  },\n  {\n    \"id\": 4,\n    \"name\": \"Nhi khoa\",\n    \"description\": \"Chăm sóc và điều trị sức khỏe trẻ em\",\n    \"active\": true,\n    \"createdAt\": \"2026-10-04T04:42:18.32039\",\n    \"updatedAt\": \"2026-10-04T04:42:18.32039\"\n  },\n  {\n    \"id\": 5,\n    \"name\": \"Thần kinh\",\n    \"description\": \"Khám và điều trị bệnh về thần kinh\",\n    \"active\": true,\n    \"createdAt\": \"2026-10-04T04:42:18.32039\",\n    \"updatedAt\": \"2026-10-04T04:42:18.32039\"\n  },\n  {\n    \"id\": 6,\n    \"name\": \"Da liễu\",\n    \"description\": \"Khám và điều trị bệnh về da\",\n    \"active\": true,\n    \"createdAt\": \"2026-10-04T04:42:18.32039\",\n    \"updatedAt\": \"2026-10-04T04:42:18.32039\"\n  },\n  {\n    \"id\": 7,\n    \"name\": \"Tai Mũi Họng\",\n    \"description\": \"Khám và điều trị bệnh về tai, mũi và họng\",\n    \"active\": true,\n    \"createdAt\": \"2026-10-04T04:42:18.32039\",\n    \"updatedAt\": \"2026-10-04T04:42:18.32039\"\n  }\n]"
+        }
+      ]
+    },
+    {
+      "name": "api/admin/departments",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "const expectedStatusText = String(",
+              "    pm.iterationData.get(\"expectedStatus\")",
+              ");",
+              "",
+              "const expectedStatus = Number(",
+              "    expectedStatusText.match(/\\d{3}/)[0]",
+              ");",
+              "",
+              "pm.test(\"Kiểm tra mã trạng thái HTTP\", function () {",
+              "    pm.expect(pm.response.code).to.eql(expectedStatus);",
+              "});",
+              "",
+              "pm.test(\"Kiểm tra API có phản hồi\", function () {",
+              "    pm.expect(pm.response.code).to.be.a(\"number\");",
+              "});",
+              "",
+              "console.log(\"TEST CASE:\", pm.iterationData.get(\"testCaseId\"));",
+              "console.log(\"EXPECTED STATUS:\", expectedStatus);",
+              "console.log(\"ACTUAL STATUS:\", pm.response.code);"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        },
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              "\r",
+              "const testCaseId = pm.iterationData.get(\"testCaseId\");\r",
+              "\r",
+              "// Xóa Authorization mặc định\r",
+              "pm.request.headers.remove(\"Authorization\");\r",
+              "\r",
+              "let token = null;\r",
+              "\r",
+              "switch (testCaseId) {\r",
+              "    case \"DEPT-011\":\r",
+              "        // Không gửi token\r",
+              "        break;\r",
+              "\r",
+              "    case \"DEPT-012\":\r",
+              "        token = pm.environment.get(\"EXPIRED_TOKEN\");\r",
+              "        break;\r",
+              "\r",
+              "    case \"DEPT-013\":\r",
+              "        token = pm.environment.get(\"PATIENT_TOKEN\");\r",
+              "        break;\r",
+              "\r",
+              "    case \"DEPT-014\":\r",
+              "        token = pm.environment.get(\"DOCTOR_TOKEN\");\r",
+              "        break;\r",
+              "\r",
+              "    default:\r",
+              "        token = pm.environment.get(\"ADMIN_TOKEN\");\r",
+              "        break;\r",
+              "}\r",
+              "\r",
+              "if (token) {\r",
+              "    pm.request.headers.upsert({\r",
+              "        key: \"Authorization\",\r",
+              "        value: \"Bearer \" + token\r",
+              "    });\r",
+              "}\r",
+              "\r",
+              "console.log(\"TEST CASE:\", testCaseId);\r",
+              "console.log(\"AUTH:\", testCaseId === \"DEPT-011\"\r",
+              "    ? \"No Token\"\r",
+              "    : token ? \"Token configured\" : \"Missing Token\");\r",
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "auth": {
+          "type": "noauth"
+        },
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"name\": \"Khoa BVA DEPT-TEST\",\r\n    \"description\": \"Test khoa thu cong\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/admin/departments",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "admin",
+            "departments"
+          ]
+        },
+        "description": "Yêu cầu Authorization: Bearer token ADMIN.\nBody: Department { name, description, active }. name là duy nhất và bắt buộc.\nKết quả mong đợi: 200 OK, trả về Department vừa tạo kèm id.\nTest script tự lưu departmentId cho request DELETE.\n\nLƯU Ý: gửi lại đúng name sẽ nhận HTTP 500 thay vì 409. Xem mục Known Issues."
+      },
+      "response": [
+        {
+          "name": "OK",
+          "originalRequest": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Khoa Da Nghiem Thu\",\n  \"description\": \"Khoa tao moi phuc vu nghiem thu W1-01\",\n  \"active\": true\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/departments",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "departments"
+              ]
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "_postman_previewlanguage": "json",
+          "header": [
+            {
+              "key": "vary",
+              "value": "Origin, Access-Control-Request-Method, Access-Control-Request-Headers"
+            },
+            {
+              "key": "x-content-type-options",
+              "value": "nosniff"
+            },
+            {
+              "key": "x-xss-protection",
+              "value": "0"
+            },
+            {
+              "key": "cache-control",
+              "value": "no-cache, no-store, max-age=0, must-revalidate"
+            },
+            {
+              "key": "pragma",
+              "value": "no-cache"
+            },
+            {
+              "key": "expires",
+              "value": "0"
+            },
+            {
+              "key": "x-frame-options",
+              "value": "DENY"
+            },
+            {
+              "key": "content-type",
+              "value": "application/json"
+            },
+            {
+              "key": "transfer-encoding",
+              "value": "chunked"
+            },
+            {
+              "key": "date",
+              "value": "Sun, 11 Oct 2026 06:08:48 GMT"
+            },
+            {
+              "key": "keep-alive",
+              "value": "timeout=60"
+            },
+            {
+              "key": "connection",
+              "value": "keep-alive"
+            }
+          ],
+          "cookie": [],
+          "body": "{\n  \"id\": 43,\n  \"name\": \"Khoa Da Nghiem Thu\",\n  \"description\": \"Khoa tao moi phuc vu nghiem thu W1-01\",\n  \"active\": true,\n  \"createdAt\": \"2026-10-11T13:08:48.466639815\",\n  \"updatedAt\": \"2026-10-11T13:08:48.466639815\"\n}"
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "departmentId",
+      "value": ""
+    },
+    {
+      "key": "bearer_token_162i"
+    },
+    {
+      "key": "bearer_token_0s7j"
+    }
+  ]
+}

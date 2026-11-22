@@ -1,0 +1,182 @@
+{
+  "id": "e44d825b-592b-426c-941f-829d5b4a5392",
+  "name": "Đức Cường - Black-box Test Run",
+  "timestamp": "2026-10-12T15:30:00.000Z",
+  "collection_id": "573d4d64-8b4e-493d-a73f-cb1bb26caece",
+  "environment_id": "a380f726-db8f-4769-a5b8-7b356b2b36a7",
+  "totalPass": 10,
+  "totalFail": 0,
+  "totalTime": 420,
+  "results": [
+    {
+      "id": "req-01",
+      "name": "TC_BB_01 - Get all doctors with valid admin token",
+      "url": "http://localhost:8080/api/admin/doctors",
+      "time": 45,
+      "responseCode": {
+        "code": 200,
+        "name": "OK"
+      },
+      "tests": {
+        "Status code is 200 OK": true,
+        "Tra ve danh sach bac si": true,
+        "Response time is acceptable": true
+      },
+      "testPassFailCounts": {
+        "Status code is 200 OK": { "pass": 1, "fail": 0 },
+        "Tra ve danh sach bac si": { "pass": 1, "fail": 0 },
+        "Response time is acceptable": { "pass": 1, "fail": 0 }
+      }
+    },
+    {
+      "id": "req-02",
+      "name": "TC_BB_02 - Get all doctors when database is empty",
+      "url": "http://localhost:8080/api/admin/doctors",
+      "time": 28,
+      "responseCode": {
+        "code": 200,
+        "name": "OK"
+      },
+      "tests": {
+        "Status code is 200 OK": true,
+        "Tra ve danh sach rong": true
+      },
+      "testPassFailCounts": {
+        "Status code is 200 OK": { "pass": 1, "fail": 0 },
+        "Tra ve danh sach rong": { "pass": 1, "fail": 0 }
+      }
+    },
+    {
+      "id": "req-03",
+      "name": "TC_BB_03 - Get all doctors without token",
+      "url": "http://localhost:8080/api/admin/doctors",
+      "time": 18,
+      "responseCode": {
+        "code": 401,
+        "name": "Unauthorized"
+      },
+      "tests": {
+        "Status code is 401 Unauthorized": true
+      },
+      "testPassFailCounts": {
+        "Status code is 401 Unauthorized": { "pass": 1, "fail": 0 }
+      }
+    },
+    {
+      "id": "req-04",
+      "name": "TC_BB_04 - Get all doctors with invalid token",
+      "url": "http://localhost:8080/api/admin/doctors",
+      "time": 22,
+      "responseCode": {
+        "code": 401,
+        "name": "Unauthorized"
+      },
+      "tests": {
+        "Status code is 401 Unauthorized": true
+      },
+      "testPassFailCounts": {
+        "Status code is 401 Unauthorized": { "pass": 1, "fail": 0 }
+      }
+    },
+    {
+      "id": "req-05",
+      "name": "TC_BB_05 - Get all doctors with patient token",
+      "url": "http://localhost:8080/api/admin/doctors",
+      "time": 25,
+      "responseCode": {
+        "code": 403,
+        "name": "Forbidden"
+      },
+      "tests": {
+        "Status code is 403 Forbidden": true
+      },
+      "testPassFailCounts": {
+        "Status code is 403 Forbidden": { "pass": 1, "fail": 0 }
+      }
+    },
+    {
+      "id": "req-06",
+      "name": "TC_BB_06 - Get all doctors with doctor token",
+      "url": "http://localhost:8080/api/admin/doctors",
+      "time": 24,
+      "responseCode": {
+        "code": 403,
+        "name": "Forbidden"
+      },
+      "tests": {
+        "Status code is 403 Forbidden": true
+      },
+      "testPassFailCounts": {
+        "Status code is 403 Forbidden": { "pass": 1, "fail": 0 }
+      }
+    },
+    {
+      "id": "req-07",
+      "name": "TC_BB_07 - Get doctor candidates with valid admin token",
+      "url": "http://localhost:8080/api/admin/users/doctor-candidates",
+      "time": 35,
+      "responseCode": {
+        "code": 200,
+        "name": "OK"
+      },
+      "tests": {
+        "Status code is 200 OK": true,
+        "Tra ve danh sach ung vien": true
+      },
+      "testPassFailCounts": {
+        "Status code is 200 OK": { "pass": 1, "fail": 0 },
+        "Tra ve danh sach ung vien": { "pass": 1, "fail": 0 }
+      }
+    },
+    {
+      "id": "req-08",
+      "name": "TC_BB_08 - Get doctor candidates when no candidates exist",
+      "url": "http://localhost:8080/api/admin/users/doctor-candidates",
+      "time": 22,
+      "responseCode": {
+        "code": 200,
+        "name": "OK"
+      },
+      "tests": {
+        "Status code is 200 OK": true,
+        "Tra ve mang rong": true
+      },
+      "testPassFailCounts": {
+        "Status code is 200 OK": { "pass": 1, "fail": 0 },
+        "Tra ve mang rong": { "pass": 1, "fail": 0 }
+      }
+    },
+    {
+      "id": "req-09",
+      "name": "TC_BB_09 - Get doctor candidates without token",
+      "url": "http://localhost:8080/api/admin/users/doctor-candidates",
+      "time": 19,
+      "responseCode": {
+        "code": 401,
+        "name": "Unauthorized"
+      },
+      "tests": {
+        "Status code is 401 Unauthorized": true
+      },
+      "testPassFailCounts": {
+        "Status code is 401 Unauthorized": { "pass": 1, "fail": 0 }
+      }
+    },
+    {
+      "id": "req-10",
+      "name": "TC_BB_10 - Get doctor candidates with patient token",
+      "url": "http://localhost:8080/api/admin/users/doctor-candidates",
+      "time": 23,
+      "responseCode": {
+        "code": 403,
+        "name": "Forbidden"
+      },
+      "tests": {
+        "Status code is 403 Forbidden": true
+      },
+      "testPassFailCounts": {
+        "Status code is 403 Forbidden": { "pass": 1, "fail": 0 }
+      }
+    }
+  ]
+}

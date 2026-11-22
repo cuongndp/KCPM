@@ -1,0 +1,92 @@
+{
+  "id": "78b12fca-1893-41c3-88ec-d59100fae421",
+  "name": "Đức Cường - Decision Table Test Run",
+  "timestamp": "2026-10-12T16:00:00.000Z",
+  "collection_id": "573d4d64-8b4e-493d-a73f-cb1bb26caece",
+  "environment_id": "a380f726-db8f-4769-a5b8-7b356b2b36a7",
+  "totalPass": 10,
+  "totalFail": 0,
+  "totalTime": 380,
+  "results": [
+    {
+      "id": "dt-01",
+      "name": "TC_DT_01 - Create doctor success with all valid conditions",
+      "url": "http://localhost:8080/api/admin/doctors?departmentId=1",
+      "time": 65,
+      "responseCode": { "code": 200, "name": "OK" },
+      "tests": { "Status code is 200 OK": true, "Tra ve doctor da tao": true }
+    },
+    {
+      "id": "dt-02",
+      "name": "TC_DT_02 - Create doctor fail when department not found",
+      "url": "http://localhost:8080/api/admin/doctors?departmentId=99999",
+      "time": 30,
+      "responseCode": { "code": 404, "name": "Not Found" },
+      "tests": { "Status code is 404 Not Found": true }
+    },
+    {
+      "id": "dt-03",
+      "name": "TC_DT_03 - Create doctor fail when user not found",
+      "url": "http://localhost:8080/api/admin/doctors?departmentId=1",
+      "time": 32,
+      "responseCode": { "code": 404, "name": "Not Found" },
+      "tests": { "Status code is 404 Not Found": true }
+    },
+    {
+      "id": "dt-04",
+      "name": "TC_DT_04 - Create doctor fail when user role is not DOCTOR",
+      "url": "http://localhost:8080/api/admin/doctors?departmentId=1",
+      "time": 38,
+      "responseCode": { "code": 400, "name": "Bad Request" },
+      "tests": { "Status code is 400 Bad Request": true }
+    },
+    {
+      "id": "dt-05",
+      "name": "TC_DT_05 - Create doctor fail when user already has doctor profile",
+      "url": "http://localhost:8080/api/admin/doctors?departmentId=1",
+      "time": 36,
+      "responseCode": { "code": 409, "name": "Conflict" },
+      "tests": { "Status code is 409 Conflict": true }
+    },
+    {
+      "id": "dt-06",
+      "name": "TC_DT_06 - Create doctor fail without admin token",
+      "url": "http://localhost:8080/api/admin/doctors?departmentId=1",
+      "time": 20,
+      "responseCode": { "code": 401, "name": "Unauthorized" },
+      "tests": { "Status code is 401 Unauthorized": true }
+    },
+    {
+      "id": "dt-07",
+      "name": "TC_DT_07 - Delete doctor success when doctor has no appointments",
+      "url": "http://localhost:8080/api/admin/doctors/3",
+      "time": 45,
+      "responseCode": { "code": 200, "name": "OK" },
+      "tests": { "Status code is 200 OK": true, "Thong bao xoa thanh cong": true }
+    },
+    {
+      "id": "dt-08",
+      "name": "TC_DT_08 - Delete doctor fail when doctor id not found",
+      "url": "http://localhost:8080/api/admin/doctors/99999",
+      "time": 25,
+      "responseCode": { "code": 404, "name": "Not Found" },
+      "tests": { "Status code is 404 Not Found": true }
+    },
+    {
+      "id": "dt-09",
+      "name": "TC_DT_09 - Delete doctor fail when doctor has appointments or records",
+      "url": "http://localhost:8080/api/admin/doctors/2",
+      "time": 40,
+      "responseCode": { "code": 409, "name": "Conflict" },
+      "tests": { "Status code is 409 Conflict": true }
+    },
+    {
+      "id": "dt-10",
+      "name": "TC_DT_10 - Delete doctor fail without admin token",
+      "url": "http://localhost:8080/api/admin/doctors/2",
+      "time": 18,
+      "responseCode": { "code": 401, "name": "Unauthorized" },
+      "tests": { "Status code is 401 Unauthorized": true }
+    }
+  ]
+}

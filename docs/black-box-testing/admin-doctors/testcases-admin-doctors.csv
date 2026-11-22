@@ -1,0 +1,11 @@
+test_case_id,test_case_name,testing_type,api_method_or_function,preconditions,input_data,expected_output,coverage_target,status
+TC_BB_01,Tao bac si thanh cong voi day du thong tin hop le,Black-box,POST /api/admin/doctors,User role DOCTOR chua co profile; Dept ton tai,deptId=1; userId=5; spec="Y hoc tong quat",HTTP 200 OK + Doctor object,EP1;EP3;EP7;Rule 5,PASS
+TC_BB_02,Tao bac si that bai do userId khong ton tai,Black-box,POST /api/admin/doctors,User khong ton tai trong he thong,deptId=1; userId=99999,HTTP 404 User Not Found,EP4;Rule 1,PASS
+TC_BB_03,Tao bac si that bai do user khong phai role DOCTOR,Black-box,POST /api/admin/doctors,User co role PATIENT,deptId=1; userId=3,HTTP 400 Bad Request,EP5;Rule 2,PASS
+TC_BB_04,Tao bac si that bai do user da co ho so bac si,Black-box,POST /api/admin/doctors,User da co ho so trong bang doctors,deptId=1; userId=2,HTTP 409 Conflict,EP6;Rule 3,PASS
+TC_BB_05,Tao bac si that bai do departmentId khong ton tai,Black-box,POST /api/admin/doctors,Department khong ton tai trong CSDL,deptId=99999; userId=5,HTTP 404 Department Not Found,EP2;Rule 4,PASS
+TC_WB_01,Basis Path 1: UserNotFound throws ResourceNotFoundException,White-box,AdminService.createDoctorWithDepartment,userRepository.findById() returns empty,request(userId=5L),Throws ResourceNotFoundException,Path 1 (100% Path 1),PASS
+TC_WB_02,Basis Path 2: UserRoleNotDoctor throws ResponseStatusException 400,White-box,AdminService.createDoctorWithDepartment,user has role PATIENT,user(role=PATIENT),Throws ResponseStatusException BAD_REQUEST,Path 2 (100% Path 2),PASS
+TC_WB_03,Basis Path 3: DoctorProfileExists throws ResponseStatusException 409,White-box,AdminService.createDoctorWithDepartment,doctorRepository.existsByUserId() is true,user(role=DOCTOR) existing,Throws ResponseStatusException CONFLICT,Path 3 (100% Path 3),PASS
+TC_WB_04,Basis Path 4: DepartmentNotFound throws ResourceNotFoundException,White-box,AdminService.createDoctorWithDepartment,departmentRepository.findById() is empty,deptId=1L not found,Throws ResourceNotFoundException,Path 4 (100% Path 4),PASS
+TC_WB_05,Basis Path 5: Successful doctor creation and save,White-box,AdminService.createDoctorWithDepartment,All conditions met,valid user and valid department,Returns saved Doctor object,Path 5 (100% Path 5),PASS

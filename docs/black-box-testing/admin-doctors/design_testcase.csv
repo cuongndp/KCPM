@@ -1,0 +1,11 @@
+test_case_id,test_case_name,method,endpoint,precondition,auth_type,token_value,ep_tags,bva_tags,expected_status,expected_result,actual_result,status
+TC_BB_01,Get all doctors with valid admin token,GET,/api/admin/doctors,User logged in as ADMIN,bearer,{{ADMIN_TOKEN}},EP_AUTH_V1;EP_DOC_V1,BVA_DOC_MANY,200,Return array of doctor objects with full details,HTTP 200 OK - Array returned,PASS
+TC_BB_02,Get all doctors when database is empty,GET,/api/admin/doctors,No doctors exist in database,bearer,{{ADMIN_TOKEN}},EP_AUTH_V1;EP_DOC_V2,BVA_DOC_0,200,Return empty array [],HTTP 200 OK - Empty array [],PASS
+TC_BB_03,Get all doctors without token,GET,/api/admin/doctors,User not logged in,none,,EP_AUTH_INV1,BVA_HDR_EMPTY,401,Unauthorized response,HTTP 401 Unauthorized,PASS
+TC_BB_04,Get all doctors with invalid token,GET,/api/admin/doctors,Invalid token string,bearer,invalid_token_xyz,EP_AUTH_INV2,BVA_HDR_INVALID,401,Unauthorized response,HTTP 401 Unauthorized,PASS
+TC_BB_05,Get all doctors with patient token,GET,/api/admin/doctors,User logged in as PATIENT,bearer,{{PATIENT_TOKEN}},EP_AUTH_INV3,RBAC_BOUNDARY,403,Forbidden access,HTTP 403 Forbidden,PASS
+TC_BB_06,Get all doctors with doctor token,GET,/api/admin/doctors,User logged in as DOCTOR,bearer,{{DOCTOR_TOKEN}},EP_AUTH_INV4,RBAC_BOUNDARY,403,Forbidden access,HTTP 403 Forbidden,PASS
+TC_BB_07,Get doctor candidates with valid admin token,GET,/api/admin/users/doctor-candidates,User logged in as ADMIN,bearer,{{ADMIN_TOKEN}},EP_AUTH_V1;EP_CAND_V1,BVA_CAND_MANY,200,Return array of candidate users,HTTP 200 OK - Candidates returned,PASS
+TC_BB_08,Get doctor candidates when no candidates exist,GET,/api/admin/users/doctor-candidates,All doctor users already have profiles,bearer,{{ADMIN_TOKEN}},EP_AUTH_V1;EP_CAND_V2,BVA_CAND_0,200,Return empty array [],HTTP 200 OK - Empty array [],PASS
+TC_BB_09,Get doctor candidates without token,GET,/api/admin/users/doctor-candidates,User not logged in,none,,EP_AUTH_INV1,BVA_HDR_EMPTY,401,Unauthorized response,HTTP 401 Unauthorized,PASS
+TC_BB_10,Get doctor candidates with patient token,GET,/api/admin/users/doctor-candidates,User logged in as PATIENT,bearer,{{PATIENT_TOKEN}},EP_AUTH_INV3,RBAC_BOUNDARY,403,Forbidden access,HTTP 403 Forbidden,PASS

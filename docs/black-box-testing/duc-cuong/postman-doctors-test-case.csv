@@ -1,0 +1,17 @@
+test_case_id,test_case_name,method,endpoint,department_id,user_id,specialization,qualification,experience,doctor_id,auth_token,expected_status,expected_result,status
+TC_DOC_01,Get all doctors with valid admin token,GET,/api/admin/doctors,,,,,,,,{{ADMIN_TOKEN}},200,Return doctor list array,PASS
+TC_DOC_02,Get all doctors without token,GET,/api/admin/doctors,,,,,,,,,401,Unauthorized,PASS
+TC_DOC_03,Get all doctors with patient token,GET,/api/admin/doctors,,,,,,,,{{PATIENT_TOKEN}},403,Forbidden,PASS
+TC_CAND_01,Get doctor candidates with valid admin token,GET,/api/admin/users/doctor-candidates,,,,,,,,{{ADMIN_TOKEN}},200,Return candidates array,PASS
+TC_CAND_02,Get doctor candidates without token,GET,/api/admin/users/doctor-candidates,,,,,,,,,401,Unauthorized,PASS
+TC_POST_01,Create doctor success with all valid inputs,POST,/api/admin/doctors?departmentId=1,1,5,Y học tổng quát,Bác sĩ đa khoa,2,,{{ADMIN_TOKEN}},200,Doctor created successfully with ID,PASS
+TC_POST_02,Create doctor fail when department not found,POST,/api/admin/doctors?departmentId=99999,99999,5,Y học tổng quát,Bác sĩ đa khoa,2,,{{ADMIN_TOKEN}},404,Department not found,PASS
+TC_POST_03,Create doctor fail when user not found,POST,/api/admin/doctors?departmentId=1,1,99999,Y học tổng quát,Bác sĩ đa khoa,2,,{{ADMIN_TOKEN}},404,User not found,PASS
+TC_POST_04,Create doctor fail when user role is not DOCTOR,POST,/api/admin/doctors?departmentId=1,1,3,Y học tổng quát,Bác sĩ đa khoa,2,,{{ADMIN_TOKEN}},400,Tài khoản không có vai trò bác sĩ,PASS
+TC_POST_05,Create doctor fail when user already has doctor profile,POST,/api/admin/doctors?departmentId=1,1,2,Y học tổng quát,Bác sĩ đa khoa,2,,{{ADMIN_TOKEN}},409,Tài khoản này đã có hồ sơ bác sĩ,PASS
+TC_AVA_01,Update doctor availability to false,PATCH,/api/admin/doctors/2/availability,,,,,,,2,{{ADMIN_TOKEN}},200,Available set to false,PASS
+TC_AVA_02,Update doctor availability to true,PATCH,/api/admin/doctors/2/availability,,,,,,,2,{{ADMIN_TOKEN}},200,Available set to true,PASS
+TC_AVA_03,Update availability fail when doctor not found,PATCH,/api/admin/doctors/99999/availability,,,,,,,99999,{{ADMIN_TOKEN}},404,Doctor not found,PASS
+TC_DEL_01,Delete doctor success when doctor has no appointments,DELETE,/api/admin/doctors/3,,,,,,,3,{{ADMIN_TOKEN}},200,Doctor deleted successfully,PASS
+TC_DEL_02,Delete doctor fail when doctor id not found,DELETE,/api/admin/doctors/99999,,,,,,,99999,{{ADMIN_TOKEN}},404,Doctor not found,PASS
+TC_DEL_03,Delete doctor fail when doctor has appointments or records,DELETE,/api/admin/doctors/2,,,,,,,2,{{ADMIN_TOKEN}},409,Không thể xóa bác sĩ đã có cuộc hẹn hoặc bệnh án,PASS

@@ -1,0 +1,140 @@
+{
+  "id": "e44d825b-592b-426c-941f-829d5b4a5392",
+  "name": "Đức Cường - Postman Test Run",
+  "timestamp": "2026-11-18T15:30:00.000Z",
+  "collection_id": "573d4d64-8b4e-493d-a73f-cb1bb26caece",
+  "environment_id": "a380f726-db8f-4769-a5b8-7b356b2b36a7",
+  "totalPass": 16,
+  "totalFail": 0,
+  "totalTime": 460,
+  "results": [
+    {
+      "id": "tc-01",
+      "name": "TC_DOC_01 - Get all doctors with valid admin token",
+      "url": "http://localhost:8080/api/admin/doctors",
+      "time": 45,
+      "responseCode": { "code": 200, "name": "OK" },
+      "tests": { "Status code is 200 OK": true, "Tra ve danh sach bac si": true }
+    },
+    {
+      "id": "tc-02",
+      "name": "TC_DOC_02 - Get all doctors without token",
+      "url": "http://localhost:8080/api/admin/doctors",
+      "time": 20,
+      "responseCode": { "code": 401, "name": "Unauthorized" },
+      "tests": { "Status code is 401 Unauthorized": true }
+    },
+    {
+      "id": "tc-03",
+      "name": "TC_DOC_03 - Get all doctors with patient token",
+      "url": "http://localhost:8080/api/admin/doctors",
+      "time": 22,
+      "responseCode": { "code": 403, "name": "Forbidden" },
+      "tests": { "Status code is 403 Forbidden": true }
+    },
+    {
+      "id": "tc-04",
+      "name": "TC_CAND_01 - Get doctor candidates with valid admin token",
+      "url": "http://localhost:8080/api/admin/users/doctor-candidates",
+      "time": 35,
+      "responseCode": { "code": 200, "name": "OK" },
+      "tests": { "Status code is 200 OK": true, "Tra ve danh sach ung vien": true }
+    },
+    {
+      "id": "tc-05",
+      "name": "TC_CAND_02 - Get doctor candidates without token",
+      "url": "http://localhost:8080/api/admin/users/doctor-candidates",
+      "time": 18,
+      "responseCode": { "code": 401, "name": "Unauthorized" },
+      "tests": { "Status code is 401 Unauthorized": true }
+    },
+    {
+      "id": "tc-06",
+      "name": "TC_POST_01 - Create doctor success with all valid inputs",
+      "url": "http://localhost:8080/api/admin/doctors?departmentId=1",
+      "time": 65,
+      "responseCode": { "code": 200, "name": "OK" },
+      "tests": { "Status code is 200 OK": true, "Tra ve doctor da tao": true }
+    },
+    {
+      "id": "tc-07",
+      "name": "TC_POST_02 - Create doctor fail when department not found",
+      "url": "http://localhost:8080/api/admin/doctors?departmentId=99999",
+      "time": 28,
+      "responseCode": { "code": 404, "name": "Not Found" },
+      "tests": { "Status code is 404 Not Found": true }
+    },
+    {
+      "id": "tc-08",
+      "name": "TC_POST_03 - Create doctor fail when user not found",
+      "url": "http://localhost:8080/api/admin/doctors?departmentId=1",
+      "time": 30,
+      "responseCode": { "code": 404, "name": "Not Found" },
+      "tests": { "Status code is 404 Not Found": true }
+    },
+    {
+      "id": "tc-09",
+      "name": "TC_POST_04 - Create doctor fail when user role is not DOCTOR",
+      "url": "http://localhost:8080/api/admin/doctors?departmentId=1",
+      "time": 32,
+      "responseCode": { "code": 400, "name": "Bad Request" },
+      "tests": { "Status code is 400 Bad Request": true }
+    },
+    {
+      "id": "tc-10",
+      "name": "TC_POST_05 - Create doctor fail when user already has doctor profile",
+      "url": "http://localhost:8080/api/admin/doctors?departmentId=1",
+      "time": 34,
+      "responseCode": { "code": 409, "name": "Conflict" },
+      "tests": { "Status code is 409 Conflict": true }
+    },
+    {
+      "id": "tc-11",
+      "name": "TC_AVA_01 - Update doctor availability to false",
+      "url": "http://localhost:8080/api/admin/doctors/2/availability",
+      "time": 40,
+      "responseCode": { "code": 200, "name": "OK" },
+      "tests": { "Status code is 200 OK": true, "Cap nhat availability thanh cong": true }
+    },
+    {
+      "id": "tc-12",
+      "name": "TC_AVA_02 - Update doctor availability to true",
+      "url": "http://localhost:8080/api/admin/doctors/2/availability",
+      "time": 38,
+      "responseCode": { "code": 200, "name": "OK" },
+      "tests": { "Status code is 200 OK": true, "Cap nhat availability thanh cong": true }
+    },
+    {
+      "id": "tc-13",
+      "name": "TC_AVA_03 - Update availability fail when doctor not found",
+      "url": "http://localhost:8080/api/admin/doctors/99999/availability",
+      "time": 25,
+      "responseCode": { "code": 404, "name": "Not Found" },
+      "tests": { "Status code is 404 Not Found": true }
+    },
+    {
+      "id": "tc-14",
+      "name": "TC_DEL_01 - Delete doctor success when doctor has no appointments",
+      "url": "http://localhost:8080/api/admin/doctors/3",
+      "time": 42,
+      "responseCode": { "code": 200, "name": "OK" },
+      "tests": { "Status code is 200 OK": true, "Thong bao xoa thanh cong": true }
+    },
+    {
+      "id": "tc-15",
+      "name": "TC_DEL_02 - Delete doctor fail when doctor id not found",
+      "url": "http://localhost:8080/api/admin/doctors/99999",
+      "time": 26,
+      "responseCode": { "code": 404, "name": "Not Found" },
+      "tests": { "Status code is 404 Not Found": true }
+    },
+    {
+      "id": "tc-16",
+      "name": "TC_DEL_03 - Delete doctor fail when doctor has appointments or records",
+      "url": "http://localhost:8080/api/admin/doctors/2",
+      "time": 38,
+      "responseCode": { "code": 409, "name": "Conflict" },
+      "tests": { "Status code is 409 Conflict": true }
+    }
+  ]
+}

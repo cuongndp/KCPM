@@ -2,26 +2,59 @@
   "info": {
     "_postman_id": "573d4d64-8b4e-493d-a73f-cb1bb26caece",
     "name": "Đức Cường",
+    "description": "Bộ sưu tập kiểm thử API Quản lý Bác sĩ (Admin - Doctor Management) cho hệ thống HMS.\n\nBao gồm các chức năng ứng với các nhiệm vụ:\n- KAN-44: Lấy danh sách bác sĩ & ứng viên bác sĩ\n- KAN-57: Tạo mới hồ sơ bác sĩ cho khoa\n- KAN-75: Cập nhật trạng thái nhận khám của bác sĩ (Availability)\n- KAN-87: Xóa hồ sơ bác sĩ khỏi hệ thống",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-    "_exporter_id": "46953631",
-    "_collection_link": "https://go.postman.co/collection/46953631-573d4d64-8b4e-493d-a73f-cb1bb26caece?source=collection_link"
+    "_exporter_id": "46953631"
   },
   "item": [
     {
       "name": "api/admin/doctors",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('200 OK', function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "pm.test('Tra ve danh sach bac si', function () {",
+              "    const jsonData = pm.response.json();",
+              "    pm.expect(jsonData).to.be.an('array');",
+              "    if (jsonData.length > 0) {",
+              "        pm.expect(jsonData[0]).to.have.property('id');",
+              "        pm.expect(jsonData[0]).to.have.property('user');",
+              "        pm.expect(jsonData[0]).to.have.property('department');",
+              "        pm.expect(jsonData[0]).to.have.property('specialization');",
+              "        pm.expect(jsonData[0]).to.have.property('available');",
+              "        if (!pm.collectionVariables.get('doctorId')) {",
+              "            pm.collectionVariables.set('doctorId', jsonData[0].id);",
+              "        }",
+              "    }",
+              "});"
+            ]
+          }
+        }
+      ],
       "request": {
         "auth": {
           "type": "bearer",
           "bearer": [
             {
               "key": "token",
-              "value": "{{token}}",
+              "value": "{{ADMIN_TOKEN}}",
               "type": "string"
             }
           ]
         },
         "method": "GET",
-        "header": [],
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
         "url": {
           "raw": "{{baseUrl}}/api/admin/doctors",
           "host": [
@@ -32,7 +65,8 @@
             "admin",
             "doctors"
           ]
-        }
+        },
+        "description": "Mục đích  \nLấy danh sách tất cả các bác sĩ trong hệ thống bệnh viện.\n\nMethod  \nGET\n\nURL  \n{{baseUrl}}/api/admin/doctors\n\nXác thực  \nBearer Token của tài khoản có role ADMIN (biến {{ADMIN_TOKEN}}).\n\nQuery Params  \nKhông có.\n\nRequest Body  \nKhông có.\n\nResponse thành công  \nHTTP 200 OK  \nTrả về mảng Doctor gồm id, user, department, specialization, qualification, experience, available, consultationFee, createdAt, updatedAt."
       },
       "response": [
         {
@@ -57,74 +91,58 @@
           "_postman_previewlanguage": "json",
           "header": [
             {
-              "key": "vary",
-              "value": "Origin, Access-Control-Request-Method, Access-Control-Request-Headers"
-            },
-            {
-              "key": "x-content-type-options",
-              "value": "nosniff"
-            },
-            {
-              "key": "x-xss-protection",
-              "value": "0"
-            },
-            {
-              "key": "cache-control",
-              "value": "no-cache, no-store, max-age=0, must-revalidate"
-            },
-            {
-              "key": "pragma",
-              "value": "no-cache"
-            },
-            {
-              "key": "expires",
-              "value": "0"
-            },
-            {
-              "key": "x-frame-options",
-              "value": "DENY"
-            },
-            {
               "key": "content-type",
               "value": "application/json"
-            },
-            {
-              "key": "transfer-encoding",
-              "value": "chunked"
-            },
-            {
-              "key": "date",
-              "value": "Sun, 11 Oct 2026 06:14:33 GMT"
-            },
-            {
-              "key": "keep-alive",
-              "value": "timeout=60"
-            },
-            {
-              "key": "connection",
-              "value": "keep-alive"
             }
           ],
           "cookie": [],
-          "body": "[\n  {\n    \"id\": 2,\n    \"user\": {\n      \"id\": 2,\n      \"username\": \"2\",\n      \"email\": \"sample-doctor@hospital.test\",\n      \"firstName\": \"Doctor\",\n      \"lastName\": \"Demo\",\n      \"phoneNumber\": \"0900000000\",\n      \"role\": \"DOCTOR\",\n      \"active\": true,\n      \"createdAt\": \"2026-10-04T11:42:19.191763\",\n      \"updatedAt\": \"2026-10-11T12:11:01.798904\"\n    },\n    \"department\": {\n      \"id\": 1,\n      \"name\": \"Y học tổng quát\",\n      \"description\": \"Khám và tư vấn sức khỏe tổng quát\",\n      \"active\": true,\n      \"createdAt\": \"2026-10-04T04:42:18.32039\",\n      \"updatedAt\": \"2026-10-04T04:42:18.32039\"\n    },\n    \"specialization\": \"Y học tổng quát\",\n    \"qualification\": \"Bác sĩ đa khoa\",\n    \"experience\": 2,\n    \"available\": true,\n    \"consultationFee\": 0,\n    \"createdAt\": \"2026-10-05T11:46:13.526642\",\n    \"updatedAt\": \"2026-10-05T11:50:14.90142\"\n  }\n]"
+          "body": "[\n  {\n    \"id\": 2,\n    \"user\": {\n      \"id\": 2,\n      \"username\": \"2\",\n      \"email\": \"sample-doctor@hospital.test\",\n      \"firstName\": \"Doctor\",\n      \"lastName\": \"Demo\",\n      \"phoneNumber\": \"0900000000\",\n      \"role\": \"DOCTOR\",\n      \"active\": true,\n      \"createdAt\": \"2026-10-04T11:42:19.191763\",\n      \"updatedAt\": \"2026-10-11T12:11:01.798904\"\n    },\n    \"department\": {\n      \"id\": 1,\n      \"name\": \"Y học tổng quát\",\n      \"description\": \"Khám và tư vấn sức khỏe tổng quát\",\n      \"active\": true,\n      \"createdAt\": \"2026-10-04T04:42:18.32039\",\n      \"updatedAt\": \"2026-10-04T04:42:18.32039\"\n    },\n    \"specialization\": \"Y học tổng quát\",\n    \"qualification\": \"Bác sĩ đa khoa\",\n    \"experience\": 2,\n    \"available\": true,\n    \"consultationFee\": 0,\n    \"createdAt\": \"2026-10-05T11:46:13.526642\",\n    \"updatedAt\": \"2026-10-11T12:11:01.798904\"\n  }\n]"
         }
       ]
     },
     {
       "name": "api/admin/users/doctor-candidates",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('200 OK', function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "pm.test('Tra ve danh sach ung vien bac si', function () {",
+              "    const jsonData = pm.response.json();",
+              "    pm.expect(jsonData).to.be.an('array');",
+              "    if (jsonData.length > 0) {",
+              "        pm.expect(jsonData[0]).to.have.property('id');",
+              "        pm.expect(jsonData[0].role).to.eql('DOCTOR');",
+              "        pm.collectionVariables.set('candidateUserId', jsonData[0].id);",
+              "    }",
+              "});"
+            ]
+          }
+        }
+      ],
       "request": {
         "auth": {
           "type": "bearer",
           "bearer": [
             {
               "key": "token",
-              "value": "{{token}}",
+              "value": "{{ADMIN_TOKEN}}",
               "type": "string"
             }
           ]
         },
         "method": "GET",
-        "header": [],
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
         "url": {
           "raw": "{{baseUrl}}/api/admin/users/doctor-candidates",
           "host": [
@@ -136,7 +154,8 @@
             "users",
             "doctor-candidates"
           ]
-        }
+        },
+        "description": "Mục đích  \nLấy danh sách các user có role DOCTOR nhưng chưa được tạo hồ sơ bác sĩ (chưa gán vào Doctor Profile).\n\nMethod  \nGET\n\nURL  \n{{baseUrl}}/api/admin/users/doctor-candidates\n\nXác thực  \nBearer Token của tài khoản có role ADMIN (biến {{ADMIN_TOKEN}}).\n\nResponse thành công  \nHTTP 200 OK  \nTrả về mảng các ứng viên bác sĩ."
       },
       "response": [
         {
@@ -162,52 +181,8 @@
           "_postman_previewlanguage": "json",
           "header": [
             {
-              "key": "vary",
-              "value": "Origin, Access-Control-Request-Method, Access-Control-Request-Headers"
-            },
-            {
-              "key": "x-content-type-options",
-              "value": "nosniff"
-            },
-            {
-              "key": "x-xss-protection",
-              "value": "0"
-            },
-            {
-              "key": "cache-control",
-              "value": "no-cache, no-store, max-age=0, must-revalidate"
-            },
-            {
-              "key": "pragma",
-              "value": "no-cache"
-            },
-            {
-              "key": "expires",
-              "value": "0"
-            },
-            {
-              "key": "x-frame-options",
-              "value": "DENY"
-            },
-            {
               "key": "content-type",
               "value": "application/json"
-            },
-            {
-              "key": "transfer-encoding",
-              "value": "chunked"
-            },
-            {
-              "key": "date",
-              "value": "Sun, 11 Oct 2026 06:14:55 GMT"
-            },
-            {
-              "key": "keep-alive",
-              "value": "timeout=60"
-            },
-            {
-              "key": "connection",
-              "value": "keep-alive"
             }
           ],
           "cookie": [],
@@ -217,22 +192,54 @@
     },
     {
       "name": "api/admin/doctors",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('200 OK', function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "const jsonData = pm.response.json();",
+              "pm.test('Tra ve doctor da tao', function () {",
+              "    pm.expect(jsonData.id).to.be.a('number');",
+              "    pm.expect(jsonData.user).to.be.an('object');",
+              "    pm.expect(jsonData.department).to.be.an('object');",
+              "    pm.expect(jsonData.specialization).to.eql('Y học tổng quát');",
+              "});",
+              "",
+              "if (jsonData.id) {",
+              "    pm.collectionVariables.set('doctorId', jsonData.id);",
+              "    pm.environment.set('doctorId', jsonData.id);",
+              "    console.log('Da luu doctorId = ' + jsonData.id);",
+              "}"
+            ]
+          }
+        }
+      ],
       "request": {
         "auth": {
           "type": "bearer",
           "bearer": [
             {
               "key": "token",
-              "value": "{{token}}",
+              "value": "{{ADMIN_TOKEN}}",
               "type": "string"
             }
           ]
         },
         "method": "POST",
-        "header": [],
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
         "body": {
           "mode": "raw",
-          "raw": "{\r\n  \"userId\": 2,\r\n  \"specialization\": \"Y học tổng quát\",\r\n  \"qualification\": \"Bác sĩ đa khoa\",\r\n  \"experience\": 2\r\n}",
+          "raw": "{\r\n  \"userId\": 5,\r\n  \"specialization\": \"Y học tổng quát\",\r\n  \"qualification\": \"Bác sĩ đa khoa\",\r\n  \"experience\": 2\r\n}",
           "options": {
             "raw": {
               "language": "json"
@@ -255,14 +262,20 @@
               "value": "1"
             }
           ]
-        }
+        },
+        "description": "Mục đích  \nTạo hồ sơ bác sĩ mới gắn với một khoa trong bệnh viện.\n\nMethod  \nPOST\n\nURL  \n{{baseUrl}}/api/admin/doctors?departmentId=1\n\nXác thực  \nBearer Token của tài khoản có role ADMIN (biến {{ADMIN_TOKEN}}).\n\nQuery Params  \ndepartmentId (bắt buộc): ID của khoa cần thêm bác sĩ vào.\n\nRequest Body  \nJSON gồm:\n- userId (bắt buộc): ID tài khoản user role DOCTOR.\n- specialization: Chuyên môn.\n- qualification: Bằng cấp.\n- experience: Số năm kinh nghiệm.\n\nResponse thành công  \nHTTP 200 OK  \nTrả về object Doctor vừa tạo kèm ID mới."
       },
       "response": [
         {
           "name": "OK",
           "originalRequest": {
             "method": "POST",
-            "header": [],
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
             "body": {
               "mode": "raw",
               "raw": "{\r\n  \"userId\": 5,\r\n  \"specialization\": \"Y học tổng quát\",\r\n  \"qualification\": \"Bác sĩ đa khoa\",\r\n  \"experience\": 2\r\n}",
@@ -273,7 +286,7 @@
               }
             },
             "url": {
-              "raw": "{{baseUrl}}/api/admin/doctors?departmentId={{departmentId}}",
+              "raw": "{{baseUrl}}/api/admin/doctors?departmentId=1",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -285,7 +298,7 @@
               "query": [
                 {
                   "key": "departmentId",
-                  "value": "{{departmentId}}"
+                  "value": "1"
                 }
               ]
             }
@@ -295,52 +308,8 @@
           "_postman_previewlanguage": "json",
           "header": [
             {
-              "key": "vary",
-              "value": "Origin, Access-Control-Request-Method, Access-Control-Request-Headers"
-            },
-            {
-              "key": "x-content-type-options",
-              "value": "nosniff"
-            },
-            {
-              "key": "x-xss-protection",
-              "value": "0"
-            },
-            {
-              "key": "cache-control",
-              "value": "no-cache, no-store, max-age=0, must-revalidate"
-            },
-            {
-              "key": "pragma",
-              "value": "no-cache"
-            },
-            {
-              "key": "expires",
-              "value": "0"
-            },
-            {
-              "key": "x-frame-options",
-              "value": "DENY"
-            },
-            {
               "key": "content-type",
               "value": "application/json"
-            },
-            {
-              "key": "transfer-encoding",
-              "value": "chunked"
-            },
-            {
-              "key": "date",
-              "value": "Sun, 11 Oct 2026 06:27:45 GMT"
-            },
-            {
-              "key": "keep-alive",
-              "value": "timeout=60"
-            },
-            {
-              "key": "connection",
-              "value": "keep-alive"
             }
           ],
           "cookie": [],
@@ -350,21 +319,53 @@
     },
     {
       "name": "api/admin/doctors/{doctorId}/availability",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('200 OK', function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "const jsonData = pm.response.json();",
+              "pm.test('Cap nhat availability thanh cong', function () {",
+              "    pm.expect(jsonData).to.have.property('available');",
+              "});"
+            ]
+          }
+        }
+      ],
       "request": {
         "auth": {
           "type": "bearer",
           "bearer": [
             {
               "key": "token",
-              "value": "{{token}}",
+              "value": "{{ADMIN_TOKEN}}",
               "type": "string"
             }
           ]
         },
-        "method": "DELETE",
-        "header": [],
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"available\": false\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
         "url": {
-          "raw": "{{baseUrl}}/api/admin/doctors/1",
+          "raw": "{{baseUrl}}/api/admin/doctors/2/availability",
           "host": [
             "{{baseUrl}}"
           ],
@@ -372,16 +373,23 @@
             "api",
             "admin",
             "doctors",
-            "1"
+            "2",
+            "availability"
           ]
-        }
+        },
+        "description": "Mục đích  \nCập nhật trạng thái nhận khám (available: true/false) của bác sĩ.\n\nMethod  \nPATCH\n\nURL  \n{{baseUrl}}/api/admin/doctors/{{doctorId}}/availability\n\nXác thực  \nBearer Token của tài khoản có role ADMIN (biến {{ADMIN_TOKEN}}).\n\nPath Variable  \ndoctorId: ID hồ sơ bác sĩ cần cập nhật trạng thái.\n\nRequest Body  \n{\n  \"available\": false\n}\n\nResponse thành công  \nHTTP 200 OK  \nTrả về thông tin Doctor với trường available đã được cập nhật."
       },
       "response": [
         {
           "name": "OK",
           "originalRequest": {
             "method": "PATCH",
-            "header": [],
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
             "body": {
               "mode": "raw",
               "raw": "{\r\n  \"available\": false\r\n}",
@@ -410,52 +418,8 @@
           "_postman_previewlanguage": "json",
           "header": [
             {
-              "key": "vary",
-              "value": "Origin, Access-Control-Request-Method, Access-Control-Request-Headers"
-            },
-            {
-              "key": "x-content-type-options",
-              "value": "nosniff"
-            },
-            {
-              "key": "x-xss-protection",
-              "value": "0"
-            },
-            {
-              "key": "cache-control",
-              "value": "no-cache, no-store, max-age=0, must-revalidate"
-            },
-            {
-              "key": "pragma",
-              "value": "no-cache"
-            },
-            {
-              "key": "expires",
-              "value": "0"
-            },
-            {
-              "key": "x-frame-options",
-              "value": "DENY"
-            },
-            {
               "key": "content-type",
               "value": "application/json"
-            },
-            {
-              "key": "transfer-encoding",
-              "value": "chunked"
-            },
-            {
-              "key": "date",
-              "value": "Sun, 11 Oct 2026 06:20:20 GMT"
-            },
-            {
-              "key": "keep-alive",
-              "value": "timeout=60"
-            },
-            {
-              "key": "connection",
-              "value": "keep-alive"
             }
           ],
           "cookie": [],
@@ -464,7 +428,24 @@
       ]
     },
     {
-      "name": "api/admin/doctors/{doctorId}/availability",
+      "name": "api/admin/doctors/{doctorId}",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('200 OK', function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "pm.test('Thong bao xoa thanh cong', function () {",
+              "    pm.expect(pm.response.text()).to.include('successfully');",
+              "});"
+            ]
+          }
+        }
+      ],
       "request": {
         "auth": {
           "type": "bearer",
@@ -476,19 +457,10 @@
             }
           ]
         },
-        "method": "PATCH",
+        "method": "DELETE",
         "header": [],
-        "body": {
-          "mode": "raw",
-          "raw": "{\r\n  \"available\": true\r\n}",
-          "options": {
-            "raw": {
-              "language": "json"
-            }
-          }
-        },
         "url": {
-          "raw": "{{baseUrl}}/api/admin/doctors/2/availability?",
+          "raw": "{{baseUrl}}/api/admin/doctors/{{doctorId}}",
           "host": [
             "{{baseUrl}}"
           ],
@@ -496,34 +468,19 @@
             "api",
             "admin",
             "doctors",
-            "2",
-            "availability"
-          ],
-          "query": [
-            {
-              "key": "",
-              "value": ""
-            }
+            "{{doctorId}}"
           ]
-        }
+        },
+        "description": "Mục đích  \nXóa hồ sơ bác sĩ khỏi hệ thống theo doctorId.\n\nMethod  \nDELETE\n\nURL  \n{{baseUrl}}/api/admin/doctors/{{doctorId}}\n\nXác thực  \nBearer Token của tài khoản có role ADMIN (biến {{ADMIN_TOKEN}}).\n\nPath Variable  \ndoctorId: ID hồ sơ bác sĩ cần xóa.\n\nResponse thành công  \nHTTP 200 OK  \nNội dung: Doctor deleted successfully\n\nLỗi thường gặp  \n404: Không tìm thấy bác sĩ có doctorId đó."
       },
       "response": [
         {
           "name": "OK",
           "originalRequest": {
-            "method": "PATCH",
+            "method": "DELETE",
             "header": [],
-            "body": {
-              "mode": "raw",
-              "raw": "{\r\n  \"available\": true\r\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            },
             "url": {
-              "raw": "{{baseUrl}}/api/admin/doctors/2/availability?",
+              "raw": "{{baseUrl}}/api/admin/doctors/1",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -531,74 +488,37 @@
                 "api",
                 "admin",
                 "doctors",
-                "2",
-                "availability"
-              ],
-              "query": [
-                {
-                  "key": "",
-                  "value": null
-                }
+                "1"
               ]
             }
           },
           "status": "OK",
           "code": 200,
-          "_postman_previewlanguage": "json",
+          "_postman_previewlanguage": "text",
           "header": [
             {
-              "key": "vary",
-              "value": "Origin, Access-Control-Request-Method, Access-Control-Request-Headers"
-            },
-            {
-              "key": "x-content-type-options",
-              "value": "nosniff"
-            },
-            {
-              "key": "x-xss-protection",
-              "value": "0"
-            },
-            {
-              "key": "cache-control",
-              "value": "no-cache, no-store, max-age=0, must-revalidate"
-            },
-            {
-              "key": "pragma",
-              "value": "no-cache"
-            },
-            {
-              "key": "expires",
-              "value": "0"
-            },
-            {
-              "key": "x-frame-options",
-              "value": "DENY"
-            },
-            {
               "key": "content-type",
-              "value": "application/json"
-            },
-            {
-              "key": "transfer-encoding",
-              "value": "chunked"
-            },
-            {
-              "key": "date",
-              "value": "Sun, 11 Oct 2026 06:21:11 GMT"
-            },
-            {
-              "key": "keep-alive",
-              "value": "timeout=60"
-            },
-            {
-              "key": "connection",
-              "value": "keep-alive"
+              "value": "text/plain;charset=UTF-8"
             }
           ],
           "cookie": [],
-          "body": "{\n  \"id\": 2,\n  \"user\": {\n    \"id\": 2,\n    \"username\": \"2\",\n    \"email\": \"sample-doctor@hospital.test\",\n    \"firstName\": \"Doctor\",\n    \"lastName\": \"Demo\",\n    \"phoneNumber\": \"0900000000\",\n    \"role\": \"DOCTOR\",\n    \"active\": true,\n    \"createdAt\": \"2026-10-04T11:42:19.191763\",\n    \"updatedAt\": \"2026-10-11T12:11:01.798904\"\n  },\n  \"department\": {\n    \"id\": 1,\n    \"name\": \"Y học tổng quát\",\n    \"description\": \"Khám và tư vấn sức khỏe tổng quát\",\n    \"active\": true,\n    \"createdAt\": \"2026-10-04T04:42:18.32039\",\n    \"updatedAt\": \"2026-10-04T04:42:18.32039\"\n  },\n  \"specialization\": \"Y học tổng quát\",\n  \"qualification\": \"Bác sĩ đa khoa\",\n  \"experience\": 2,\n  \"available\": true,\n  \"consultationFee\": 0,\n  \"createdAt\": \"2026-10-05T11:46:13.526642\",\n  \"updatedAt\": \"2026-10-11T13:21:11.451935935\"\n}"
+          "body": "Doctor deleted successfully"
         }
       ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "departmentId",
+      "value": "1"
+    },
+    {
+      "key": "doctorId",
+      "value": "2"
+    },
+    {
+      "key": "candidateUserId",
+      "value": "5"
     }
   ]
 }

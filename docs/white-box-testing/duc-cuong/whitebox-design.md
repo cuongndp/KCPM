@@ -79,7 +79,11 @@ $\rightarrow$ Cần **5 đường đi cơ sở (Basis Paths)** để đạt 100%
 
 ---
 
-## 5. Kết quả thực thi Unit Test
+## 5. Kết quả thực thi Unit Test & Minh chứng
 * Tệp kiểm thử: `backend/src/test/java/com/hospital/management/service/CreateDoctorTest.java`
 * Sử dụng: **JUnit 5 + Mockito**
 * Độ bao phủ: **100% Instruction Coverage**, **100% Branch Coverage**.
+
+### Hình ảnh minh chứng (Jira Tasks):
+- **CFG Diagram (Jira KAN-90):** `docs/white-box-testing/duc-cuong/evidence/CFG_AdminService_createDoctorWithDepartment.png`
+- **JUnit 5 Test Pass (Jira KAN-91):** `docs/white-box-testing/duc-cuong/evidence/JUnit5_CreateDoctorTest_Pass.png`

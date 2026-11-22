@@ -76,3 +76,4 @@
 * Bộ test cases chi tiết: `postman-doctors-test-case.csv`
 * File kết quả chạy tự động trên Postman Collection Runner: `DucCuong.postman_test_run.json`
 * Ảnh chụp minh chứng các trường hợp Pass/Fail được lưu trong thư mục `evidence/`.
+* **Minh chứng Postman Collection Runner 16/16 Passed (Jira KAN-92):** `docs/black-box-testing/duc-cuong/evidence/Postman_Runner_DucCuong_Admin_Doctors.png`
